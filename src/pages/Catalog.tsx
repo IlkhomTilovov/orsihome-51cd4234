@@ -22,6 +22,7 @@ export default function Catalog() {
   const [mobileOpen, setMobileOpen] = useState(false);
   
   const initialCategoryParam = searchParams.get('category') || 'all';
+  const promoTileId = searchParams.get('promo') || '';
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   
   const [search, setSearch] = useState('');
