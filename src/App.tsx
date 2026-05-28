@@ -51,7 +51,6 @@ const Themes = lazy(() => import("./pages/admin/Themes"));
 const CheckoutFormSettings = lazy(() => import("./pages/admin/CheckoutFormSettings"));
 const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
 
-const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
