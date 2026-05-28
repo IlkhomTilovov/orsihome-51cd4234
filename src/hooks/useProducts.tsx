@@ -145,10 +145,15 @@ export function useProducts(
       if (filters.applications && filters.applications.length > 0) {
         query = query.overlaps('application', filters.applications);
       }
-
       // Discounted: original_price must be greater than price
       if (filters.discounted) {
         query = query.not('original_price', 'is', null).gt('original_price', 0);
+      }
+
+      // Promo tile filter (array contains)
+      if (filters.promoTileId) {
+        query = query.contains('promo_tile_ids', [filters.promoTileId]);
+      }
       }
 
       // Pagination
