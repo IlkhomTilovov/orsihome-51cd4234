@@ -62,26 +62,7 @@ async function getTelegramSettings(supabase: any) {
   };
 }
 
-async function sendTelegramMessage(botToken: string, chatId: string, message: string) {
-  const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: message,
-      parse_mode: 'Markdown',
-    }),
-  });
 
-  const result = await response.json();
-  
-  if (!result.ok) {
-    console.error('Telegram API error:', result);
-    throw new Error(result.description || 'Telegram xabar yuborishda xatolik');
-  }
-
-  return result;
-}
 
 function formatOrderMessage(orderData: TelegramRequest['order_data']) {
   if (!orderData) return '';
