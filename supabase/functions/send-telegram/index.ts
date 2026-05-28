@@ -153,15 +153,38 @@ Deno.serve(async (req) => {
     if (!settings.chat_id) {
       return new Response(
         JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Handle Web App setup separately (no chat_id needed)
+    if (body.type === 'setup_webapp') {
+      const url = body.webapp_url?.trim();
+      if (!url || !/^https:\/\//.test(url)) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Web App URL HTTPS bilan boshlanishi kerak' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const buttonText = body.webapp_button_text?.trim() || 'Do\'konni ochish';
 
-    // For order notifications, check if enabled
-    if (body.type === 'order' && !settings.enabled) {
-      console.log('Telegram notifications disabled, skipping order notification');
+      // Set the bot's default chat menu button to open the Web App
+      await tgApi(settings.bot_token, 'setChatMenuButton', {
+        menu_button: {
+          type: 'web_app',
+          text: buttonText,
+          web_app: { url },
+        },
+      });
+
+      // Set basic commands
+      await tgApi(settings.bot_token, 'setMyCommands', {
+        commands: [
+          { command: 'start', description: 'Do\'konni ochish' },
+          { command: 'help', description: 'Yordam' },
+        ],
+      });
+
+      const me = await tgApi(settings.bot_token, 'getMe', {});
+
       return new Response(
-        JSON.stringify({ success: true, skipped: true, message: 'Telegram xabarlari o\'chirilgan' }),
+        JSON.stringify({ success: true, bot: me.result, webapp_url: url }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -189,6 +212,17 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ success: false, error: 'Noto\'g\'ri so\'rov turi' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Send the message
+    await tgApi(settings.bot_token, 'sendMessage', {
+      chat_id: settings.chat_id,
+      text: message,
+      parse_mode: 'Markdown',
+    });
+    console.log('Telegram message sent successfully');
+
       );
     }
 
