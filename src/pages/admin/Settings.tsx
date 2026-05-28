@@ -9,9 +9,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface TelegramSettings {
+interface TelegramSettings {
   bot_token: string;
   chat_id: string;
   enabled: boolean;
+}
+
+interface WebAppSettings {
+  url: string;
+  button_text: string;
 }
 
 export default function Settings() {
@@ -20,13 +26,19 @@ export default function Settings() {
     chat_id: '',
     enabled: false,
   });
+  const [webapp, setWebapp] = useState<WebAppSettings>({
+    url: typeof window !== 'undefined' ? window.location.origin : '',
+    button_text: "Do'konni ochish",
+  });
+  const [savingWebapp, setSavingWebapp] = useState(false);
+  const [connectingBot, setConnectingBot] = useState(false);
+  const [botInfo, setBotInfo] = useState<{ username?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
     fetchSettings();
   }, []);
 
