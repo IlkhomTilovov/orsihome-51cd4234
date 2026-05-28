@@ -154,7 +154,6 @@ export function useProducts(
       if (filters.promoTileId) {
         query = query.contains('promo_tile_ids', [filters.promoTileId]);
       }
-      }
 
       // Pagination
       const from = (page - 1) * pageSize;
