@@ -187,10 +187,9 @@ export default function Index() {
 
       </section>
 
-      {/* ============ PROMO TILES (6 colorful cards) ============ */}
-      <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
       {/* ============ PROMO TILES (DB-driven) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
+
         <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-700 ${sec1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
           {dbPromoTiles.map((tile, i) => {
             const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
