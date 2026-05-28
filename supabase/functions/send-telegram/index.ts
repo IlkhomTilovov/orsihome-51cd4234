@@ -189,6 +189,55 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Post a message to the channel/group with an inline URL button (e.g., "Katalog") and optionally pin it.
+    // Channels do NOT support web_app inline buttons — we use a regular URL button which opens the site
+    // (and, if visited inside Telegram, the Mini App opens automatically when set up).
+    if (body.type === 'post_channel_button') {
+      let url = (body.webapp_url || '').trim().replace(/\/+$/, '');
+      if (!url || !/^https:\/\/.+/i.test(url)) {
+        // Fallback: try DB
+        const { data } = await supabase.from('settings').select('value').eq('key', 'telegram_webapp_url').maybeSingle();
+        url = (data?.value || '').trim().replace(/\/+$/, '');
+      }
+      if (!url || !/^https:\/\/.+/i.test(url)) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Web App URL topilmadi. Avval Web App sozlamasini saqlang.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const buttonText = (body.webapp_button_text || 'Katalog').trim().slice(0, 32) || 'Katalog';
+      const text = (body.post_text || '🛍 Bizning do\'kon katalogi quyidagi tugma orqali ochiladi:').trim();
+
+      const sent = await tgApi(settings.bot_token, 'sendMessage', {
+        chat_id: settings.chat_id,
+        text,
+        reply_markup: {
+          inline_keyboard: [[{ text: buttonText, url }]],
+        },
+      });
+
+      let pinned = false;
+      if (body.pin !== false) {
+        try {
+          await tgApi(settings.bot_token, 'pinChatMessage', {
+            chat_id: settings.chat_id,
+            message_id: sent.result.message_id,
+            disable_notification: true,
+          });
+          pinned = true;
+        } catch (e) {
+          console.log('Pin failed:', (e as Error).message);
+        }
+      }
+
+      return new Response(
+        JSON.stringify({ success: true, message_id: sent.result.message_id, pinned }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+
+
     let message: string;
 
 
