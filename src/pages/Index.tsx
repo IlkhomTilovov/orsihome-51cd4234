@@ -3,12 +3,15 @@ import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, Utensils
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
+import { usePromoTiles } from '@/hooks/usePromoTiles';
+import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
+
 
 import serviceWardrobe from '@/assets/service-wardrobe.jpg';
 import serviceKitchen from '@/assets/service-kitchen.jpg';
@@ -106,14 +109,15 @@ function useInView(threshold = 0.15) {
 export default function Index() {
   const { language } = useLanguage();
   useSEO({});
+export default function Index() {
+  const { language } = useLanguage();
+  useSEO({});
   const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
   const { settings } = useSystemSettings();
   const { categories } = useCategories();
+  const { data: dbPromoTiles = [] } = usePromoTiles();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
 
-  const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
-
-  // Inspiration grid (4 images, instagram-style)
   const inspirations = [
     { key: 'insp_1', fallback: fallbackImages[0] },
     { key: 'insp_2', fallback: fallbackImages[1] },
@@ -185,23 +189,25 @@ export default function Index() {
 
       {/* ============ PROMO TILES (6 colorful cards) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
+      {/* ============ PROMO TILES (DB-driven) ============ */}
+      <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
         <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-700 ${sec1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-          {promoTiles.map((tile, i) => {
-            const Icon = tile.icon;
-            const title = language === 'uz' ? tile.titleUz : tile.titleRu;
+          {dbPromoTiles.map((tile, i) => {
+            const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+            const title = language === 'uz' ? tile.title_uz : tile.title_ru;
             return (
               <Link
-                key={tile.key}
+                key={tile.id}
                 to={tile.href}
-                className={`group relative aspect-square rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg}`}
+                className={`group relative aspect-square rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
                 style={{ transitionDelay: `${i * 60}ms` }}
               >
                 <div className="absolute inset-0 p-5 flex flex-col justify-between">
-                  <h3 className={`font-sans font-semibold text-sm lg:text-base leading-tight ${tile.textLight ? 'text-secondary' : 'text-foreground'}`}>
+                  <h3 className={`font-sans font-semibold text-sm lg:text-base leading-tight ${tile.text_class}`}>
                     {title}
                   </h3>
                   <Icon
-                    className={`w-16 h-16 lg:w-20 lg:h-20 self-end ${tile.iconColor} opacity-90 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}
+                    className={`w-16 h-16 lg:w-20 lg:h-20 self-end ${tile.text_class} opacity-90 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}
                     strokeWidth={1.5}
                   />
                 </div>
@@ -211,7 +217,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ============ CATEGORIES (carousel-style row) ============ */}
       <section ref={sec2.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
         <div className="flex items-end justify-between mb-8">
           <div>
