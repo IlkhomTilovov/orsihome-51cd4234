@@ -61,6 +61,11 @@ export default function Settings() {
         chat_id: settings['telegram_chat_id'] || '',
         enabled: settings['telegram_enabled'] === 'true',
       });
+      setWebapp((prev) => ({
+        url: settings['telegram_webapp_url'] || prev.url,
+        button_text: settings['telegram_webapp_button'] || prev.button_text,
+      }));
+
     } catch (error) {
       console.error('Error fetching settings:', error);
     } finally {
