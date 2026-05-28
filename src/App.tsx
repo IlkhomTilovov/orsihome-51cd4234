@@ -139,6 +139,25 @@ const App = () => (
                             <ProtectedRoute module="systemSettings">
                               <SystemSettings />
                             </ProtectedRoute>
+                          <Route path="themes" element={
+                            <ProtectedRoute module="siteContent">
+                              <Themes />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="site-content" element={
+                            <ProtectedRoute module="siteContent">
+                              <SiteContent />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="messages" element={
+                            <ProtectedRoute module="siteContent">
+                              <Messages />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="admins" element={
+                            <ProtectedRoute module="admins">
+                              <Admins />
+                            </ProtectedRoute>
                           } />
                         </Route>
                       
