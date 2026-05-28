@@ -6,9 +6,12 @@ const corsHeaders = {
 }
 
 interface TelegramRequest {
-  type: 'test' | 'order' | 'setup_webapp';
+interface TelegramRequest {
+  type: 'test' | 'order' | 'setup_webapp' | 'post_channel_button';
   webapp_url?: string;
   webapp_button_text?: string;
+  post_text?: string;
+  pin?: boolean;
   order_data?: {
     order_number: string;
     customer_name: string;
@@ -26,7 +29,6 @@ interface TelegramRequest {
     }>;
   };
 }
-
 async function tgApi(botToken: string, method: string, payload: any) {
   const res = await fetch(`https://api.telegram.org/bot${botToken}/${method}`, {
     method: 'POST',
