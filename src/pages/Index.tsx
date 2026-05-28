@@ -132,82 +132,57 @@ export default function Index() {
       <section className="container mx-auto px-4 lg:px-8 pt-6 lg:pt-10">
         <div className="grid grid-cols-1 gap-6">
           {/* Main hero card */}
-          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft min-h-[460px] lg:min-h-[560px]">
-            {/* Subtle organic background shape */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-secondary/40 blur-3xl opacity-60" />
-            </div>
+          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft min-h-[460px] lg:min-h-[620px]">
+            {/* Full-bleed background image */}
+            <EditableImage
+              contentKey="hero_product_image"
+              fallbackSrc={fallbackImages[0]}
+              alt="OrisHome premium furniture"
+              className="absolute inset-0 w-full h-full object-cover"
+              wrapperClassName="absolute inset-0 w-full h-full"
+              section="hero"
+            />
 
-            <div className="relative h-full grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-0">
+            {/* Dark gradient overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
 
-              {/* Left: typography */}
-              <div className="flex flex-col justify-center z-10 p-8 lg:p-12">
-                <div className="flex items-center gap-3 mb-6 text-muted-foreground">
-                  <span className="font-serif text-2xl">1</span>
-                  <span className="w-8 h-px bg-muted-foreground/40" />
-                  <span className="font-serif text-2xl">3</span>
-                </div>
-                <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
-                  <EditableText
-                    contentKey="hero_title_line1"
-                    fallback="SOFA"
-                    as="span"
-                    className="block"
-                    section="hero"
-                  />
-                  <EditableText
-                    contentKey="hero_title_line2"
-                    fallback="OLIVIA"
-                    as="span"
-                    className="block"
-                    section="hero"
-                  />
-                </h1>
-                <p className="mt-6 text-muted-foreground text-base lg:text-lg italic font-serif">
-                  <EditableText
-                    contentKey="hero_subtitle"
-                    fallback="Design by OrisHome"
-                    as="span"
-                    section="hero"
-                  />
-                </p>
-
-                <div className="mt-10 flex flex-wrap gap-3">
-                  <Button asChild size="lg" className="rounded-full px-8 h-12 text-sm font-medium">
-                    <Link to="/catalog">
-                      {language === 'uz' ? "Katalogni ko'rish" : 'Смотреть каталог'}
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-12 text-sm font-medium border-foreground/20">
-                    <Link to="/contact">
-                      {language === 'uz' ? 'Konsultatsiya' : 'Консультация'}
-                    </Link>
-                  </Button>
-                </div>
+            {/* Text content overlay */}
+            <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
+              <div className="flex items-center gap-3 mb-6 text-white/70">
+                <span className="font-serif text-2xl">1</span>
+                <span className="w-8 h-px bg-white/40" />
+                <span className="font-serif text-2xl">3</span>
               </div>
+              <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
+                <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
+                <EditableText contentKey="hero_title_line2" fallback="OLIVIA" as="span" className="block" section="hero" />
+              </h1>
+              <p className="mt-6 text-white/80 text-base lg:text-lg italic font-serif">
+                <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
+              </p>
 
-              {/* Right: product image — fills parent edge-to-edge */}
-              <div className="relative z-10 min-h-[300px] lg:min-h-full">
-                <EditableImage
-                  contentKey="hero_product_image"
-                  fallbackSrc={fallbackImages[0]}
-                  alt="OrisHome premium furniture"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  wrapperClassName="absolute inset-0 w-full h-full"
-                  section="hero"
-                />
+              <div className="mt-10 flex flex-wrap gap-3">
+                <Button asChild size="lg" className="rounded-full px-8 h-12 text-sm font-medium">
+                  <Link to="/catalog">
+                    {language === 'uz' ? "Katalogni ko'rish" : 'Смотреть каталог'}
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-12 text-sm font-medium bg-white/10 backdrop-blur text-white border-white/30 hover:bg-white/20 hover:text-white">
+                  <Link to="/contact">
+                    {language === 'uz' ? 'Konsultatsiya' : 'Консультация'}
+                  </Link>
+                </Button>
               </div>
             </div>
-
 
             {/* Thumbnail strip */}
-            <div className="absolute bottom-6 left-8 lg:left-12 flex gap-3 z-20">
+            <div className="absolute bottom-6 left-8 lg:left-14 flex gap-3 z-20">
               {[0, 1, 2].map((i) => (
                 <button
                   key={i}
                   className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all ${
-                    i === 0 ? 'border-primary scale-105' : 'border-border/60 hover:border-primary/50'
-                  } bg-card shadow-soft-sm`}
+                    i === 0 ? 'border-white scale-105' : 'border-white/40 hover:border-white/80'
+                  } shadow-soft-sm`}
                   aria-label={`Slide ${i + 1}`}
                 >
                   <img src={fallbackImages[i]} alt="" className="w-full h-full object-cover" />
@@ -215,6 +190,7 @@ export default function Index() {
               ))}
             </div>
           </div>
+
         </div>
 
       </section>
