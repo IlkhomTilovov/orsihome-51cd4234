@@ -393,10 +393,18 @@ export default function Settings() {
                 <Send className="mr-2 h-4 w-4" />
               )}
               Saqlash va botga ulash
+              Saqlash va botga ulash
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Post Catalog button to channel */}
+      <ChannelCatalogPost
+        webappUrl={webapp.url}
+        defaultButton={webapp.button_text || 'Katalog'}
+      />
+
 
       {/* How to Setup Guide */}
       <Card>
