@@ -340,6 +340,7 @@ export type Database = {
           name_uz: string
           original_price: number | null
           price: number | null
+          promo_tile_ids: string[]
           sizes: string[] | null
           slug: string | null
           sort_order: number | null
@@ -379,6 +380,7 @@ export type Database = {
           name_uz: string
           original_price?: number | null
           price?: number | null
+          promo_tile_ids?: string[]
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
@@ -418,6 +420,7 @@ export type Database = {
           name_uz?: string
           original_price?: number | null
           price?: number | null
+          promo_tile_ids?: string[]
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
