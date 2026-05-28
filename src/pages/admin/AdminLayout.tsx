@@ -17,8 +17,10 @@ import {
   ClipboardList,
   Settings2,
   MessageSquare,
+  LayoutGrid,
   LucideIcon
 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
@@ -40,7 +42,9 @@ const navItems: NavItem[] = [
   { title: 'Mijozlar', url: '/admin/customers', icon: Users, module: 'customers' },
   { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
   { title: 'Sayt kontenti', url: '/admin/content', icon: FileText, module: 'siteContent' },
+  { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
   { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
+
   { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
   { title: 'Adminlar', url: '/admin/admins', icon: Shield, module: 'admins' },
   { title: 'Telegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
