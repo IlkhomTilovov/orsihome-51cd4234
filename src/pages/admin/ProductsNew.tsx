@@ -537,6 +537,7 @@ export default function ProductsNew() {
       keyword_ru: formData.keyword_ru || null,
       variants_uz: (formData.variants_uz || []).length > 0 ? formData.variants_uz : [],
       variants_ru: (formData.variants_ru || []).length > 0 ? formData.variants_ru : [],
+      promo_tile_ids: formData.promo_tile_ids || [],
     };
 
     try {
