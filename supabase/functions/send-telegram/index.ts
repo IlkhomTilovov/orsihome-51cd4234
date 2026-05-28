@@ -134,7 +134,6 @@ Deno.serve(async (req) => {
     // Handle Web App setup separately (no chat_id needed)
     if (body.type === 'setup_webapp') {
 
-    if (body.type === 'setup_webapp') {
       const url = body.webapp_url?.trim();
       if (!url || !/^https:\/\//.test(url)) {
         return new Response(
