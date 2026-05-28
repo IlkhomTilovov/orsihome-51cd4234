@@ -264,6 +264,41 @@ export default function Settings() {
     }
   };
 
+  const sendChannelPost = async () => {
+    if (!telegram.bot_token) {
+      toast({ title: 'Xatolik', description: 'Avval Bot Token saqlang', variant: 'destructive' });
+      return;
+    }
+    if (!post.chat_id.trim() || !/^-?\d+$/.test(post.chat_id.trim())) {
+      toast({ title: 'Xatolik', description: 'Kanal Chat ID noto\'g\'ri (masalan: -1001234567890)', variant: 'destructive' });
+      return;
+    }
+    if (!post.text.trim()) {
+      toast({ title: 'Xatolik', description: 'E\'lon matnini kiriting', variant: 'destructive' });
+      return;
+    }
+    setSendingPost(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-telegram', {
+        body: {
+          type: 'channel_post',
+          post_chat_id: post.chat_id.trim(),
+          post_text: post.text,
+          post_image_url: post.image_url.trim() || undefined,
+          post_button_text: post.button_text,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Yuborishda xatolik');
+      toast({ title: 'Muvaffaqiyat', description: 'E\'lon kanalga yuborildi' });
+      setPost((p) => ({ ...p, text: '', image_url: '' }));
+    } catch (err: any) {
+      toast({ title: 'Xatolik', description: err.message || 'Yuborishda xatolik', variant: 'destructive' });
+    } finally {
+      setSendingPost(false);
+    }
+  };
+
 
   if (loading) {
     return (
