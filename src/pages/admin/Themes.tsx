@@ -423,188 +423,219 @@ const Themes = () => {
       )}
 
       {/* Theme Builder Dialog */}
+      {/* Theme Builder Dialog — Premium 2-column layout */}
       <Dialog open={showBuilder} onOpenChange={setShowBuilder}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Settings2 className="h-5 w-5" />
-              {builderMode === 'create' ? 'Yangi mavzu yaratish' : 
-               builderMode === 'clone' ? 'Mavzuni nusxalash' : 'Mavzuni tahrirlash'}
-            </DialogTitle>
-            <DialogDescription>
-              O'zingizning brend ranglaringiz bilan yangi mavzu yarating
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6 py-4">
-            {/* Theme Name */}
-            <div className="space-y-2">
-              <Label>Mavzu nomi</Label>
-              <Input
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Masalan: Zamonaviy Oq"
-              />
-            </div>
-
-            {/* Dark/Light Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Qorong'i rejim</Label>
-                <p className="text-sm text-muted-foreground">Mavzuni qorong'i sifatida belgilash</p>
+        <DialogContent className="max-w-[1000px] w-[95vw] p-0 gap-0 max-h-[92vh] overflow-hidden">
+          {/* Sticky Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b bg-background sticky top-0 z-10">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Palette className="h-4 w-4 text-primary" />
               </div>
-              <Switch
-                checked={formData.isDark}
-                onCheckedChange={(checked) => setFormData({ ...formData, isDark: checked })}
-              />
-            </div>
-
-            {/* Colors Grid */}
-            <div className="space-y-3">
-              <Label>Ranglar</Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <ColorInput
-                  label="Asosiy rang"
-                  value={formData.primaryColor}
-                  onChange={(v) => setFormData({ ...formData, primaryColor: v })}
-                />
-                <ColorInput
-                  label="Ikkinchi darajali"
-                  value={formData.secondaryColor}
-                  onChange={(v) => setFormData({ ...formData, secondaryColor: v })}
-                />
-                <ColorInput
-                  label="Urg'u rang"
-                  value={formData.accentColor}
-                  onChange={(v) => setFormData({ ...formData, accentColor: v })}
-                />
-                <ColorInput
-                  label="Orqa fon"
-                  value={formData.backgroundColor}
-                  onChange={(v) => setFormData({ ...formData, backgroundColor: v })}
-                />
-                <ColorInput
-                  label="Matn rangi"
-                  value={formData.foregroundColor}
-                  onChange={(v) => setFormData({ ...formData, foregroundColor: v })}
-                />
+              <div>
+                <DialogTitle className="text-base font-semibold leading-tight">
+                  {builderMode === 'create' ? 'Yangi mavzu yaratish' :
+                   builderMode === 'clone' ? 'Mavzuni nusxalash' : 'Mavzuni tahrirlash'}
+                </DialogTitle>
+                <DialogDescription className="text-xs mt-0.5">
+                  Brend ranglaringiz va uslubingiz bilan professional mavzu yarating
+                </DialogDescription>
               </div>
+              <Badge variant="secondary" className="ml-2 text-[10px]">
+                {builderMode === 'edit' ? 'Tahrirlash' : 'Yangi'}
+              </Badge>
+              {formData.isDark && (
+                <Badge variant="outline" className="text-[10px]"><Moon className="h-3 w-3 mr-1" />Qorong'i</Badge>
+              )}
             </div>
+          </div>
 
-            {/* Font Family */}
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Type className="h-4 w-4" />
-                Shrift
-              </Label>
-              <Select
-                value={formData.fontFamily}
-                onValueChange={(v) => setFormData({ ...formData, fontFamily: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {FONT_OPTIONS.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
+          {/* 2-column body */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] overflow-hidden" style={{ maxHeight: 'calc(92vh - 130px)' }}>
+            {/* LEFT — Configuration */}
+            <div className="overflow-y-auto p-6 space-y-6 border-r">
+              {/* Presets */}
+              <SectionCard title="Tayyor mavzular" subtitle="Bir bosishda qo'llash">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {THEME_PRESETS.map((preset) => (
+                    <button
+                      key={preset.name}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, ...preset.values })}
+                      className="group text-left rounded-lg border bg-card p-2.5 hover:border-primary hover:shadow-sm transition-all"
+                    >
+                      <div className="flex gap-0.5 mb-2 h-6 rounded overflow-hidden">
+                        {[preset.values.primaryColor, preset.values.secondaryColor, preset.values.accentColor, preset.values.backgroundColor].map((c, i) => (
+                          <div key={i} className="flex-1" style={{ backgroundColor: `hsl(${c})` }} />
+                        ))}
+                      </div>
+                      <div className="text-xs font-medium truncate">{preset.name}</div>
+                      <div className="text-[10px] text-muted-foreground truncate">{preset.tagline}</div>
+                    </button>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Border Radius */}
-            <div className="space-y-2">
-              <Label>Burchak radiusi</Label>
-              <Select
-                value={formData.borderRadius}
-                onValueChange={(v) => setFormData({ ...formData, borderRadius: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {RADIUS_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Shadow Level */}
-            <div className="space-y-2">
-              <Label>Soya darajasi</Label>
-              <Select
-                value={formData.shadowLevel}
-                onValueChange={(v) => setFormData({ ...formData, shadowLevel: v })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Yo'q</SelectItem>
-                  <SelectItem value="light">Engil</SelectItem>
-                  <SelectItem value="medium">O'rta</SelectItem>
-                  <SelectItem value="heavy">Kuchli</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Preview */}
-            <div className="space-y-2">
-              <Label>Ko'rinish</Label>
-              <div 
-                className="p-4 rounded-lg border"
-                style={{ 
-                  backgroundColor: `hsl(${formData.backgroundColor})`,
-                  borderRadius: formData.borderRadius,
-                }}
-              >
-                <div 
-                  className="h-8 rounded mb-2"
-                  style={{ 
-                    backgroundColor: `hsl(${formData.primaryColor})`,
-                    borderRadius: formData.borderRadius,
-                  }}
-                />
-                <div className="flex gap-2">
-                  <div 
-                    className="flex-1 h-16 rounded"
-                    style={{ 
-                      backgroundColor: `hsl(${formData.secondaryColor})`,
-                      borderRadius: formData.borderRadius,
-                    }}
-                  />
-                  <div 
-                    className="w-1/3 h-16 rounded"
-                    style={{ 
-                      backgroundColor: `hsl(${formData.accentColor})`,
-                      borderRadius: formData.borderRadius,
-                    }}
-                  />
                 </div>
-                <p 
-                  className="mt-2 text-sm"
-                  style={{ color: `hsl(${formData.foregroundColor})` }}
-                >
-                  Namuna matn ko'rinishi
-                </p>
+              </SectionCard>
+
+              {/* Theme info */}
+              <SectionCard title="Mavzu ma'lumotlari" subtitle="Nom va asosiy sozlamalar">
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">Mavzu nomi</Label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Masalan: OrsiHome Premium"
+                      className="h-9"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2.5">
+                    <div className="flex items-center gap-2.5">
+                      {formData.isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                      <div>
+                        <div className="text-xs font-medium">Qorong'i rejim</div>
+                        <div className="text-[11px] text-muted-foreground">Mavzu turini belgilash</div>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={formData.isDark}
+                      onCheckedChange={(checked) => setFormData({ ...formData, isDark: checked })}
+                    />
+                  </div>
+                </div>
+              </SectionCard>
+
+              {/* Colors */}
+              <SectionCard title="Ranglar tizimi" subtitle="Brend ranglarini sozlang">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <ColorCard label="Asosiy rang" hint="Tugmalar, linklar" value={formData.primaryColor} onChange={(v) => setFormData({ ...formData, primaryColor: v })} />
+                  <ColorCard label="Ikkinchi darajali" hint="Kartalar, fonlar" value={formData.secondaryColor} onChange={(v) => setFormData({ ...formData, secondaryColor: v })} />
+                  <ColorCard label="Urg'u rang" hint="Aksentlar, badgelar" value={formData.accentColor} onChange={(v) => setFormData({ ...formData, accentColor: v })} />
+                  <ColorCard label="Orqa fon" hint="Sahifa foni" value={formData.backgroundColor} onChange={(v) => setFormData({ ...formData, backgroundColor: v })} />
+                  <ColorCard label="Matn rangi" hint="Asosiy matn" value={formData.foregroundColor} onChange={(v) => setFormData({ ...formData, foregroundColor: v })} />
+                </div>
+              </SectionCard>
+
+              {/* Typography */}
+              <SectionCard title="Tipografiya" subtitle="Shrift oilasini tanlang">
+                <div className="space-y-2">
+                  <Select
+                    value={formData.fontFamily}
+                    onValueChange={(v) => setFormData({ ...formData, fontFamily: v })}
+                  >
+                    <SelectTrigger className="h-9"><SelectValue placeholder="Shrift tanlang" /></SelectTrigger>
+                    <SelectContent>
+                      {FONT_OPTIONS.map((font) => (
+                        <SelectItem key={font.value} value={font.value}>
+                          <span style={{ fontFamily: font.value }}>{font.label}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="rounded-lg border bg-muted/30 p-3" style={{ fontFamily: formData.fontFamily }}>
+                    <div className="text-lg font-semibold leading-tight">Aa Sarlavha</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">The quick brown fox jumps over the lazy dog</div>
+                  </div>
+                </div>
+              </SectionCard>
+
+              {/* Radius */}
+              <SectionCard title="Burchak radiusi" subtitle="Shakl va silliqlik">
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {RADIUS_OPTIONS.map((opt) => {
+                    const active = formData.borderRadius === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, borderRadius: opt.value })}
+                        className={`flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-all ${
+                          active ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'hover:border-primary/40'
+                        }`}
+                      >
+                        <div
+                          className="h-8 w-8 bg-primary/80"
+                          style={{ borderRadius: opt.value }}
+                        />
+                        <span className="text-[10px] text-muted-foreground">{opt.label.split(' ')[0]}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </SectionCard>
+
+              {/* Shadows */}
+              <SectionCard title="Soyalar" subtitle="Chuqurlik darajasi">
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { value: 'none', label: "Yo'q" },
+                    { value: 'light', label: 'Engil' },
+                    { value: 'medium', label: "O'rta" },
+                    { value: 'heavy', label: 'Kuchli' },
+                  ].map((opt) => {
+                    const active = formData.shadowLevel === opt.value;
+                    const shadow = getShadowValues(opt.value).md;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, shadowLevel: opt.value })}
+                        className={`flex flex-col items-center gap-2 p-3 rounded-lg border bg-background transition-all ${
+                          active ? 'border-primary ring-1 ring-primary' : 'hover:border-primary/40'
+                        }`}
+                      >
+                        <div className="h-8 w-8 rounded bg-card border" style={{ boxShadow: shadow }} />
+                        <span className="text-[10px] text-muted-foreground">{opt.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </SectionCard>
+            </div>
+
+            {/* RIGHT — Live Preview */}
+            <div className="bg-muted/20 overflow-y-auto">
+              <div className="sticky top-0 z-10 px-5 py-3 border-b bg-muted/40 backdrop-blur flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium">Jonli ko'rinish</span>
+                </div>
+                <div className="flex items-center border rounded-md overflow-hidden bg-background">
+                  <button
+                    onClick={() => setPreviewDevice('desktop')}
+                    className={`px-2 py-1 ${previewDevice === 'desktop' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
+                  >
+                    <Monitor className="h-3 w-3" />
+                  </button>
+                  <button
+                    onClick={() => setPreviewDevice('mobile')}
+                    className={`px-2 py-1 ${previewDevice === 'mobile' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
+                  >
+                    <Smartphone className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-5 flex justify-center">
+                <LivePreview formData={formData} device={previewDevice} getShadow={getShadowValues} />
               </div>
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowBuilder(false)}>
-              Bekor qilish
-            </Button>
-            <Button onClick={handleSaveTheme}>
-              <Check className="h-4 w-4 mr-2" />
-              Saqlash
-            </Button>
-          </DialogFooter>
+          {/* Sticky Footer */}
+          <div className="flex items-center justify-between px-6 py-3 border-t bg-background">
+            <div className="text-[11px] text-muted-foreground">
+              O'zgarishlar avtomatik ko'rinishda yangilanadi
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={() => setShowBuilder(false)}>
+                Bekor qilish
+              </Button>
+              <Button size="sm" onClick={handleSaveTheme} className="gap-2">
+                <Check className="h-4 w-4" />
+                {builderMode === 'edit' ? 'Yangilash' : 'Saqlash'}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
