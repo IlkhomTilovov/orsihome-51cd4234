@@ -139,6 +139,7 @@ const App = () => (
                             <ProtectedRoute module="systemSettings">
                               <SystemSettings />
                             </ProtectedRoute>
+                          } />
                           <Route path="themes" element={
                             <ProtectedRoute module="siteContent">
                               <Themes />
