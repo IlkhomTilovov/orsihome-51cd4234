@@ -75,8 +75,10 @@ interface Product {
   is_followed: boolean;
   target_keyword: string | null;
   keyword_variations: string[] | null;
-  keyword_uz: string | null;
-  keyword_ru: string | null;
+  variants_uz: string[] | null;
+  variants_ru: string[] | null;
+  promo_tile_ids: string[] | null;
+}
   variants_uz: string[] | null;
   variants_ru: string[] | null;
 }
