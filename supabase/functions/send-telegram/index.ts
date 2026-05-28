@@ -169,7 +169,15 @@ Deno.serve(async (req) => {
       );
     }
 
+    if (!settings.chat_id) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     let message: string;
+
 
     if (body.type === 'test') {
       // Check if enabled for test messages too
