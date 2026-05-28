@@ -154,6 +154,7 @@ const ADMIN_PAGE_SIZE = 20;
 
 export default function ProductsNew() {
   const [products, setProducts] = useState<Product[]>([]);
+  const { data: promoTilesList = [] } = useAllPromoTiles();
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
