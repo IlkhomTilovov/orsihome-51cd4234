@@ -138,9 +138,9 @@ export default function Index() {
               <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-secondary/40 blur-3xl opacity-60" />
             </div>
 
-            <div className="relative h-full grid grid-cols-1 lg:grid-cols-2 gap-4 p-8 lg:p-12">
+            <div className="relative h-full grid grid-cols-1 lg:grid-cols-2 gap-0">
               {/* Left: typography */}
-              <div className="flex flex-col justify-center z-10">
+              <div className="flex flex-col justify-center z-10 p-8 lg:p-12">
                 <div className="flex items-center gap-3 mb-6 text-muted-foreground">
                   <span className="font-serif text-2xl">1</span>
                   <span className="w-8 h-px bg-muted-foreground/40" />
@@ -185,18 +185,19 @@ export default function Index() {
                 </div>
               </div>
 
-              {/* Right: product image */}
-              <div className="relative flex items-center justify-center z-10 min-h-[300px]">
+              {/* Right: product image — fills parent edge-to-edge */}
+              <div className="relative z-10 min-h-[300px] lg:min-h-full">
                 <EditableImage
                   contentKey="hero_product_image"
                   fallbackSrc={fallbackImages[0]}
                   alt="OrisHome premium furniture"
-                  className="w-full h-full max-h-[480px] object-contain drop-shadow-2xl"
-                  wrapperClassName="w-full h-full flex items-center justify-center"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  wrapperClassName="absolute inset-0 w-full h-full"
                   section="hero"
                 />
               </div>
             </div>
+
 
             {/* Thumbnail strip */}
             <div className="absolute bottom-6 left-8 lg:left-12 flex gap-3 z-20">
