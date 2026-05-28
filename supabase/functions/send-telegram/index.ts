@@ -211,12 +211,7 @@ Deno.serve(async (req) => {
     });
     console.log('Telegram message sent successfully');
 
-      );
-    }
 
-    // Send the message
-    await sendTelegramMessage(settings.bot_token, settings.chat_id, message);
-    console.log('Telegram message sent successfully');
 
     return new Response(
       JSON.stringify({ success: true, message: 'Xabar yuborildi' }),
