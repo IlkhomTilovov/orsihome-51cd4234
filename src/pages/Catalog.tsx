@@ -133,9 +133,10 @@ export default function Catalog() {
     if (sidebarFilters.applications.length > 0) params.set('application', sidebarFilters.applications.join(','));
     if (sidebarFilters.inStock) params.set('in_stock', '1');
     if (sidebarFilters.discounted) params.set('discount', '1');
+    if (promoTileId) params.set('promo', promoTileId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId]);
 
 
 
