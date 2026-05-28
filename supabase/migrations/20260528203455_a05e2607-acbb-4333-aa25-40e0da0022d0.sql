@@ -1,0 +1,2 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS promo_tile_ids uuid[] NOT NULL DEFAULT '{}'::uuid[];
+CREATE INDEX IF NOT EXISTS idx_products_promo_tile_ids ON public.products USING GIN(promo_tile_ids);

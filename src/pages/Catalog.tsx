@@ -22,6 +22,7 @@ export default function Catalog() {
   const [mobileOpen, setMobileOpen] = useState(false);
   
   const initialCategoryParam = searchParams.get('category') || 'all';
+  const promoTileId = searchParams.get('promo') || '';
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
   
   const [search, setSearch] = useState('');
@@ -82,12 +83,12 @@ export default function Catalog() {
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
     if (sidebarFilters.colors.length > 0) f.colors = sidebarFilters.colors;
     if (sidebarFilters.furLengths.length > 0) f.furLengths = sidebarFilters.furLengths;
-    if (sidebarFilters.applications.length > 0) f.applications = sidebarFilters.applications;
     if (sidebarFilters.inStock) f.inStock = true;
     if (sidebarFilters.discounted) f.discounted = true;
+    if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId]);
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
 
@@ -132,9 +133,10 @@ export default function Catalog() {
     if (sidebarFilters.applications.length > 0) params.set('application', sidebarFilters.applications.join(','));
     if (sidebarFilters.inStock) params.set('in_stock', '1');
     if (sidebarFilters.discounted) params.set('discount', '1');
+    if (promoTileId) params.set('promo', promoTileId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId]);
 
 
 

@@ -34,6 +34,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/useLanguage';
 import { AddMediaModal, MediaItem } from '@/components/admin/AddMediaModal';
 import { MediaGrid } from '@/components/admin/MediaGrid';
+import { useAllPromoTiles } from '@/hooks/usePromoTiles';
+import { PROMO_ICONS } from '@/lib/promoIcons';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Category {
   id: string;
@@ -72,10 +75,9 @@ interface Product {
   is_followed: boolean;
   target_keyword: string | null;
   keyword_variations: string[] | null;
-  keyword_uz: string | null;
-  keyword_ru: string | null;
   variants_uz: string[] | null;
   variants_ru: string[] | null;
+  promo_tile_ids: string[] | null;
 }
 
 interface FormData {
@@ -110,6 +112,7 @@ interface FormData {
   keyword_ru: string;
   variants_uz: string[];
   variants_ru: string[];
+  promo_tile_ids: string[];
 }
 
 const emptyForm: FormData = {
@@ -144,12 +147,14 @@ const emptyForm: FormData = {
   keyword_ru: '',
   variants_uz: [],
   variants_ru: [],
+  promo_tile_ids: [],
 };
 
 const ADMIN_PAGE_SIZE = 20;
 
 export default function ProductsNew() {
   const [products, setProducts] = useState<Product[]>([]);
+  const { data: promoTilesList = [] } = useAllPromoTiles();
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -382,6 +387,7 @@ export default function ProductsNew() {
       keyword_ru: (product as any).keyword_ru || '',
       variants_uz: (product as any).variants_uz || product.keyword_variations || [],
       variants_ru: (product as any).variants_ru || [],
+      promo_tile_ids: (product as any).promo_tile_ids || [],
     });
     setSlugError('');
     setActiveTab('basic');
@@ -532,6 +538,7 @@ export default function ProductsNew() {
       keyword_ru: formData.keyword_ru || null,
       variants_uz: (formData.variants_uz || []).length > 0 ? formData.variants_uz : [],
       variants_ru: (formData.variants_ru || []).length > 0 ? formData.variants_ru : [],
+      promo_tile_ids: formData.promo_tile_ids || [],
     };
 
     try {
@@ -897,6 +904,46 @@ export default function ProductsNew() {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Promo kartochkalar</Label>
+                <p className="text-xs text-muted-foreground">
+                  Mahsulot qaysi promo kartochka filtri ostida ko'rinishini tanlang (bir nechta tanlash mumkin).
+                </p>
+                {promoTilesList.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Promo kartochkalar mavjud emas.</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 rounded-md border p-3">
+                    {promoTilesList.map((tile) => {
+                      const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+                      const checked = formData.promo_tile_ids.includes(tile.id);
+                      return (
+                        <label
+                          key={tile.id}
+                          className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1.5 hover:bg-accent"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(v) => {
+                              const next = v
+                                ? [...formData.promo_tile_ids, tile.id]
+                                : formData.promo_tile_ids.filter((id) => id !== tile.id);
+                              setFormData({ ...formData, promo_tile_ids: next });
+                            }}
+                          />
+                          <Icon className="h-4 w-4 shrink-0" />
+                          <span className="text-sm truncate">
+                            {language === 'uz' ? tile.title_uz : tile.title_ru}
+                            {!tile.is_active && (
+                              <span className="ml-1 text-xs text-muted-foreground">(nofaol)</span>
+                            )}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
