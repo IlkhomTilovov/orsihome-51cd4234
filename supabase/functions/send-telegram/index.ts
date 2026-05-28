@@ -227,6 +227,7 @@ Deno.serve(async (req) => {
       const sent = await tgApi(settings.bot_token, 'sendMessage', {
         chat_id: settings.chat_id,
         text,
+        link_preview_options: { is_disabled: true },
         reply_markup: {
           inline_keyboard: [[{ text: buttonText, url: deepLink }]],
         },
