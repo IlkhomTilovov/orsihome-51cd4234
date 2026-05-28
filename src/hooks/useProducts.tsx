@@ -62,6 +62,7 @@ export interface ProductFilters {
   isFeatured?: boolean;
   isActive?: boolean;
   discounted?: boolean;
+  promoTileId?: string;
 }
 
 export interface ProductsResponse {
