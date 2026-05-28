@@ -131,10 +131,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (!settings.chat_id) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
     // Handle Web App setup separately (no chat_id needed)
+    if (body.type === 'setup_webapp') {
+
     if (body.type === 'setup_webapp') {
       const url = body.webapp_url?.trim();
       if (!url || !/^https:\/\//.test(url)) {
