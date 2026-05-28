@@ -134,8 +134,10 @@ Deno.serve(async (req) => {
     // Handle Web App setup separately (no chat_id needed)
     if (body.type === 'setup_webapp') {
 
-      const url = body.webapp_url?.trim();
-      if (!url || !/^https:\/\//.test(url)) {
+      let url = body.webapp_url?.trim() || '';
+      // Normalize: strip trailing slash
+      url = url.replace(/\/+$/, '');
+      if (!url || !/^https:\/\/.+/i.test(url)) {
         return new Response(
           JSON.stringify({ success: false, error: 'Web App URL HTTPS bilan boshlanishi kerak' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -143,7 +145,16 @@ Deno.serve(async (req) => {
       }
       const buttonText = body.webapp_button_text?.trim() || 'Do\'konni ochish';
 
-      // Set the bot's default chat menu button to open the Web App
+      // Step 1: Reset old menu button (removes any previously linked Web App)
+      try {
+        await tgApi(settings.bot_token, 'setChatMenuButton', {
+          menu_button: { type: 'default' },
+        });
+      } catch (e) {
+        console.log('Reset old menu button failed (non-fatal):', (e as Error).message);
+      }
+
+      // Step 2: Set the new Web App as the bot's default menu button
       await tgApi(settings.bot_token, 'setChatMenuButton', {
         menu_button: {
           type: 'web_app',
@@ -151,6 +162,7 @@ Deno.serve(async (req) => {
           web_app: { url },
         },
       });
+
 
       // Set basic commands
       await tgApi(settings.bot_token, 'setMyCommands', {
