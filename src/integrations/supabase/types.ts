@@ -466,6 +466,48 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_tiles: {
+        Row: {
+          bg_class: string
+          created_at: string
+          href: string
+          icon: string
+          id: string
+          is_active: boolean
+          sort_order: number
+          text_class: string
+          title_ru: string
+          title_uz: string
+          updated_at: string
+        }
+        Insert: {
+          bg_class?: string
+          created_at?: string
+          href?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          text_class?: string
+          title_ru: string
+          title_uz: string
+          updated_at?: string
+        }
+        Update: {
+          bg_class?: string
+          created_at?: string
+          href?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          sort_order?: number
+          text_class?: string
+          title_ru?: string
+          title_uz?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           created_at: string
