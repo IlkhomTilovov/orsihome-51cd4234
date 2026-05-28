@@ -117,29 +117,11 @@ const App = () => (
                               <Customers />
                             </ProtectedRoute>
                           } />
-                          <Route path="content" element={
-                            <ProtectedRoute module="siteContent">
-                              <SiteContent />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="messages" element={
-                            <ProtectedRoute module="customers">
-                              <Messages />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="admins" element={
-                            <ProtectedRoute module="admins">
-                              <Admins />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="themes" element={
-                            <ProtectedRoute module="themes">
-                              <Themes />
-                            </ProtectedRoute>
-                          } />
                           <Route path="settings" element={
                             <ProtectedRoute module="telegram">
                               <Settings />
+                            </ProtectedRoute>
+                          } />
                           <Route path="checkout-form" element={
                             <ProtectedRoute module="siteContent">
                               <CheckoutFormSettings />
@@ -148,9 +130,6 @@ const App = () => (
                           <Route path="promo-tiles" element={
                             <ProtectedRoute module="siteContent">
                               <PromoTilesAdmin />
-                            </ProtectedRoute>
-                          } />
-
                             </ProtectedRoute>
                           } />
                           <Route path="system" element={
