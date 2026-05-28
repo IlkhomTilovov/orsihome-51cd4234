@@ -23,7 +23,6 @@ const defaultServiceImages: Record<string, string> = {
   'yotoqxona-mebellari': serviceBedroom,
 };
 const fallbackImages = [heroBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
-const fallbackImages = [serviceBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
 
 // Promo tiles (Woodline-style colorful cards)
 const promoTiles = [
