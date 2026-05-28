@@ -386,6 +386,7 @@ export default function ProductsNew() {
       keyword_ru: (product as any).keyword_ru || '',
       variants_uz: (product as any).variants_uz || product.keyword_variations || [],
       variants_ru: (product as any).variants_ru || [],
+      promo_tile_ids: (product as any).promo_tile_ids || [],
     });
     setSlugError('');
     setActiveTab('basic');
