@@ -177,7 +177,7 @@ export function Footer() {
         <div className="container mx-auto px-4 py-6">
           <p className="text-center text-xs text-muted-foreground tracking-wider">
             © {new Date().getFullYear()}{' '}
-            <EditableText contentKey="footer_copyright" fallback="WOODMAX. Barcha huquqlar himoyalangan." as="span" className="text-xs" section="footer" />
+            <EditableText contentKey="footer_copyright" fallback="OrisHome. Barcha huquqlar himoyalangan." as="span" className="text-xs" section="footer" />
           </p>
         </div>
       </div>
