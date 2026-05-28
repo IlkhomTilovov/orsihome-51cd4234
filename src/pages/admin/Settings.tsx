@@ -442,6 +442,77 @@ export default function Settings() {
         </CardContent>
       </Card>
 
+      {/* Channel Post with WebApp button */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Megaphone className="h-5 w-5" />
+            Kanalga e'lon yuborish
+          </CardTitle>
+          <CardDescription>
+            Telegram kanal/guruhingizga "Do'konni ochish" tugmali e'lon yuboring. Tugma bosilganda Mini App ochiladi.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="post-chat-id">Kanal/guruh Chat ID</Label>
+            <Input
+              id="post-chat-id"
+              placeholder="-1001234567890"
+              value={post.chat_id}
+              onChange={(e) => setPost((p) => ({ ...p, chat_id: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">
+              Bot kanalda admin bo'lishi shart. Standart Chat ID dan olindi — o'zgartirishingiz mumkin.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="post-text">E'lon matni</Label>
+            <Textarea
+              id="post-text"
+              rows={5}
+              placeholder="🛒 Yangi to'plamlar keldi! Tugmani bosib do'konni oching."
+              value={post.text}
+              onChange={(e) => setPost((p) => ({ ...p, text: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">HTML teglar qo'llab-quvvatlanadi: &lt;b&gt;, &lt;i&gt;, &lt;a&gt;</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="post-image">Rasm URL (ixtiyoriy)</Label>
+            <Input
+              id="post-image"
+              placeholder="https://..."
+              value={post.image_url}
+              onChange={(e) => setPost((p) => ({ ...p, image_url: e.target.value }))}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="post-button">Tugma matni</Label>
+            <Input
+              id="post-button"
+              maxLength={64}
+              value={post.button_text}
+              onChange={(e) => setPost((p) => ({ ...p, button_text: e.target.value }))}
+            />
+          </div>
+
+          <div className="pt-2">
+            <Button onClick={sendChannelPost} disabled={sendingPost}>
+              {sendingPost ? (
+                <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
+              Kanalga yuborish
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+
       {/* How to Setup Guide */}
       <Card>
         <CardHeader>
