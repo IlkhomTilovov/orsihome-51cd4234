@@ -11,6 +11,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { EditModeProvider } from "@/hooks/useEditMode";
 import { SiteContentProvider } from "@/hooks/useSiteContent";
 import { SystemSettingsProvider } from "@/hooks/useSystemSettings";
+import { TelegramProvider } from "@/hooks/useTelegram";
+import { TelegramShell } from "@/components/telegram/TelegramShell";
 import { ThemeLoader } from "@/components/ThemeLoader";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
