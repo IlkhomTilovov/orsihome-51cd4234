@@ -953,4 +953,263 @@ const CompactThemeCard = ({
   );
 };
 
+// ============= Premium Builder helpers =============
+
+const SectionCard = ({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) => (
+  <div className="rounded-xl border bg-card p-4 shadow-sm">
+    <div className="mb-3">
+      <h3 className="text-sm font-semibold leading-tight">{title}</h3>
+      {subtitle && <p className="text-[11px] text-muted-foreground mt-0.5">{subtitle}</p>}
+    </div>
+    {children}
+  </div>
+);
+
+const hslToHexUtil = (hsl: string): string => {
+  try {
+    const [h, s, l] = hsl.split(' ').map(v => parseFloat(v));
+    const sNorm = s / 100, lNorm = l / 100;
+    const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = lNorm - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else { r = c; b = x; }
+    const toHex = (n: number) => Math.round((n + m) * 255).toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  } catch { return '#000000'; }
+};
+
+const hexToHslUtil = (hex: string): string => {
+  try {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    let h = 0, s = 0;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) * 60; break;
+        case g: h = ((b - r) / d + 2) * 60; break;
+        case b: h = ((r - g) / d + 4) * 60; break;
+      }
+    }
+    return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+  } catch { return '0 0% 0%'; }
+};
+
+const ColorCard = ({ label, hint, value, onChange }: { label: string; hint?: string; value: string; onChange: (v: string) => void }) => {
+  const hex = hslToHexUtil(value);
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(hex); toast.success('Nusxalandi'); } catch {}
+  };
+  return (
+    <div className="group rounded-lg border bg-background p-2.5 hover:border-primary/40 transition-colors">
+      <div className="flex items-center justify-between mb-2">
+        <div className="min-w-0">
+          <div className="text-xs font-medium truncate">{label}</div>
+          {hint && <div className="text-[10px] text-muted-foreground truncate">{hint}</div>}
+        </div>
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
+          title="HEX nusxalash"
+        >
+          <Copy className="h-3 w-3" />
+        </button>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <label className="relative shrink-0 cursor-pointer">
+          <div
+            className="h-8 w-8 rounded-md border-2 border-background ring-1 ring-border shadow-sm"
+            style={{ backgroundColor: `hsl(${value})` }}
+          />
+          <input
+            type="color"
+            value={hex}
+            onChange={(e) => onChange(hexToHslUtil(e.target.value))}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+          />
+        </label>
+        <Input
+          value={hex}
+          onChange={(e) => {
+            const v = e.target.value;
+            if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(hexToHslUtil(v));
+          }}
+          className="h-8 text-[11px] font-mono uppercase tracking-tight px-2"
+        />
+      </div>
+    </div>
+  );
+};
+
+const LivePreview = ({
+  formData,
+  device,
+  getShadow,
+}: {
+  formData: any;
+  device: 'desktop' | 'mobile';
+  getShadow: (level: string) => { sm: string; md: string; lg: string };
+}) => {
+  const shadows = getShadow(formData.shadowLevel);
+  const isMobile = device === 'mobile';
+  return (
+    <div
+      className="w-full transition-all duration-300"
+      style={{
+        maxWidth: isMobile ? '280px' : '100%',
+        backgroundColor: `hsl(${formData.backgroundColor})`,
+        color: `hsl(${formData.foregroundColor})`,
+        fontFamily: formData.fontFamily,
+        borderRadius: formData.borderRadius,
+        boxShadow: shadows.lg,
+        border: `1px solid hsl(${formData.secondaryColor})`,
+      }}
+    >
+      {/* Mock Header */}
+      <div
+        className="flex items-center justify-between px-4 py-3 border-b"
+        style={{ borderColor: `hsl(${formData.secondaryColor})` }}
+      >
+        <div className="font-semibold text-sm tracking-wide">ORSI HOME</div>
+        {!isMobile && (
+          <div className="flex gap-3 text-[10px] uppercase tracking-wider opacity-70">
+            <span>Bosh</span><span>Katalog</span><span>Aloqa</span>
+          </div>
+        )}
+        <button
+          className="px-3 py-1.5 text-[10px] font-medium tracking-wide"
+          style={{
+            backgroundColor: `hsl(${formData.primaryColor})`,
+            color: `hsl(${formData.backgroundColor})`,
+            borderRadius: formData.borderRadius,
+          }}
+        >
+          BOG'LANISH
+        </button>
+      </div>
+
+      {/* Hero */}
+      <div className="p-5">
+        <div className="text-2xl font-bold leading-tight mb-1.5">Premium mebellar</div>
+        <div className="text-xs opacity-70 mb-3">Sizning brendingiz, sizning uslubingiz</div>
+        <div className="flex gap-2 mb-4">
+          <button
+            className="px-3 py-2 text-[11px] font-medium"
+            style={{
+              backgroundColor: `hsl(${formData.primaryColor})`,
+              color: `hsl(${formData.backgroundColor})`,
+              borderRadius: formData.borderRadius,
+              boxShadow: shadows.sm,
+            }}
+          >
+            Katalogni ko'rish
+          </button>
+          <button
+            className="px-3 py-2 text-[11px] font-medium border"
+            style={{
+              borderColor: `hsl(${formData.primaryColor})`,
+              color: `hsl(${formData.primaryColor})`,
+              borderRadius: formData.borderRadius,
+            }}
+          >
+            Batafsil
+          </button>
+        </div>
+
+        {/* Product cards */}
+        <div className={`grid gap-2 ${isMobile ? 'grid-cols-2' : 'grid-cols-3'}`}>
+          {[1, 2, 3].slice(0, isMobile ? 2 : 3).map((i) => (
+            <div
+              key={i}
+              className="overflow-hidden border"
+              style={{
+                backgroundColor: `hsl(${formData.backgroundColor})`,
+                borderColor: `hsl(${formData.secondaryColor})`,
+                borderRadius: formData.borderRadius,
+                boxShadow: shadows.md,
+              }}
+            >
+              <div
+                className="aspect-square relative"
+                style={{ backgroundColor: `hsl(${formData.secondaryColor})` }}
+              >
+                <span
+                  className="absolute top-1.5 left-1.5 px-1.5 py-0.5 text-[8px] font-semibold tracking-wider"
+                  style={{
+                    backgroundColor: `hsl(${formData.accentColor})`,
+                    color: `hsl(${formData.foregroundColor})`,
+                    borderRadius: formData.borderRadius,
+                  }}
+                >
+                  YANGI
+                </span>
+              </div>
+              <div className="p-2">
+                <div className="text-[10px] font-medium truncate">Mahsulot {i}</div>
+                <div
+                  className="text-[10px] font-semibold mt-0.5"
+                  style={{ color: `hsl(${formData.primaryColor})` }}
+                >
+                  1 250 000 so'm
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Input demo */}
+        <div className="mt-4">
+          <div
+            className="text-[10px] mb-1 opacity-70"
+          >
+            Email
+          </div>
+          <div
+            className="w-full px-3 py-2 text-[11px] border"
+            style={{
+              borderColor: `hsl(${formData.secondaryColor})`,
+              borderRadius: formData.borderRadius,
+              backgroundColor: `hsl(${formData.backgroundColor})`,
+            }}
+          >
+            sample@email.com
+          </div>
+        </div>
+
+        {/* Badges */}
+        <div className="flex gap-1.5 mt-3 flex-wrap">
+          {[
+            { label: 'Chegirma', bg: formData.accentColor },
+            { label: 'Yangi', bg: formData.primaryColor },
+            { label: 'Tavsiya', bg: formData.secondaryColor },
+          ].map((b) => (
+            <span
+              key={b.label}
+              className="px-2 py-0.5 text-[9px] font-semibold tracking-wider"
+              style={{
+                backgroundColor: `hsl(${b.bg})`,
+                color: b.bg === formData.secondaryColor ? `hsl(${formData.foregroundColor})` : `hsl(${formData.backgroundColor})`,
+                borderRadius: formData.borderRadius,
+              }}
+            >
+              {b.label.toUpperCase()}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default Themes;
