@@ -112,6 +112,7 @@ interface FormData {
   keyword_ru: string;
   variants_uz: string[];
   variants_ru: string[];
+  promo_tile_ids: string[];
 }
 
 const emptyForm: FormData = {
