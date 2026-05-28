@@ -144,8 +144,9 @@ const emptyForm: FormData = {
   target_keyword: '',
   keyword_variations: [],
   keyword_uz: '',
-  keyword_ru: '',
   variants_uz: [],
+  variants_ru: [],
+  promo_tile_ids: [],
   variants_ru: [],
 };
 
