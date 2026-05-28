@@ -14,7 +14,6 @@ import serviceWardrobe from '@/assets/service-wardrobe.jpg';
 import serviceKitchen from '@/assets/service-kitchen.jpg';
 import serviceTvzone from '@/assets/service-tvzone.jpg';
 import serviceBedroom from '@/assets/service-bedroom.jpg';
-import heroBedroom from '@/assets/hero-bedroom.png';
 
 const defaultServiceImages: Record<string, string> = {
   'shkaflar': serviceWardrobe,
@@ -22,7 +21,8 @@ const defaultServiceImages: Record<string, string> = {
   'tv-zonalar': serviceTvzone,
   'yotoqxona-mebellari': serviceBedroom,
 };
-const fallbackImages = [heroBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
+
+const fallbackImages = [serviceBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
 
 // Promo tiles (Woodline-style colorful cards)
 const promoTiles = [
