@@ -109,9 +109,7 @@ function useInView(threshold = 0.15) {
 export default function Index() {
   const { language } = useLanguage();
   useSEO({});
-export default function Index() {
-  const { language } = useLanguage();
-  useSEO({});
+
   const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
   const { settings } = useSystemSettings();
   const { categories } = useCategories();
