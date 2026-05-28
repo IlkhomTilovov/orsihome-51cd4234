@@ -161,18 +161,6 @@ export default function Index() {
                 <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
               </p>
 
-              <div className="mt-10 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="rounded-full px-8 h-12 text-sm font-medium">
-                  <Link to="/catalog">
-                    {language === 'uz' ? "Katalogni ko'rish" : 'Смотреть каталог'}
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full px-8 h-12 text-sm font-medium bg-white/10 backdrop-blur text-white border-white/30 hover:bg-white/20 hover:text-white">
-                  <Link to="/contact">
-                    {language === 'uz' ? 'Konsultatsiya' : 'Консультация'}
-                  </Link>
-                </Button>
-              </div>
             </div>
 
             {/* Thumbnail strip */}
