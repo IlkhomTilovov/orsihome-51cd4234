@@ -37,6 +37,13 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
+  const [post, setPost] = useState({
+    chat_id: '',
+    text: '',
+    image_url: '',
+    button_text: "Do'konni ochish",
+  });
+  const [sendingPost, setSendingPost] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
