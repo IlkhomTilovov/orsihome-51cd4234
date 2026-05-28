@@ -116,6 +116,7 @@ const App = () => (
                             <ProtectedRoute module="customers">
                               <Customers />
                             </ProtectedRoute>
+                          } />
                           <Route path="settings" element={
                             <ProtectedRoute module="telegram">
                               <Settings />
@@ -129,29 +130,6 @@ const App = () => (
                           <Route path="promo-tiles" element={
                             <ProtectedRoute module="siteContent">
                               <PromoTilesAdmin />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="system" element={
-                            <ProtectedRoute module="systemSettings">
-                              <SystemSettings />
-                            </ProtectedRoute>
-                          } />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="settings" element={
-                            <ProtectedRoute module="telegram">
-                              <Settings />
-                          <Route path="checkout-form" element={
-                            <ProtectedRoute module="siteContent">
-                              <CheckoutFormSettings />
-                            </ProtectedRoute>
-                          } />
-                          <Route path="promo-tiles" element={
-                            <ProtectedRoute module="siteContent">
-                              <PromoTilesAdmin />
-                            </ProtectedRoute>
-                          } />
-
                             </ProtectedRoute>
                           } />
                           <Route path="system" element={
