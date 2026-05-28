@@ -175,9 +175,6 @@ const App = () => (
                       </Suspense>
                       </TelegramProvider>
                     </BrowserRouter>
-                      </Routes>
-                      </Suspense>
-                    </BrowserRouter>
                   </TooltipProvider>
                   </EditModeProvider>
                 </SiteContentProvider>
