@@ -196,6 +196,66 @@ export default function Settings() {
     }
   };
 
+  const upsertSetting = async (key: string, value: string) => {
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', key)
+      .maybeSingle();
+    if (existing) {
+      const { error } = await supabase
+        .from('settings')
+        .update({ value, updated_at: new Date().toISOString() })
+        .eq('key', key);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('settings').insert({ key, value });
+      if (error) throw error;
+    }
+  };
+
+  const saveAndConnectWebApp = async () => {
+    if (!telegram.bot_token) {
+      toast({ title: 'Xatolik', description: 'Avval Bot Token kiriting va saqlang', variant: 'destructive' });
+      return;
+    }
+    const url = webapp.url.trim();
+    if (!/^https:\/\/.+/i.test(url)) {
+      toast({ title: 'Xatolik', description: 'Web App URL HTTPS bilan boshlanishi kerak', variant: 'destructive' });
+      return;
+    }
+    setSavingWebapp(true);
+    setConnectingBot(true);
+    try {
+      await upsertSetting('telegram_webapp_url', url);
+      await upsertSetting('telegram_webapp_button', webapp.button_text || "Do'konni ochish");
+      // Make sure bot token is in DB
+      await upsertSetting('telegram_bot_token', telegram.bot_token);
+
+      const { data, error } = await supabase.functions.invoke('send-telegram', {
+        body: {
+          type: 'setup_webapp',
+          webapp_url: url,
+          webapp_button_text: webapp.button_text,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Botga ulashda xatolik');
+
+      setBotInfo({ username: data.bot?.username });
+      toast({
+        title: 'Muvaffaqiyat',
+        description: `Web App botga ulandi: @${data.bot?.username || 'bot'}`,
+      });
+    } catch (err: any) {
+      toast({ title: 'Xatolik', description: err.message || 'Ulanishda xatolik', variant: 'destructive' });
+    } finally {
+      setSavingWebapp(false);
+      setConnectingBot(false);
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
