@@ -40,6 +40,99 @@ const RADIUS_OPTIONS = [
   { value: "1.5rem", label: "1.5rem (Rounded)" },
 ];
 
+const THEME_PRESETS = [
+  {
+    name: 'OrsiHome Premium',
+    tagline: 'Dark Green + Beige',
+    values: {
+      isDark: false,
+      primaryColor: '150 32% 17%',
+      secondaryColor: '35 38% 75%',
+      accentColor: '35 38% 75%',
+      backgroundColor: '43 30% 95%',
+      foregroundColor: '0 0% 13%',
+      fontFamily: "'Playfair Display', Georgia, serif",
+      borderRadius: '1.5rem',
+      shadowLevel: 'medium',
+    },
+  },
+  {
+    name: 'Modern Luxury',
+    tagline: 'Black + Gold',
+    values: {
+      isDark: false,
+      primaryColor: '0 0% 8%',
+      secondaryColor: '45 30% 92%',
+      accentColor: '45 93% 47%',
+      backgroundColor: '0 0% 100%',
+      foregroundColor: '0 0% 10%',
+      fontFamily: "'Playfair Display', Georgia, serif",
+      borderRadius: '0.25rem',
+      shadowLevel: 'medium',
+    },
+  },
+  {
+    name: 'Scandinavian',
+    tagline: 'White + Gray',
+    values: {
+      isDark: false,
+      primaryColor: '210 20% 20%',
+      secondaryColor: '210 16% 93%',
+      accentColor: '215 25% 35%',
+      backgroundColor: '0 0% 98%',
+      foregroundColor: '210 20% 15%',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      borderRadius: '0.5rem',
+      shadowLevel: 'light',
+    },
+  },
+  {
+    name: 'Elegant Beige',
+    tagline: 'Cream + Brown',
+    values: {
+      isDark: false,
+      primaryColor: '25 35% 28%',
+      secondaryColor: '35 40% 88%',
+      accentColor: '30 50% 50%',
+      backgroundColor: '40 35% 96%',
+      foregroundColor: '25 30% 18%',
+      fontFamily: "'Lora', Georgia, serif",
+      borderRadius: '0.75rem',
+      shadowLevel: 'medium',
+    },
+  },
+  {
+    name: 'Midnight',
+    tagline: 'Dark Theme',
+    values: {
+      isDark: true,
+      primaryColor: '210 100% 60%',
+      secondaryColor: '220 15% 18%',
+      accentColor: '270 70% 65%',
+      backgroundColor: '222 20% 10%',
+      foregroundColor: '210 20% 95%',
+      fontFamily: "'Inter', system-ui, sans-serif",
+      borderRadius: '0.75rem',
+      shadowLevel: 'heavy',
+    },
+  },
+  {
+    name: 'Forest',
+    tagline: 'Green + Earth',
+    values: {
+      isDark: false,
+      primaryColor: '142 40% 25%',
+      secondaryColor: '85 25% 88%',
+      accentColor: '35 70% 50%',
+      backgroundColor: '60 20% 97%',
+      foregroundColor: '142 30% 12%',
+      fontFamily: "'Montserrat', system-ui, sans-serif",
+      borderRadius: '1rem',
+      shadowLevel: 'medium',
+    },
+  },
+] as const;
+
 const Themes = () => {
   const { 
     themes, 
