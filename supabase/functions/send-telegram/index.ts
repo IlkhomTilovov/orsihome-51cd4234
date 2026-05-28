@@ -219,10 +219,8 @@ Deno.serve(async (req) => {
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      const appShortName = (Deno.env.get('TELEGRAM_APP_SHORT_NAME') || '').trim();
-      const deepLink = appShortName
-        ? `https://t.me/${botUsername}/${appShortName}`
-        : `https://t.me/${botUsername}?startapp=catalog`;
+      const appShortName = (Deno.env.get('TELEGRAM_APP_SHORT_NAME') || 'catalog').trim();
+      const deepLink = `https://t.me/${botUsername}/${appShortName}`;
 
       const sent = await tgApi(settings.bot_token, 'sendMessage', {
         chat_id: settings.chat_id,
