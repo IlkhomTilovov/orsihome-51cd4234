@@ -113,10 +113,13 @@ export default function Index() {
   const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
   const { settings } = useSystemSettings();
   const { categories } = useCategories();
+  const { settings } = useSystemSettings();
+  const { categories } = useCategories();
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
 
-  const inspirations = [
+  const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
+
     { key: 'insp_1', fallback: fallbackImages[0] },
     { key: 'insp_2', fallback: fallbackImages[1] },
     { key: 'insp_3', fallback: fallbackImages[2] },
