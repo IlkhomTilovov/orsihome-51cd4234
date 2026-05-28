@@ -34,6 +34,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/useLanguage';
 import { AddMediaModal, MediaItem } from '@/components/admin/AddMediaModal';
 import { MediaGrid } from '@/components/admin/MediaGrid';
+import { useAllPromoTiles } from '@/hooks/usePromoTiles';
+import { PROMO_ICONS } from '@/lib/promoIcons';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Category {
   id: string;
