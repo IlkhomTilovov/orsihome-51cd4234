@@ -9,7 +9,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface TelegramSettings {
-interface TelegramSettings {
   bot_token: string;
   chat_id: string;
   enabled: boolean;
@@ -39,8 +38,10 @@ export default function Settings() {
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
     fetchSettings();
   }, []);
+
 
   const fetchSettings = async () => {
     try {
