@@ -49,7 +49,8 @@ const Settings = lazy(() => import("./pages/admin/Settings"));
 const SystemSettings = lazy(() => import("./pages/admin/SystemSettings"));
 const Themes = lazy(() => import("./pages/admin/Themes"));
 const CheckoutFormSettings = lazy(() => import("./pages/admin/CheckoutFormSettings"));
-const CheckoutFormSettings = lazy(() => import("./pages/admin/CheckoutFormSettings"));
+const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
+
 const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
 
 const queryClient = new QueryClient({
@@ -140,11 +141,17 @@ const App = () => (
                           <Route path="settings" element={
                             <ProtectedRoute module="telegram">
                               <Settings />
-                            </ProtectedRoute>
-                          } />
                           <Route path="checkout-form" element={
                             <ProtectedRoute module="siteContent">
                               <CheckoutFormSettings />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="promo-tiles" element={
+                            <ProtectedRoute module="siteContent">
+                              <PromoTilesAdmin />
+                            </ProtectedRoute>
+                          } />
+
                             </ProtectedRoute>
                           } />
                           <Route path="system" element={
