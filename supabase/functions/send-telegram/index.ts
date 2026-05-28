@@ -6,9 +6,13 @@ const corsHeaders = {
 }
 
 interface TelegramRequest {
-  type: 'test' | 'order' | 'setup_webapp';
+  type: 'test' | 'order' | 'setup_webapp' | 'channel_post';
   webapp_url?: string;
   webapp_button_text?: string;
+  post_text?: string;
+  post_image_url?: string;
+  post_button_text?: string;
+  post_chat_id?: string;
   order_data?: {
     order_number: string;
     customer_name: string;
