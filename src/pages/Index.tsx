@@ -130,7 +130,7 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* ============ HERO (Apple-style: huge type + product + side promo) ============ */}
       <section className="container mx-auto px-4 lg:px-8 pt-6 lg:pt-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* Main hero card */}
           <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft min-h-[460px] lg:min-h-[560px]">
             {/* Subtle organic background shape */}
@@ -191,7 +191,7 @@ export default function Index() {
                   contentKey="hero_product_image"
                   fallbackSrc={fallbackImages[0]}
                   alt="OrisHome premium furniture"
-                  className="w-full h-full max-h-[420px] object-contain drop-shadow-2xl"
+                  className="w-full h-full max-h-[480px] object-contain drop-shadow-2xl"
                   wrapperClassName="w-full h-full flex items-center justify-center"
                   section="hero"
                 />
@@ -213,41 +213,8 @@ export default function Index() {
               ))}
             </div>
           </div>
-
-          {/* Side promo card (call-center) */}
-          <Link
-            to="/contact"
-            className="relative rounded-[2rem] overflow-hidden bg-gradient-to-br from-secondary to-[hsl(35_45%_70%)] min-h-[280px] lg:min-h-[560px] group shadow-soft hover:shadow-soft-lg transition-shadow"
-          >
-            <div className="absolute top-5 right-5 z-10 text-xs font-medium text-primary/80">3 / 3</div>
-            <div className="relative h-full p-8 flex flex-col justify-between">
-              <h3 className="font-serif text-4xl lg:text-5xl font-bold text-primary leading-[0.95] tracking-tight">
-                {language === 'uz' ? (
-                  <>QO'NG'IROQ<br />MARKAZI<br />ALOQADA</>
-                ) : (
-                  <>КОЛЛ-<br />ЦЕНТР<br />НА СВЯЗИ</>
-                )}
-              </h3>
-
-              <div className="mt-6">
-                <p className="text-primary/70 text-xs font-medium tracking-wider uppercase mb-1">
-                  {language === 'uz' ? 'Ish vaqti' : 'График работы'}
-                </p>
-                <p className="font-serif font-semibold text-primary text-lg">
-                  10:00 — 22:00
-                </p>
-                <a href={`tel:${contactPhone}`} className="mt-3 inline-flex text-primary font-medium text-sm underline-offset-4 hover:underline">
-                  {contactPhone}
-                </a>
-              </div>
-
-              {/* Floating headphone icon */}
-              <div className="absolute -right-4 -bottom-4 w-32 h-32 rounded-full bg-[hsl(35_85%_55%)] flex items-center justify-center shadow-soft-lg group-hover:scale-110 transition-transform">
-                <Headphones className="w-14 h-14 text-white" strokeWidth={1.8} />
-              </div>
-            </div>
-          </Link>
         </div>
+
       </section>
 
       {/* ============ PROMO TILES (6 colorful cards) ============ */}
