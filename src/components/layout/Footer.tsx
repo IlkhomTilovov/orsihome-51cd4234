@@ -42,7 +42,7 @@ export function Footer() {
           <div className="space-y-6">
             <Link to="/" className="inline-block">
               <span className="font-serif text-2xl font-bold tracking-wider text-foreground">
-                WOOD<span className="text-primary">MAX</span>
+                ORSI<span className="text-primary"> HOME</span>
               </span>
             </Link>
             <EditableText

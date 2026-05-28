@@ -47,7 +47,7 @@ export function Header() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider text-foreground">
-              WOOD<span className="text-primary">MAX</span>
+              ORSI<span className="text-primary"> HOME</span>
             </span>
           </Link>
 
