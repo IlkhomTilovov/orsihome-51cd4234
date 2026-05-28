@@ -6,7 +6,9 @@ const corsHeaders = {
 }
 
 interface TelegramRequest {
-  type: 'test' | 'order';
+  type: 'test' | 'order' | 'setup_webapp';
+  webapp_url?: string;
+  webapp_button_text?: string;
   order_data?: {
     order_number: string;
     customer_name: string;
@@ -24,6 +26,18 @@ interface TelegramRequest {
     }>;
   };
 }
+
+async function tgApi(botToken: string, method: string, payload: any) {
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.description || `Telegram ${method} xatoligi`);
+  return data;
+}
+
 
 async function getTelegramSettings(supabase: any) {
   const { data, error } = await supabase
