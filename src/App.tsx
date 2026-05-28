@@ -143,7 +143,9 @@ const App = () => (
                         </Route>
                       
                       {/* Public Routes */}
+                      {/* Public Routes */}
                       <Route path="*" element={
+                        <TelegramShell>
                         <div className="flex flex-col min-h-screen">
                           <Header />
                           <main className="flex-1">
@@ -167,7 +169,12 @@ const App = () => (
                           <EditModeToggle />
                           <EditorPanel />
                         </div>
+                        </TelegramShell>
                         } />
+                      </Routes>
+                      </Suspense>
+                      </TelegramProvider>
+                    </BrowserRouter>
                       </Routes>
                       </Suspense>
                     </BrowserRouter>
