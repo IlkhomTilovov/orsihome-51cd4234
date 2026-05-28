@@ -86,6 +86,7 @@ const App = () => (
                     <Toaster />
                     <Sonner />
                     <BrowserRouter>
+                      <TelegramProvider>
                       <ScrollToTop />
                       <Suspense fallback={<RouteFallback />}>
                       <Routes>
