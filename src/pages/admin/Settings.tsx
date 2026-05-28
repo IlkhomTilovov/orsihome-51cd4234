@@ -346,6 +346,58 @@ export default function Settings() {
         </CardContent>
       </Card>
 
+      {/* Telegram Web App */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Telegram Web App</CardTitle>
+          <CardDescription>
+            Saytni botga Web App sifatida ulang. Foydalanuvchilar bot menyusidagi tugma orqali do'koningizni ochadi.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="webapp-url">Web App URL (HTTPS)</Label>
+            <Input
+              id="webapp-url"
+              placeholder="https://sizning-saytingiz.uz"
+              value={webapp.url}
+              onChange={(e) => setWebapp((p) => ({ ...p, url: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">
+              Tavsiya: {typeof window !== 'undefined' ? window.location.origin : ''}
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="webapp-button">Tugma matni</Label>
+            <Input
+              id="webapp-button"
+              placeholder="Do'konni ochish"
+              maxLength={32}
+              value={webapp.button_text}
+              onChange={(e) => setWebapp((p) => ({ ...p, button_text: e.target.value }))}
+            />
+          </div>
+
+          {botInfo?.username && (
+            <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
+              ✅ Bot: <a className="font-medium underline" href={`https://t.me/${botInfo.username}`} target="_blank" rel="noreferrer">@{botInfo.username}</a> — menyu tugmasi sozlandi
+            </div>
+          )}
+
+          <div className="pt-2">
+            <Button onClick={saveAndConnectWebApp} disabled={savingWebapp || connectingBot}>
+              {connectingBot ? (
+                <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
+              Saqlash va botga ulash
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* How to Setup Guide */}
       <Card>
         <CardHeader>
