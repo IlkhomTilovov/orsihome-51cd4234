@@ -252,7 +252,7 @@ export default function Index() {
 
       {/* ============ PROMO TILES (6 colorful cards) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
-        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-700 ${sec1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-700 ${sec1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
           {promoTiles.map((tile, i) => {
             const Icon = tile.icon;
             const title = language === 'uz' ? tile.titleUz : tile.titleRu;
@@ -297,7 +297,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
           {cats.slice(0, 4).map((cat: any, i) => {
             const name = language === 'uz' ? cat.name_uz : cat.name_ru;
             const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
@@ -333,7 +333,7 @@ export default function Index() {
 
         {/* Second row */}
         {cats.length > 4 && (
-          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mt-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mt-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
             {cats.slice(4, 8).map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
               const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[(i + 2) % 4];
@@ -386,7 +386,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className={`grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6 transition-all duration-700 ${sec3.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6 transition-all duration-700 ${sec3.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
           {/* Big interior */}
           <Link to="/catalog?featured=1" className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow">
             <EditableImage
@@ -474,7 +474,7 @@ export default function Index() {
           />
         </h2>
 
-        <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec4.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec4.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
           {inspirations.map((insp, i) => (
             <a
               key={insp.key}
