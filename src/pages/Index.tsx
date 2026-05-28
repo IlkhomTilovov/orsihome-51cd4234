@@ -138,7 +138,8 @@ export default function Index() {
               <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-secondary/40 blur-3xl opacity-60" />
             </div>
 
-            <div className="relative h-full grid grid-cols-1 lg:grid-cols-2 gap-0">
+            <div className="relative h-full grid grid-cols-1 lg:grid-cols-[5fr_7fr] gap-0">
+
               {/* Left: typography */}
               <div className="flex flex-col justify-center z-10 p-8 lg:p-12">
                 <div className="flex items-center gap-3 mb-6 text-muted-foreground">
