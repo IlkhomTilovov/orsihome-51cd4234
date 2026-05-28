@@ -906,6 +906,45 @@ export default function ProductsNew() {
                 </Select>
               </div>
 
+              <div className="space-y-2">
+                <Label>Promo kartochkalar</Label>
+                <p className="text-xs text-muted-foreground">
+                  Mahsulot qaysi promo kartochka filtri ostida ko'rinishini tanlang (bir nechta tanlash mumkin).
+                </p>
+                {promoTilesList.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Promo kartochkalar mavjud emas.</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 rounded-md border p-3">
+                    {promoTilesList.map((tile) => {
+                      const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+                      const checked = formData.promo_tile_ids.includes(tile.id);
+                      return (
+                        <label
+                          key={tile.id}
+                          className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-1.5 hover:bg-accent"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(v) => {
+                              const next = v
+                                ? [...formData.promo_tile_ids, tile.id]
+                                : formData.promo_tile_ids.filter((id) => id !== tile.id);
+                              setFormData({ ...formData, promo_tile_ids: next });
+                            }}
+                          />
+                          <Icon className="h-4 w-4 shrink-0" />
+                          <span className="text-sm truncate">
+                            {language === 'uz' ? tile.title_uz : tile.title_ru}
+                            {!tile.is_active && (
+                              <span className="ml-1 text-xs text-muted-foreground">(nofaol)</span>
+                            )}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Narxi</Label>
