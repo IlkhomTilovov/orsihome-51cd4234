@@ -6,13 +6,9 @@ const corsHeaders = {
 }
 
 interface TelegramRequest {
-  type: 'test' | 'order' | 'setup_webapp' | 'channel_post';
+  type: 'test' | 'order' | 'setup_webapp';
   webapp_url?: string;
   webapp_button_text?: string;
-  post_text?: string;
-  post_image_url?: string;
-  post_button_text?: string;
-  post_chat_id?: string;
   order_data?: {
     order_number: string;
     customer_name: string;
@@ -180,84 +176,12 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true, bot: me.result, webapp_url: url }),
-    // Handle channel post with WebApp inline button
-    if (body.type === 'channel_post') {
-      // Get saved WebApp URL from DB
-      const { data: webappRow } = await supabase
-        .from('settings')
-        .select('value')
-        .eq('key', 'telegram_webapp_url')
-        .maybeSingle();
-      let webappUrl = (webappRow?.value || '').replace(/\/+$/, '');
-      if (!webappUrl || !/^https:\/\/.+/i.test(webappUrl)) {
-        return new Response(
-          JSON.stringify({ success: false, error: 'Avval Web App URL ni saqlang va botga ulang' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const chatId = (body.post_chat_id?.trim() || settings.chat_id || '').trim();
-      if (!chatId) {
-        return new Response(
-          JSON.stringify({ success: false, error: 'Kanal/guruh Chat ID kiritilmagan' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const text = (body.post_text || '').trim();
-      if (!text) {
-        return new Response(
-          JSON.stringify({ success: false, error: 'E\'lon matni bo\'sh' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const buttonText = (body.post_button_text?.trim() || 'Do\'konni ochish').slice(0, 64);
-
-      // NOTE: Channels do NOT support web_app inline buttons — only `url` buttons.
-      // We use a t.me/<bot>?startapp link which opens the Mini App from the channel.
-      const me = await tgApi(settings.bot_token, 'getMe', {});
-      const botUsername = me.result?.username;
-      if (!botUsername) {
-        throw new Error('Bot username olinmadi');
-      }
-      const startAppUrl = `https://t.me/${botUsername}?startapp=open`;
-
-      const replyMarkup = {
-        inline_keyboard: [[{ text: buttonText, url: startAppUrl }]],
-      };
-
-      const imageUrl = body.post_image_url?.trim();
-      if (imageUrl) {
-        await tgApi(settings.bot_token, 'sendPhoto', {
-          chat_id: chatId,
-          photo: imageUrl,
-          caption: text,
-          parse_mode: 'HTML',
-          reply_markup: replyMarkup,
-        });
-      } else {
-        await tgApi(settings.bot_token, 'sendMessage', {
-          chat_id: chatId,
-          text,
-          parse_mode: 'HTML',
-          disable_web_page_preview: false,
-          reply_markup: replyMarkup,
-        });
-      }
-
-      return new Response(
-        JSON.stringify({ success: true, message: 'E\'lon yuborildi', bot_username: botUsername }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     if (!settings.chat_id) {
       return new Response(
-        JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
         JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
