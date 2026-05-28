@@ -79,9 +79,6 @@ interface Product {
   variants_ru: string[] | null;
   promo_tile_ids: string[] | null;
 }
-  variants_uz: string[] | null;
-  variants_ru: string[] | null;
-}
 
 interface FormData {
   name_uz: string;
