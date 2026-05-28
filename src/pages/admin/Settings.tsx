@@ -73,6 +73,7 @@ export default function Settings() {
         url: settings['telegram_webapp_url'] || prev.url,
         button_text: settings['telegram_webapp_button'] || prev.button_text,
       }));
+      setPost((prev) => ({ ...prev, chat_id: settings['telegram_chat_id'] || '' }));
 
     } catch (error) {
       console.error('Error fetching settings:', error);
