@@ -11,6 +11,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { EditModeProvider } from "@/hooks/useEditMode";
 import { SiteContentProvider } from "@/hooks/useSiteContent";
 import { SystemSettingsProvider } from "@/hooks/useSystemSettings";
+import { TelegramProvider } from "@/hooks/useTelegram";
+import { TelegramShell } from "@/components/telegram/TelegramShell";
 import { ThemeLoader } from "@/components/ThemeLoader";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -84,6 +86,7 @@ const App = () => (
                     <Toaster />
                     <Sonner />
                     <BrowserRouter>
+                      <TelegramProvider>
                       <ScrollToTop />
                       <Suspense fallback={<RouteFallback />}>
                       <Routes>
@@ -140,7 +143,9 @@ const App = () => (
                         </Route>
                       
                       {/* Public Routes */}
+                      {/* Public Routes */}
                       <Route path="*" element={
+                        <TelegramShell>
                         <div className="flex flex-col min-h-screen">
                           <Header />
                           <main className="flex-1">
@@ -164,9 +169,11 @@ const App = () => (
                           <EditModeToggle />
                           <EditorPanel />
                         </div>
+                        </TelegramShell>
                         } />
                       </Routes>
                       </Suspense>
+                      </TelegramProvider>
                     </BrowserRouter>
                   </TooltipProvider>
                   </EditModeProvider>
