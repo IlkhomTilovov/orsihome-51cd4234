@@ -1,12 +1,89 @@
 import { useEffect, useState } from 'react';
-import { Save, Send, CheckCircle, XCircle } from 'lucide-react';
+import { Save, Send, CheckCircle, XCircle, Pin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
+function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; defaultButton: string }) {
+  const { toast } = useToast();
+  const [text, setText] = useState("🛍 Bizning do'kon katalogi quyidagi tugma orqali ochiladi:");
+  const [buttonText, setButtonText] = useState(defaultButton || 'Katalog');
+  const [pin, setPin] = useState(true);
+  const [sending, setSending] = useState(false);
+
+  const send = async () => {
+    if (!webappUrl || !/^https:\/\/.+/i.test(webappUrl)) {
+      toast({ title: 'Xatolik', description: 'Avval Web App URL ni saqlang', variant: 'destructive' });
+      return;
+    }
+    setSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-telegram', {
+        body: {
+          type: 'post_channel_button',
+          webapp_url: webappUrl,
+          webapp_button_text: buttonText,
+          post_text: text,
+          pin,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Yuborishda xatolik');
+      toast({
+        title: 'Yuborildi',
+        description: pin
+          ? (data.pinned ? 'Xabar kanalga yuborildi va pin qilindi' : 'Xabar yuborildi, lekin pin qilib bo\'lmadi (bot admin huquqlarini tekshiring)')
+          : 'Xabar kanalga yuborildi',
+      });
+    } catch (err: any) {
+      toast({ title: 'Xatolik', description: err.message || 'Yuborishda xatolik', variant: 'destructive' });
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Pin className="h-5 w-5" /> Kanalga "Katalog" tugmali xabar</CardTitle>
+        <CardDescription>
+          Kanal yoki guruhga ichida bosiladigan "Katalog" tugmasi bilan xabar yuboring va avtomatik pin qiling.
+          Bot kanalda admin bo'lishi va "Post messages" + "Pin messages" huquqlariga ega bo'lishi kerak.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label>Xabar matni</Label>
+          <Textarea rows={3} value={text} onChange={(e) => setText(e.target.value)} />
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label>Tugma matni</Label>
+            <Input maxLength={32} value={buttonText} onChange={(e) => setButtonText(e.target.value)} />
+          </div>
+          <div className="flex items-center justify-between rounded-md border border-border px-3">
+            <Label htmlFor="pin-switch">Avtomatik pin qilish</Label>
+            <Switch id="pin-switch" checked={pin} onCheckedChange={setPin} />
+          </div>
+        </div>
+        <Button onClick={send} disabled={sending}>
+          {sending ? (
+            <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+          ) : (
+            <Send className="mr-2 h-4 w-4" />
+          )}
+          Kanalga yuborish
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
 
 interface TelegramSettings {
   bot_token: string;
@@ -393,10 +470,18 @@ export default function Settings() {
                 <Send className="mr-2 h-4 w-4" />
               )}
               Saqlash va botga ulash
+              Saqlash va botga ulash
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Post Catalog button to channel */}
+      <ChannelCatalogPost
+        webappUrl={webapp.url}
+        defaultButton={webapp.button_text || 'Katalog'}
+      />
+
 
       {/* How to Setup Guide */}
       <Card>
