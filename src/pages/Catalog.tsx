@@ -83,12 +83,12 @@ export default function Catalog() {
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
     if (sidebarFilters.colors.length > 0) f.colors = sidebarFilters.colors;
     if (sidebarFilters.furLengths.length > 0) f.furLengths = sidebarFilters.furLengths;
-    if (sidebarFilters.applications.length > 0) f.applications = sidebarFilters.applications;
     if (sidebarFilters.inStock) f.inStock = true;
     if (sidebarFilters.discounted) f.discounted = true;
+    if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId]);
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
 
