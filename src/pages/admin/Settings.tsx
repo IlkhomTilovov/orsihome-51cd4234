@@ -14,12 +14,24 @@ interface TelegramSettings {
   enabled: boolean;
 }
 
+interface WebAppSettings {
+  url: string;
+  button_text: string;
+}
+
 export default function Settings() {
   const [telegram, setTelegram] = useState<TelegramSettings>({
     bot_token: '',
     chat_id: '',
     enabled: false,
   });
+  const [webapp, setWebapp] = useState<WebAppSettings>({
+    url: typeof window !== 'undefined' ? window.location.origin : '',
+    button_text: "Do'konni ochish",
+  });
+  const [savingWebapp, setSavingWebapp] = useState(false);
+  const [connectingBot, setConnectingBot] = useState(false);
+  const [botInfo, setBotInfo] = useState<{ username?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -29,6 +41,7 @@ export default function Settings() {
   useEffect(() => {
     fetchSettings();
   }, []);
+
 
   const fetchSettings = async () => {
     try {
@@ -48,6 +61,11 @@ export default function Settings() {
         chat_id: settings['telegram_chat_id'] || '',
         enabled: settings['telegram_enabled'] === 'true',
       });
+      setWebapp((prev) => ({
+        url: settings['telegram_webapp_url'] || prev.url,
+        button_text: settings['telegram_webapp_button'] || prev.button_text,
+      }));
+
     } catch (error) {
       console.error('Error fetching settings:', error);
     } finally {
@@ -178,6 +196,66 @@ export default function Settings() {
     }
   };
 
+  const upsertSetting = async (key: string, value: string) => {
+    const { data: existing } = await supabase
+      .from('settings')
+      .select('id')
+      .eq('key', key)
+      .maybeSingle();
+    if (existing) {
+      const { error } = await supabase
+        .from('settings')
+        .update({ value, updated_at: new Date().toISOString() })
+        .eq('key', key);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('settings').insert({ key, value });
+      if (error) throw error;
+    }
+  };
+
+  const saveAndConnectWebApp = async () => {
+    if (!telegram.bot_token) {
+      toast({ title: 'Xatolik', description: 'Avval Bot Token kiriting va saqlang', variant: 'destructive' });
+      return;
+    }
+    const url = webapp.url.trim();
+    if (!/^https:\/\/.+/i.test(url)) {
+      toast({ title: 'Xatolik', description: 'Web App URL HTTPS bilan boshlanishi kerak', variant: 'destructive' });
+      return;
+    }
+    setSavingWebapp(true);
+    setConnectingBot(true);
+    try {
+      await upsertSetting('telegram_webapp_url', url);
+      await upsertSetting('telegram_webapp_button', webapp.button_text || "Do'konni ochish");
+      // Make sure bot token is in DB
+      await upsertSetting('telegram_bot_token', telegram.bot_token);
+
+      const { data, error } = await supabase.functions.invoke('send-telegram', {
+        body: {
+          type: 'setup_webapp',
+          webapp_url: url,
+          webapp_button_text: webapp.button_text,
+        },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || 'Botga ulashda xatolik');
+
+      setBotInfo({ username: data.bot?.username });
+      toast({
+        title: 'Muvaffaqiyat',
+        description: `Web App botga ulandi: @${data.bot?.username || 'bot'}`,
+      });
+    } catch (err: any) {
+      toast({ title: 'Xatolik', description: err.message || 'Ulanishda xatolik', variant: 'destructive' });
+    } finally {
+      setSavingWebapp(false);
+      setConnectingBot(false);
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -263,6 +341,58 @@ export default function Settings() {
                 <Send className="mr-2 h-4 w-4" />
               )}
               Test xabar yuborish
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Telegram Web App */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Telegram Web App</CardTitle>
+          <CardDescription>
+            Saytni botga Web App sifatida ulang. Foydalanuvchilar bot menyusidagi tugma orqali do'koningizni ochadi.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="webapp-url">Web App URL (HTTPS)</Label>
+            <Input
+              id="webapp-url"
+              placeholder="https://sizning-saytingiz.uz"
+              value={webapp.url}
+              onChange={(e) => setWebapp((p) => ({ ...p, url: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">
+              Tavsiya: {typeof window !== 'undefined' ? window.location.origin : ''}
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="webapp-button">Tugma matni</Label>
+            <Input
+              id="webapp-button"
+              placeholder="Do'konni ochish"
+              maxLength={32}
+              value={webapp.button_text}
+              onChange={(e) => setWebapp((p) => ({ ...p, button_text: e.target.value }))}
+            />
+          </div>
+
+          {botInfo?.username && (
+            <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
+              ✅ Bot: <a className="font-medium underline" href={`https://t.me/${botInfo.username}`} target="_blank" rel="noreferrer">@{botInfo.username}</a> — menyu tugmasi sozlandi
+            </div>
+          )}
+
+          <div className="pt-2">
+            <Button onClick={saveAndConnectWebApp} disabled={savingWebapp || connectingBot}>
+              {connectingBot ? (
+                <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
+              Saqlash va botga ulash
             </Button>
           </div>
         </CardContent>

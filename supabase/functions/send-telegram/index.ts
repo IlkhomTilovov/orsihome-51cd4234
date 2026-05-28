@@ -6,7 +6,9 @@ const corsHeaders = {
 }
 
 interface TelegramRequest {
-  type: 'test' | 'order';
+  type: 'test' | 'order' | 'setup_webapp';
+  webapp_url?: string;
+  webapp_button_text?: string;
   order_data?: {
     order_number: string;
     customer_name: string;
@@ -24,6 +26,18 @@ interface TelegramRequest {
     }>;
   };
 }
+
+async function tgApi(botToken: string, method: string, payload: any) {
+  const res = await fetch(`https://api.telegram.org/bot${botToken}/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.description || `Telegram ${method} xatoligi`);
+  return data;
+}
+
 
 async function getTelegramSettings(supabase: any) {
   const { data, error } = await supabase
@@ -48,26 +62,7 @@ async function getTelegramSettings(supabase: any) {
   };
 }
 
-async function sendTelegramMessage(botToken: string, chatId: string, message: string) {
-  const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: message,
-      parse_mode: 'Markdown',
-    }),
-  });
 
-  const result = await response.json();
-  
-  if (!result.ok) {
-    console.error('Telegram API error:', result);
-    throw new Error(result.description || 'Telegram xabar yuborishda xatolik');
-  }
-
-  return result;
-}
 
 function formatOrderMessage(orderData: TelegramRequest['order_data']) {
   if (!orderData) return '';
@@ -136,6 +131,43 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Handle Web App setup separately (no chat_id needed)
+    if (body.type === 'setup_webapp') {
+
+      const url = body.webapp_url?.trim();
+      if (!url || !/^https:\/\//.test(url)) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Web App URL HTTPS bilan boshlanishi kerak' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const buttonText = body.webapp_button_text?.trim() || 'Do\'konni ochish';
+
+      // Set the bot's default chat menu button to open the Web App
+      await tgApi(settings.bot_token, 'setChatMenuButton', {
+        menu_button: {
+          type: 'web_app',
+          text: buttonText,
+          web_app: { url },
+        },
+      });
+
+      // Set basic commands
+      await tgApi(settings.bot_token, 'setMyCommands', {
+        commands: [
+          { command: 'start', description: 'Do\'konni ochish' },
+          { command: 'help', description: 'Yordam' },
+        ],
+      });
+
+      const me = await tgApi(settings.bot_token, 'getMe', {});
+
+      return new Response(
+        JSON.stringify({ success: true, bot: me.result, webapp_url: url }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!settings.chat_id) {
       return new Response(
         JSON.stringify({ success: false, error: 'Chat ID sozlanmagan' }),
@@ -143,16 +175,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // For order notifications, check if enabled
-    if (body.type === 'order' && !settings.enabled) {
-      console.log('Telegram notifications disabled, skipping order notification');
-      return new Response(
-        JSON.stringify({ success: true, skipped: true, message: 'Telegram xabarlari o\'chirilgan' }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     let message: string;
+
 
     if (body.type === 'test') {
       // Check if enabled for test messages too
@@ -179,8 +203,14 @@ Deno.serve(async (req) => {
     }
 
     // Send the message
-    await sendTelegramMessage(settings.bot_token, settings.chat_id, message);
+    await tgApi(settings.bot_token, 'sendMessage', {
+      chat_id: settings.chat_id,
+      text: message,
+      parse_mode: 'Markdown',
+    });
     console.log('Telegram message sent successfully');
+
+
 
     return new Response(
       JSON.stringify({ success: true, message: 'Xabar yuborildi' }),
