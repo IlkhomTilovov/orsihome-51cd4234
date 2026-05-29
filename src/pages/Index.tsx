@@ -291,9 +291,9 @@ export default function Index() {
         )}
       </section>
 
-      {/* ============ SETLAR TO'PLAMI (DB-driven sets) ============ */}
+      {/* ============ SETLAR TO'PLAMI (DB-driven sets, carousel) ============ */}
       {(setsLoading || sets.length > 0) && (
-        <section ref={sec3.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24 space-y-12">
+        <section ref={sec3.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
           {setsLoading ? (
             <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
               <div className="aspect-[4/3] lg:aspect-auto rounded-[2rem] bg-card animate-pulse" />
@@ -301,51 +301,16 @@ export default function Index() {
               <div className="aspect-[3/4] rounded-[2rem] bg-card animate-pulse" />
             </div>
           ) : (
-            sets.map((set) => {
-              const setProducts = (productsBySet[set.id] || []).slice(0, 2);
-              const title = language === 'uz' ? set.title_uz : set.title_ru;
-              return (
-                <div key={set.id}>
-                  <div className="flex items-end justify-between mb-8">
-                    <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
-                      {title}
-                      <sup className="text-xl ml-2 text-muted-foreground font-normal">{setProducts.length}</sup>
-                    </h2>
-                    <Link to={set.href || '/catalog'} className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                      {language === 'uz' ? 'Barchasi' : 'Все'}
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
-                    <Link to={set.href || '/catalog'} className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow">
-                      <img
-                        src={set.image || fallbackImages[2]}
-                        alt={title}
-                        loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-                      />
-                    </Link>
-
-                    {setProducts.length > 0 ? (
-                      setProducts.map((p) => <ProductCard key={p.id} product={p} />)
-                    ) : (
-                      <>
-                        <div className="aspect-[3/4] rounded-[2rem] bg-card flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                          {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-                        </div>
-                        <div className="aspect-[3/4] rounded-[2rem] bg-card hidden lg:flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                          {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              );
-            })
+            <SetsCarousel
+              sets={sets}
+              productsBySet={productsBySet}
+              language={language}
+              fallbackImage={fallbackImages[2]}
+            />
           )}
         </section>
       )}
+
 
 
 
