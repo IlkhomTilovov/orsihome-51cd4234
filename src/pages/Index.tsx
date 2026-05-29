@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, Utensils
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
+import { useActiveSets } from '@/hooks/useSets';
 import { usePromoTiles } from '@/hooks/usePromoTiles';
 import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -114,6 +115,7 @@ export default function Index() {
   const { settings } = useSystemSettings();
   const { categories } = useCategories();
   const { data: dbPromoTiles = [] } = usePromoTiles();
+  const { sets, productsBySet, loading: setsLoading } = useActiveSets();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
 
   const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
@@ -288,78 +290,63 @@ export default function Index() {
         )}
       </section>
 
-      {/* ============ FEATURED / SET (interior + product cards) ============ */}
-      <section ref={sec3.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
-            {language === 'uz' ? 'Setlar to\'plami' : 'Набор сетов'}
-            <sup className="text-xl ml-2 text-muted-foreground font-normal">2</sup>
-          </h2>
-          <div className="hidden md:flex items-center gap-3">
-            <button className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center" aria-label="Previous">
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <button className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center" aria-label="Next">
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div className={`grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6 transition-all duration-700 ${sec3.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-          {/* Big interior */}
-          <Link to="/catalog?featured=1" className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow">
-            <EditableImage
-              contentKey="set_main_image"
-              fallbackSrc={fallbackImages[2]}
-              alt="Interior set"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-              wrapperClassName="absolute inset-0"
-              section="featured"
-            />
-          </Link>
-
-          {/* 2 product cards */}
-          {productsLoading ? (
-            <>
+      {/* ============ SETLAR TO'PLAMI (DB-driven sets) ============ */}
+      {(setsLoading || sets.length > 0) && (
+        <section ref={sec3.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24 space-y-12">
+          {setsLoading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
+              <div className="aspect-[4/3] lg:aspect-auto rounded-[2rem] bg-card animate-pulse" />
               <div className="aspect-[3/4] rounded-[2rem] bg-card animate-pulse" />
               <div className="aspect-[3/4] rounded-[2rem] bg-card animate-pulse" />
-            </>
-          ) : featuredProducts.length >= 2 ? (
-            featuredProducts.slice(0, 2).map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))
+            </div>
           ) : (
-            // Fallback static cards
-            [0, 1].map((i) => (
-              <div key={i} className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-shadow group">
-                <div className="absolute top-4 left-4 z-10 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1.5 rounded-full">
-                  −{i === 0 ? '45' : '35'}%
-                </div>
-                <button className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-card/90 backdrop-blur flex items-center justify-center hover:bg-card transition-colors" aria-label="Wishlist">
-                  <Heart className="w-4 h-4 text-foreground/70" />
-                </button>
-                <div className="aspect-square overflow-hidden bg-muted/30">
-                  <img src={fallbackImages[(i + 3) % 4]} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                <div className="p-5 pb-6">
-                  <h3 className="font-sans text-base text-foreground mb-2">
-                    {i === 0 ? (language === 'uz' ? 'Oliviya Pro' : 'Оливия Про') : (language === 'uz' ? 'Parus' : 'Парус')}
-                  </h3>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-xs text-muted-foreground line-through">{i === 0 ? '12 700 000' : '2 600 000'} {language === 'uz' ? "so'm" : 'сум'}</span>
+            sets.map((set) => {
+              const setProducts = (productsBySet[set.id] || []).slice(0, 2);
+              const title = language === 'uz' ? set.title_uz : set.title_ru;
+              return (
+                <div key={set.id}>
+                  <div className="flex items-end justify-between mb-8">
+                    <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+                      {title}
+                      <sup className="text-xl ml-2 text-muted-foreground font-normal">{setProducts.length}</sup>
+                    </h2>
+                    <Link to={set.href || '/catalog'} className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                      {language === 'uz' ? 'Barchasi' : 'Все'}
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
-                  <div className="flex items-baseline gap-2 mb-5">
-                    <span className="font-serif font-bold text-xl text-primary">{i === 0 ? '6 985 000' : '1 690 000'} {language === 'uz' ? "so'm" : 'сум'}</span>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
+                    <Link to={set.href || '/catalog'} className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow">
+                      <img
+                        src={set.image || fallbackImages[2]}
+                        alt={title}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
+                      />
+                    </Link>
+
+                    {setProducts.length > 0 ? (
+                      setProducts.map((p) => <ProductCard key={p.id} product={p} />)
+                    ) : (
+                      <>
+                        <div className="aspect-[3/4] rounded-[2rem] bg-card flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
+                          {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
+                        </div>
+                        <div className="aspect-[3/4] rounded-[2rem] bg-card hidden lg:flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
+                          {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
+                        </div>
+                      </>
+                    )}
                   </div>
-                  <Button variant="outline" className="w-full rounded-full h-11 border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">
-                    {language === 'uz' ? 'Sotib olish' : 'Купить'}
-                  </Button>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
-        </div>
-      </section>
+        </section>
+      )}
+
+
 
       {/* ============ FEATURED PRODUCTS GRID (only if we have more) ============ */}
       {featuredProducts.length > 2 && (

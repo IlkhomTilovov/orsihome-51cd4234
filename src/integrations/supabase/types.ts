@@ -511,6 +511,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sets: {
+        Row: {
+          created_at: string
+          href: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          product_ids: string[]
+          sort_order: number
+          title_ru: string
+          title_uz: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          href?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          product_ids?: string[]
+          sort_order?: number
+          title_ru: string
+          title_uz: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          href?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          product_ids?: string[]
+          sort_order?: number
+          title_ru?: string
+          title_uz?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           created_at: string
