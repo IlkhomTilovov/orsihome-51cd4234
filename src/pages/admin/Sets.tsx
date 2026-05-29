@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { convertImageToWebP } from '@/lib/imageToWebp';
 import { LazyImage } from '@/components/LazyImage';
@@ -28,6 +29,7 @@ export default function SetsAdmin() {
   const [uploading, setUploading] = useState(false);
   const [allProducts, setAllProducts] = useState<ProductLite[]>([]);
   const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState<ProductSet | null>(null);
 
   useEffect(() => {
     supabase
@@ -91,10 +93,11 @@ export default function SetsAdmin() {
     refetch();
   };
 
-  const remove = async (s: ProductSet) => {
-    if (!confirm(`"${s.title_uz}" setini o'chirasizmi?`)) return;
-    await supabase.from('sets').delete().eq('id', s.id);
+  const confirmRemove = async () => {
+    if (!deleting) return;
+    await supabase.from('sets').delete().eq('id', deleting.id);
     toast.success('O\'chirildi');
+    setDeleting(null);
     refetch();
   };
 
@@ -149,7 +152,7 @@ export default function SetsAdmin() {
                   {s.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Pencil className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" onClick={() => remove(s)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                <Button variant="ghost" size="icon" onClick={() => setDeleting(s)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
               </div>
             </Card>
           ))}
@@ -241,6 +244,23 @@ export default function SetsAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Setni o'chirish</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{deleting?.title_uz}" setini o'chirmoqchimisiz? Bu amalni qaytarib bo'lmaydi.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRemove} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              O'chirish
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
