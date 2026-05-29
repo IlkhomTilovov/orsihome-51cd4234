@@ -92,11 +92,37 @@ export default {
           from: { opacity: "0", transform: "translateY(10px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        "slide-in-r": {
+          from: { opacity: "0", transform: "translateX(40px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        "slide-in-l": {
+          from: { opacity: "0", transform: "translateX(-40px)" },
+          to: { opacity: "1", transform: "translateX(0)" },
+        },
+        "set-card": {
+          "0%": { opacity: "0", transform: "translateY(28px) scale(0.97)" },
+          "60%": { opacity: "1" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "set-title": {
+          from: { opacity: "0", transform: "translateY(14px)", letterSpacing: "0.02em" },
+          to: { opacity: "1", transform: "translateY(0)", letterSpacing: "-0.02em" },
+        },
+        "set-img": {
+          from: { transform: "scale(1.08)" },
+          to: { transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out",
+        "slide-in-r": "slide-in-r 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+        "slide-in-l": "slide-in-l 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
+        "set-card": "set-card 0.75s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "set-title": "set-title 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "set-img": "set-img 1.2s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
