@@ -18,6 +18,7 @@ import {
   Settings2,
   MessageSquare,
   LayoutGrid,
+  Layers,
   LucideIcon
 } from 'lucide-react';
 
@@ -43,6 +44,7 @@ const navItems: NavItem[] = [
   { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
   { title: 'Sayt kontenti', url: '/admin/content', icon: FileText, module: 'siteContent' },
   { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
+  { title: 'Setlar to\'plami', url: '/admin/sets', icon: Layers, module: 'siteContent' },
   { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
 
   { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
