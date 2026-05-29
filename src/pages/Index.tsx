@@ -145,7 +145,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   return (
     <div className="relative">
       <div
-        className="overflow-hidden"
+        className="[overflow-x:clip] [overflow-y:visible] -mx-2 px-2 py-4"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
