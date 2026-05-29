@@ -59,19 +59,67 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
-                  isActive(link.href) 
-                    ? 'text-primary after:w-full' 
-                    : 'text-muted-foreground after:w-0 hover:after:w-full'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              if (link.href === '/catalog') {
+                return (
+                  <div
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={() => setCatalogOpen(true)}
+                    onMouseLeave={() => setCatalogOpen(false)}
+                  >
+                    <Link
+                      to={link.href}
+                      className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
+                        isActive(link.href)
+                          ? 'text-primary after:w-full'
+                          : 'text-muted-foreground after:w-0 hover:after:w-full'
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
+                    </Link>
+
+                    {catalogOpen && categories.length > 0 && (
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50 animate-fade-in">
+                        <div className="bg-background border border-border/40 shadow-soft-md rounded-md p-6 min-w-[560px]">
+                          <h3 className="font-serif text-xl font-semibold text-foreground mb-5">
+                            {language === 'ru' ? 'Товары' : 'Tovarlar'}
+                          </h3>
+                          <div className="grid grid-cols-2 gap-x-10 gap-y-3">
+                            {categories.map((c) => (
+                              <Link
+                                key={c.id}
+                                to={`/catalog?category=${c.slug}`}
+                                onClick={() => setCatalogOpen(false)}
+                                className="text-sm text-muted-foreground hover:text-primary transition-colors py-1 border-b border-transparent hover:border-primary/30"
+                              >
+                                {language === 'ru' ? c.name_ru : c.name_uz}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
+                    isActive(link.href)
+                      ? 'text-primary after:w-full'
+                      : 'text-muted-foreground after:w-0 hover:after:w-full'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
           </nav>
 
           {/* Right Actions */}
