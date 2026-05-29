@@ -171,7 +171,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
             <Link
               to={set.href || '/catalog'}
-              className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow animate-set-card"
+              className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group transition-shadow animate-set-card"
               style={{ animationDelay: '60ms' }}
             >
               <img
