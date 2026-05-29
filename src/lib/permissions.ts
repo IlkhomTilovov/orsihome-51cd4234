@@ -114,7 +114,7 @@ export const navItemConfigs: NavItemConfig[] = [
   { title: 'Toifalar', url: '/admin/categories', icon: 'FolderTree', module: 'categories' },
   { title: 'Mahsulotlar', url: '/admin/products', icon: 'Package', module: 'products' },
   { title: 'Mijozlar', url: '/admin/customers', icon: 'Users', module: 'customers' },
-  { title: 'Sayt kontenti', url: '/admin/content', icon: 'FileText', module: 'siteContent' },
+  { title: 'Sayt kontenti', url: '/admin/site-content', icon: 'FileText', module: 'siteContent' },
   { title: 'Mavzular', url: '/admin/themes', icon: 'Palette', module: 'themes' },
   { title: 'Adminlar', url: '/admin/admins', icon: 'Shield', module: 'admins' },
   { title: 'Telegram', url: '/admin/settings', icon: 'Settings', module: 'telegram' },
