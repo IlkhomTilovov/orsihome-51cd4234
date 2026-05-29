@@ -8,12 +8,6 @@ import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useCategories } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
-import { createPortal } from 'react-dom';
-import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useCart } from '@/hooks/useCart';
-import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { CartDrawer } from '@/components/CartDrawer';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
