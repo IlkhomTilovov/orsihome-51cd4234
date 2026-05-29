@@ -152,7 +152,7 @@ export default function SetsAdmin() {
                   {s.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Pencil className="w-4 h-4" /></Button>
-                <Button variant="ghost" size="icon" onClick={() => remove(s)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
+                <Button variant="ghost" size="icon" onClick={() => setDeleting(s)}><Trash2 className="w-4 h-4 text-destructive" /></Button>
               </div>
             </Card>
           ))}
