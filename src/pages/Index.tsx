@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Sparkles, Flame, Star, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
 import { useActiveSets } from '@/hooks/useSets';
