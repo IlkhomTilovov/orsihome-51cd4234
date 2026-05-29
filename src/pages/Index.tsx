@@ -121,6 +121,18 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   const count = sets.length;
   const touchStartX = useRef<number | null>(null);
   const DURATION = 800;
+  const INNER_DURATION = 650;
+  const PAGE = 2;
+  const STEP_MS = 5000;
+
+  // inner products pager state
+  const [innerPage, setInnerPage] = useState(0);
+  const [innerIncoming, setInnerIncoming] = useState<number | null>(null);
+  const [innerAnimating, setInnerAnimating] = useState(false);
+
+  const productsOf = (s: (typeof sets)[number]) => productsBySet[s.id] || [];
+  const pageOf = (s: (typeof sets)[number], p: number) =>
+    productsOf(s).slice(p * PAGE, p * PAGE + PAGE);
 
   const go = (next: number) => {
     if (animating) return;
@@ -134,31 +146,86 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       setCurrent(n);
       setIncoming(null);
       setAnimating(false);
+      setInnerPage(0);
+      setInnerIncoming(null);
+      setInnerAnimating(false);
     }, DURATION);
   };
 
-  // autoplay
-  useEffect(() => {
-    if (count <= 1) return;
-    const t = setInterval(() => {
-      go(current + 1);
-    }, 7000);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, current, animating]);
+  const goInner = (next: number) => {
+    if (innerAnimating || animating) return;
+    setInnerIncoming(next);
+    requestAnimationFrame(() => requestAnimationFrame(() => setInnerAnimating(true)));
+    window.setTimeout(() => {
+      setInnerPage(next);
+      setInnerIncoming(null);
+      setInnerAnimating(false);
+    }, INNER_DURATION);
+  };
 
   const set = sets[current];
+  const totalInnerPages = set ? Math.max(1, Math.ceil(productsOf(set).length / PAGE)) : 1;
+
+  // unified autoplay: cycle inner pages first, then advance to next set
+  useEffect(() => {
+    if (count <= 1 && totalInnerPages <= 1) return;
+    const t = setInterval(() => {
+      if (animating || innerAnimating) return;
+      if (innerPage < totalInnerPages - 1) {
+        goInner(innerPage + 1);
+      } else if (count > 1) {
+        go(current + 1);
+      }
+    }, STEP_MS);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, current, innerPage, totalInnerPages, animating, innerAnimating]);
+
   if (!set) return null;
 
-  const renderSlide = (s: typeof set) => {
-    const sp = (productsBySet[s.id] || []).slice(0, 2);
+  const EmptyCard = ({ hideOnMobile = false }: { hideOnMobile?: boolean }) => (
+    <div
+      className={`aspect-[3/4] rounded-[2rem] bg-card ${hideOnMobile ? 'hidden lg:flex' : 'flex'} items-center justify-center text-sm text-muted-foreground p-6 text-center`}
+    >
+      {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
+    </div>
+  );
+
+  const renderPair = (items: ReturnType<typeof productsOf>) => (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 w-full">
+      {items.length > 0 ? (
+        <>
+          {items.map((p) => (
+            <div key={p.id}>
+              <ProductCard product={p} />
+            </div>
+          ))}
+          {items.length === 1 && <EmptyCard hideOnMobile />}
+        </>
+      ) : (
+        <>
+          <EmptyCard />
+          <EmptyCard hideOnMobile />
+        </>
+      )}
+    </div>
+  );
+
+  const renderSlide = (s: typeof set, withInner: boolean) => {
     const title = language === 'uz' ? s.title_uz : s.title_ru;
+    const all = productsOf(s);
+    const innerOn = withInner && all.length > PAGE;
+    const curItems = innerOn ? pageOf(s, innerPage) : all.slice(0, PAGE);
+    const incItems = innerOn && innerIncoming !== null ? pageOf(s, innerIncoming) : null;
+    const showInnerTrack = innerOn && innerIncoming !== null;
+    const innerTranslate = !showInnerTrack ? '0%' : (innerAnimating ? '-50%' : '0%');
+
     return (
       <div className="w-full">
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
             <span className="inline-block">{title}</span>
-            <sup className="text-xl ml-2 text-muted-foreground font-normal">{sp.length}</sup>
+            <sup className="text-xl ml-2 text-muted-foreground font-normal">{all.length}</sup>
           </h2>
           <Link
             to={s.href || '/catalog'}
@@ -168,7 +235,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6">
           <Link
             to={s.href || '/catalog'}
             className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
@@ -180,29 +247,34 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
-          {sp.length > 0 ? (
-            sp.map((p) => (
-              <div key={p.id}>
-                <ProductCard product={p} />
+          <div className="relative overflow-hidden">
+            <div
+              className="flex"
+              style={{
+                width: showInnerTrack ? '200%' : '100%',
+                transform: `translate3d(${innerTranslate}, 0, 0)`,
+                transition: innerAnimating
+                  ? `transform ${INNER_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`
+                  : 'none',
+              }}
+            >
+              <div className="shrink-0" style={{ width: showInnerTrack ? '50%' : '100%' }}>
+                {renderPair(curItems)}
               </div>
-            ))
-          ) : (
-            <>
-              <div className="aspect-[3/4] rounded-[2rem] bg-card flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-              </div>
-              <div className="aspect-[3/4] rounded-[2rem] bg-card hidden lg:flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-              </div>
-            </>
-          )}
+              {showInnerTrack && incItems && (
+                <div className="shrink-0" style={{ width: '50%' }}>
+                  {renderPair(incItems)}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
   };
 
-  // Forward (→): track = [current, incoming], translate 0% → -50%
-  // Backward (←): track = [incoming, current], translate -50% → 0%
+  // Outer: forward (→) track = [current, incoming], translate 0% → -50%
+  //        backward (←) track = [incoming, current], translate -50% → 0%
   const showTrack = incoming !== null;
   const trackChildren = showTrack
     ? (direction === 1 ? [set, sets[incoming!]] : [sets[incoming!], set])
@@ -232,8 +304,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           }}
         >
           {trackChildren.map((s, i) => (
-            <div key={(s?.id || 'x') + '-' + i} className="w-1/2 shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
-              {s && renderSlide(s)}
+            <div key={(s?.id || 'x') + '-' + i} className="shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
+              {s && renderSlide(s, !showTrack)}
             </div>
           ))}
         </div>
