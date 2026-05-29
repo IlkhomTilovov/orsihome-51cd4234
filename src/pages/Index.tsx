@@ -363,7 +363,7 @@ export default function Index() {
                 style={{ transitionDelay: `${i * 80}ms` }}
               >
                 <div className="absolute top-6 left-0 right-0 z-10 text-center">
-                  <h3 className="font-sans font-medium text-base lg:text-lg text-foreground px-4">
+                  <h3 className="font-sans font-medium text-base lg:text-lg text-white px-4 drop-shadow-md">
                     {name}
                   </h3>
                 </div>
