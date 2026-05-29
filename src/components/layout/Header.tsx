@@ -220,23 +220,53 @@ export function Header() {
       {/* Full-width Catalog Mega Menu */}
       {catalogOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/20" onClick={() => setCatalogOpen(false)} />
+          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setCatalogOpen(false)} />
           <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
-            <div className="bg-background border-t border-border/40 shadow-soft-md">
-              <div className="container mx-auto px-4 lg:px-8 py-8">
-                <h3 className="font-serif text-2xl font-bold text-foreground mb-6">
-                  {language === 'ru' ? 'Товары' : 'Tovarlar'}
-                </h3>
+            <div className="bg-background/95 backdrop-blur-xl border-t border-border/40 shadow-soft-lg">
+              <div className="container mx-auto px-4 lg:px-8 py-10">
+                <div className="flex items-end justify-between mb-8 pb-4 border-b border-border/40">
+                  <div>
+                    <p className="text-xs tracking-[0.3em] uppercase text-primary/70 mb-2">
+                      {language === 'ru' ? 'Каталог' : 'Katalog'}
+                    </p>
+                    <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+                      {language === 'ru' ? 'Наши товары' : 'Bizning tovarlar'}
+                    </h3>
+                  </div>
+                  <Link
+                    to="/catalog"
+                    onClick={() => setCatalogOpen(false)}
+                    className="hidden md:inline-flex items-center gap-2 text-xs tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors group"
+                  >
+                    {language === 'ru' ? 'Все товары' : 'Barchasi'}
+                    <span className="transition-transform group-hover:translate-x-1">→</span>
+                  </Link>
+                </div>
+
                 {categories.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-4">
-                    {categories.map((c) => (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {categories.map((c, idx) => (
                       <Link
                         key={c.id}
                         to={`/catalog?category=${c.slug}`}
                         onClick={() => setCatalogOpen(false)}
-                        className="text-[15px] text-foreground/80 hover:text-primary transition-colors"
+                        className="group relative overflow-hidden rounded-md border border-border/50 bg-card/50 hover:bg-card hover:border-primary/40 hover:shadow-soft-md transition-all duration-500 p-5"
+                        style={{ animationDelay: `${idx * 50}ms` }}
                       >
-                        {language === 'ru' ? c.name_ru : c.name_uz}
+                        <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60 mb-2">
+                              0{idx + 1}
+                            </p>
+                            <p className="text-[15px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                              {language === 'ru' ? c.name_ru : c.name_uz}
+                            </p>
+                          </div>
+                          <span className="text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 text-lg">
+                            →
+                          </span>
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -254,6 +284,7 @@ export function Header() {
           </div>
         </>
       )}
+
 
       {createPortal(
         <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />,
