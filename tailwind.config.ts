@@ -133,6 +133,8 @@ export default {
         "set-card": "set-card 0.75s cubic-bezier(0.22, 1, 0.36, 1) both",
         "set-title": "set-title 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "set-img": "set-img 1.2s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-cinema-r": "slide-cinema-r 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-cinema-l": "slide-cinema-l 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
