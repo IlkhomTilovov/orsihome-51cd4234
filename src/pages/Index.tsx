@@ -153,11 +153,6 @@ export default function Index() {
 
             {/* Text content overlay */}
             <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-              <div className="flex items-center gap-3 mb-6 text-white/70">
-                <span className="font-serif text-2xl">1</span>
-                <span className="w-8 h-px bg-white/40" />
-                <span className="font-serif text-2xl">3</span>
-              </div>
               <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
                 <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
                 <EditableText contentKey="hero_title_line2" fallback="OLIVIA" as="span" className="block" section="hero" />
