@@ -168,20 +168,6 @@ export default function Index() {
 
             </div>
 
-            {/* Thumbnail strip */}
-            <div className="absolute bottom-6 left-8 lg:left-14 flex gap-3 z-20">
-              {[0, 1, 2].map((i) => (
-                <button
-                  key={i}
-                  className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all ${
-                    i === 0 ? 'border-white scale-105' : 'border-white/40 hover:border-white/80'
-                  } shadow-soft-sm`}
-                  aria-label={`Slide ${i + 1}`}
-                >
-                  <img src={fallbackImages[i]} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
           </div>
 
         </div>
