@@ -24,6 +24,11 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const { categories } = useCategories();
+  const [catalogOpen, setCatalogOpen] = useState(false);
+  const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+
+
   const navLinks = [
     { href: '/', label: 'Bosh sahifa' },
     { href: '/catalog', label: 'Katalog' },
