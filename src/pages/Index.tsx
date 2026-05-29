@@ -404,7 +404,7 @@ export default function Index() {
                     </h3>
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center p-8 pt-16">
-                    {cat.image || defaultServiceImages[cat.slug] ? (
+                    {img ? (
                       <img
                         src={img}
                         alt={name}
