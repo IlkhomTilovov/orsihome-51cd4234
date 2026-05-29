@@ -1,6 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useCart } from '@/hooks/useCart';
+import { useSystemSettings } from '@/hooks/useSystemSettings';
+import { useCategories } from '@/hooks/useProducts';
+import { CartDrawer } from '@/components/CartDrawer';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
