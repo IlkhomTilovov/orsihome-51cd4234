@@ -367,18 +367,21 @@ export default function Index() {
                     {name}
                   </h3>
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center p-8 pt-16">
+                <div className="absolute inset-0">
                   {img ? (
                     <img
                       src={img}
                       alt={name}
                       loading="lazy"
-                      className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-luxe"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
                     />
                   ) : FallbackIcon ? (
-                    <FallbackIcon className="w-32 h-32 text-primary/70 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.2} />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <FallbackIcon className="w-32 h-32 text-primary/70 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.2} />
+                    </div>
                   ) : null}
                 </div>
+                <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent z-[5]" />
               </Link>
             );
           })}
