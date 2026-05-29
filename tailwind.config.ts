@@ -123,6 +123,14 @@ export default {
           "60%": { opacity: "1", filter: "blur(0)" },
           "100%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
         },
+        "slide-out-l": {
+          "0%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+          "100%": { opacity: "0", transform: "translateX(-80px) scale(0.96)", filter: "blur(8px)" },
+        },
+        "slide-out-r": {
+          "0%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+          "100%": { opacity: "0", transform: "translateX(80px) scale(0.96)", filter: "blur(8px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
