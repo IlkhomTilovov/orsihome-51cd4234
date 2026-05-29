@@ -47,7 +47,6 @@ export function Header() {
           : 'bg-background/60 backdrop-blur-md py-4 border-b border-border/20'
       }`}
     >
-    >
 
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
