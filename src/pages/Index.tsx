@@ -371,6 +371,24 @@ export default function Index() {
   const sec3 = useInView();
   const sec4 = useInView();
 
+  // Toifalar carousel
+  const [catPerPage, setCatPerPage] = useState(4);
+  const [catPage, setCatPage] = useState(0);
+  useEffect(() => {
+    const compute = () => {
+      if (typeof window === 'undefined') return;
+      if (window.matchMedia('(min-width: 1024px)').matches) setCatPerPage(4);
+      else if (window.matchMedia('(min-width: 768px)').matches) setCatPerPage(3);
+      else setCatPerPage(2);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
+  const catTotalPages = Math.max(1, Math.ceil(cats.length / catPerPage));
+  useEffect(() => { if (catPage >= catTotalPages) setCatPage(0); }, [catPerPage, catTotalPages, catPage]);
+  const goCat = (dir: number) => setCatPage(p => (p + dir + catTotalPages) % catTotalPages);
+
   return (
     <div className="min-h-screen bg-background">
       {/* ============ HERO (Apple-style: huge type + product + side promo) ============ */}
