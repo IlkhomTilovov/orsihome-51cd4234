@@ -168,43 +168,44 @@ export default function AdminLayout() {
       {/* Desktop layout */}
       <div className="hidden lg:flex min-h-screen">
         {/* Desktop sidebar - fixed to viewport */}
-        <aside className="w-64 bg-white border-r fixed inset-y-0 left-0 flex flex-col">
-          <div className="flex items-center h-16 px-6 border-b">
-            <Link to="/admin" className="font-serif text-xl font-bold text-primary">
+        <aside className="w-60 bg-white border-r fixed inset-y-0 left-0 flex flex-col">
+          <div className="flex items-center h-14 px-5 border-b shrink-0">
+            <Link to="/admin" className="font-serif text-lg font-bold text-primary">
               Admin Panel
             </Link>
           </div>
 
           {/* User info */}
           {roleInfo && (
-            <div className="p-4 border-b">
-              <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-              <Badge className={cn("mt-1", roleInfo.color)}>{roleInfo.label}</Badge>
+            <div className="px-4 py-3 border-b shrink-0">
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              <Badge className={cn("mt-1 text-[10px] px-1.5 py-0", roleInfo.color)}>{roleInfo.label}</Badge>
             </div>
           )}
 
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto min-h-0">
             {filteredNavItems.map((item) => (
               <Link
                 key={item.url}
                 to={item.url}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
+                  "flex items-center gap-2.5 px-3 py-2 rounded-md text-sm font-medium transition-colors",
                   isActive(item.url)
                     ? "bg-primary text-primary-foreground"
                     : "text-gray-600 hover:bg-gray-100"
                 )}
               >
-                <item.icon className="h-5 w-5" />
-                {item.title}
+                <item.icon className="h-4 w-4 shrink-0" />
+                <span className="truncate">{item.title}</span>
               </Link>
             ))}
           </nav>
 
-          <div className="p-4 border-t mt-auto space-y-2">
+          <div className="p-3 border-t shrink-0 space-y-1.5 bg-white">
             <Button 
               variant="outline" 
-              className="w-full justify-start gap-3"
+              size="sm"
+              className="w-full justify-start gap-2 h-9"
               onClick={() => navigate('/')}
             >
               <LogOut className="h-4 w-4" />
@@ -212,7 +213,8 @@ export default function AdminLayout() {
             </Button>
             <Button 
               variant="destructive" 
-              className="w-full justify-start gap-3"
+              size="sm"
+              className="w-full justify-start gap-2 h-9"
               onClick={async () => { await signOut(); navigate('/admin/auth'); }}
             >
               <LogOut className="h-4 w-4" />
@@ -222,7 +224,7 @@ export default function AdminLayout() {
         </aside>
 
         {/* Spacer for fixed sidebar */}
-        <div className="w-64 flex-shrink-0" />
+        <div className="w-60 flex-shrink-0" />
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
