@@ -62,46 +62,56 @@ export function Header() {
             {navLinks.map((link) => {
               if (link.href === '/catalog') {
                 return (
-                  <div
-                    key={link.href}
-                    className="relative"
-                    onMouseEnter={() => setCatalogOpen(true)}
-                    onMouseLeave={() => setCatalogOpen(false)}
-                  >
-                    <Link
-                      to={link.href}
+                  <div key={link.href} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setCatalogOpen(v => !v)}
                       className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
-                        isActive(link.href)
+                        isActive(link.href) || catalogOpen
                           ? 'text-primary after:w-full'
                           : 'text-muted-foreground after:w-0 hover:after:w-full'
                       }`}
                     >
                       {link.label}
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
-                    </Link>
+                    </button>
 
-                    {catalogOpen && categories.length > 0 && (
-                      <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50 animate-fade-in">
-                        <div className="bg-background border border-border/40 shadow-soft-md rounded-md p-6 min-w-[560px]">
-                          <h3 className="font-serif text-xl font-semibold text-foreground mb-5">
-                            {language === 'ru' ? 'Товары' : 'Tovarlar'}
-                          </h3>
-                          <div className="grid grid-cols-2 gap-x-10 gap-y-3">
-                            {categories.map((c) => (
+                    {catalogOpen && (
+                      <>
+                        <div className="fixed inset-0 z-40" onClick={() => setCatalogOpen(false)} />
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50 animate-fade-in">
+                          <div className="bg-background border border-border/40 shadow-soft-md rounded-md p-6 min-w-[600px]">
+                            <h3 className="font-serif text-2xl font-bold text-foreground mb-5">
+                              {language === 'ru' ? 'Товары' : 'Tovarlar'}
+                            </h3>
+                            {categories.length > 0 ? (
+                              <div className="grid grid-cols-2 gap-x-12 gap-y-4">
+                                {categories.map((c) => (
+                                  <Link
+                                    key={c.id}
+                                    to={`/catalog?category=${c.slug}`}
+                                    onClick={() => setCatalogOpen(false)}
+                                    className="text-[15px] text-foreground/80 hover:text-primary transition-colors"
+                                  >
+                                    {language === 'ru' ? c.name_ru : c.name_uz}
+                                  </Link>
+                                ))}
+                              </div>
+                            ) : (
                               <Link
-                                key={c.id}
-                                to={`/catalog?category=${c.slug}`}
+                                to="/catalog"
                                 onClick={() => setCatalogOpen(false)}
-                                className="text-sm text-muted-foreground hover:text-primary transition-colors py-1 border-b border-transparent hover:border-primary/30"
+                                className="text-sm text-muted-foreground hover:text-primary"
                               >
-                                {language === 'ru' ? c.name_ru : c.name_uz}
+                                {language === 'ru' ? 'Перейти в каталог' : 'Katalogga o\'tish'}
                               </Link>
-                            ))}
+                            )}
                           </div>
                         </div>
-                      </div>
+                      </>
                     )}
                   </div>
+
                 );
               }
               return (
