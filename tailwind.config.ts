@@ -113,6 +113,16 @@ export default {
           from: { transform: "scale(1.08)" },
           to: { transform: "scale(1)" },
         },
+        "slide-cinema-r": {
+          "0%": { opacity: "0", transform: "translateX(60px) scale(0.96)", filter: "blur(8px)" },
+          "60%": { opacity: "1", filter: "blur(0)" },
+          "100%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+        },
+        "slide-cinema-l": {
+          "0%": { opacity: "0", transform: "translateX(-60px) scale(0.96)", filter: "blur(8px)" },
+          "60%": { opacity: "1", filter: "blur(0)" },
+          "100%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
