@@ -113,6 +113,16 @@ export default {
           from: { transform: "scale(1.08)" },
           to: { transform: "scale(1)" },
         },
+        "slide-cinema-r": {
+          "0%": { opacity: "0", transform: "translateX(60px) scale(0.96)", filter: "blur(8px)" },
+          "60%": { opacity: "1", filter: "blur(0)" },
+          "100%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+        },
+        "slide-cinema-l": {
+          "0%": { opacity: "0", transform: "translateX(-60px) scale(0.96)", filter: "blur(8px)" },
+          "60%": { opacity: "1", filter: "blur(0)" },
+          "100%": { opacity: "1", transform: "translateX(0) scale(1)", filter: "blur(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -123,6 +133,8 @@ export default {
         "set-card": "set-card 0.75s cubic-bezier(0.22, 1, 0.36, 1) both",
         "set-title": "set-title 0.7s cubic-bezier(0.22, 1, 0.36, 1) both",
         "set-img": "set-img 1.2s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-cinema-r": "slide-cinema-r 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-cinema-l": "slide-cinema-l 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
