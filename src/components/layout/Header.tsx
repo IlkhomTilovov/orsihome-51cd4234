@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
+import { useCategories } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
 
 export function Header() {
@@ -22,6 +23,11 @@ export function Header() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const { categories } = useCategories();
+  const [catalogOpen, setCatalogOpen] = useState(false);
+  const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+
 
   const navLinks = [
     { href: '/', label: 'Bosh sahifa' },
@@ -53,19 +59,65 @@ export function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
-                  isActive(link.href) 
-                    ? 'text-primary after:w-full' 
-                    : 'text-muted-foreground after:w-0 hover:after:w-full'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              if (link.href === '/catalog') {
+                return (
+                  <div
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={() => setCatalogOpen(true)}
+                    onMouseLeave={() => setCatalogOpen(false)}
+                  >
+                    <Link
+                      to={link.href}
+                      className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
+                        isActive(link.href)
+                          ? 'text-primary after:w-full'
+                          : 'text-muted-foreground after:w-0 hover:after:w-full'
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
+                    </Link>
+
+                    {catalogOpen && categories.length > 0 && (
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50 animate-fade-in">
+                        <div className="bg-background border border-border/40 shadow-soft-md rounded-md p-6 min-w-[560px]">
+                          <h3 className="font-serif text-xl font-semibold text-foreground mb-5">
+                            {language === 'ru' ? 'Товары' : 'Tovarlar'}
+                          </h3>
+                          <div className="grid grid-cols-2 gap-x-10 gap-y-3">
+                            {categories.map((c) => (
+                              <Link
+                                key={c.id}
+                                to={`/catalog?category=${c.slug}`}
+                                onClick={() => setCatalogOpen(false)}
+                                className="text-sm text-muted-foreground hover:text-primary transition-colors py-1 border-b border-transparent hover:border-primary/30"
+                              >
+                                {language === 'ru' ? c.name_ru : c.name_uz}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
+                    isActive(link.href)
+                      ? 'text-primary after:w-full'
+                      : 'text-muted-foreground after:w-0 hover:after:w-full'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Right Actions */}
@@ -129,18 +181,57 @@ export function Header() {
         {isOpen && (
           <nav className="lg:hidden py-6 border-t border-border/30 mt-4 animate-fade-in">
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
-                    isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.href === '/catalog') {
+                  return (
+                    <div key={link.href}>
+                      <button
+                        onClick={() => setMobileCatalogOpen(v => !v)}
+                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
+                          isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      {mobileCatalogOpen && (
+                        <div className="pl-6 pb-2 flex flex-col gap-1 border-l border-border/30 ml-4">
+                          <Link
+                            to="/catalog"
+                            onClick={() => setIsOpen(false)}
+                            className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
+                          >
+                            {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                          </Link>
+                          {categories.map((c) => (
+                            <Link
+                              key={c.id}
+                              to={`/catalog?category=${c.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
+                            >
+                              {language === 'ru' ? c.name_ru : c.name_uz}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
+                      isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+
               <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="px-4 py-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4" /> {contactPhone}
               </a>
