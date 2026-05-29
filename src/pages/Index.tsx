@@ -185,10 +185,9 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
 
   const EmptyCard = ({ hideOnMobile = false }: { hideOnMobile?: boolean }) => (
     <div
-      className={`aspect-[3/4] rounded-[2rem] bg-card ${hideOnMobile ? 'hidden lg:flex' : 'flex'} items-center justify-center text-sm text-muted-foreground p-6 text-center`}
-    >
-      {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-    </div>
+      className={`aspect-[3/4] ${hideOnMobile ? 'hidden lg:block' : 'block'}`}
+      aria-hidden="true"
+    />
   );
 
   const renderPair = (items: ReturnType<typeof productsOf>) => (
@@ -210,6 +209,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       )}
     </div>
   );
+
 
   const renderSlide = (s: typeof set, withInner: boolean) => {
     const title = language === 'uz' ? s.title_uz : s.title_ru;
