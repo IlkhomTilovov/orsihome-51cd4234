@@ -132,8 +132,8 @@ export default function SetsAdmin() {
       ) : (
         <div className="grid gap-4">
           {sets.map(s => (
-            <Card key={s.id} className="p-4 flex gap-4 items-center">
-              <div className="w-32 aspect-[4/3] rounded-lg overflow-hidden bg-muted shrink-0">
+            <Card key={s.id} className="p-4 flex gap-4 items-stretch">
+              <div className="w-40 self-stretch rounded-lg overflow-hidden bg-muted shrink-0">
                 {s.image && <LazyImage src={s.image} alt={s.title_uz} className="w-full h-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
