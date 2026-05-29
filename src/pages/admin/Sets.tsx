@@ -93,10 +93,11 @@ export default function SetsAdmin() {
     refetch();
   };
 
-  const remove = async (s: ProductSet) => {
-    if (!confirm(`"${s.title_uz}" setini o'chirasizmi?`)) return;
-    await supabase.from('sets').delete().eq('id', s.id);
+  const confirmRemove = async () => {
+    if (!deleting) return;
+    await supabase.from('sets').delete().eq('id', deleting.id);
     toast.success('O\'chirildi');
+    setDeleting(null);
     refetch();
   };
 
