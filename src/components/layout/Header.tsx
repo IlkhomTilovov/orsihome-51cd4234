@@ -41,7 +41,7 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-luxe ${
+      className={`sticky top-0 z-50 transition-all duration-500 ease-luxe relative ${
         scrolled
           ? 'glass-surface shadow-soft-md py-2'
           : 'bg-background/60 backdrop-blur-md py-4 border-b border-border/20'
@@ -76,41 +76,8 @@ export function Header() {
                       <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
                     </button>
 
-                    {catalogOpen && (
-                      <>
-                        <div className="fixed inset-0 z-40" onClick={() => setCatalogOpen(false)} />
-                        <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50 animate-fade-in">
-                          <div className="bg-background border border-border/40 shadow-soft-md rounded-md p-6 min-w-[600px]">
-                            <h3 className="font-serif text-2xl font-bold text-foreground mb-5">
-                              {language === 'ru' ? 'Товары' : 'Tovarlar'}
-                            </h3>
-                            {categories.length > 0 ? (
-                              <div className="grid grid-cols-2 gap-x-12 gap-y-4">
-                                {categories.map((c) => (
-                                  <Link
-                                    key={c.id}
-                                    to={`/catalog?category=${c.slug}`}
-                                    onClick={() => setCatalogOpen(false)}
-                                    className="text-[15px] text-foreground/80 hover:text-primary transition-colors"
-                                  >
-                                    {language === 'ru' ? c.name_ru : c.name_uz}
-                                  </Link>
-                                ))}
-                              </div>
-                            ) : (
-                              <Link
-                                to="/catalog"
-                                onClick={() => setCatalogOpen(false)}
-                                className="text-sm text-muted-foreground hover:text-primary"
-                              >
-                                {language === 'ru' ? 'Перейти в каталог' : 'Katalogga o\'tish'}
-                              </Link>
-                            )}
-                          </div>
-                        </div>
-                      </>
-                    )}
                   </div>
+
 
                 );
               }
@@ -249,6 +216,44 @@ export function Header() {
           </nav>
         )}
       </div>
+
+      {/* Full-width Catalog Mega Menu */}
+      {catalogOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/20" onClick={() => setCatalogOpen(false)} />
+          <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
+            <div className="bg-background border-t border-border/40 shadow-soft-md">
+              <div className="container mx-auto px-4 lg:px-8 py-8">
+                <h3 className="font-serif text-2xl font-bold text-foreground mb-6">
+                  {language === 'ru' ? 'Товары' : 'Tovarlar'}
+                </h3>
+                {categories.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-4">
+                    {categories.map((c) => (
+                      <Link
+                        key={c.id}
+                        to={`/catalog?category=${c.slug}`}
+                        onClick={() => setCatalogOpen(false)}
+                        className="text-[15px] text-foreground/80 hover:text-primary transition-colors"
+                      >
+                        {language === 'ru' ? c.name_ru : c.name_uz}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <Link
+                    to="/catalog"
+                    onClick={() => setCatalogOpen(false)}
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    {language === 'ru' ? 'Перейти в каталог' : "Katalogga o'tish"}
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {createPortal(
         <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />,
