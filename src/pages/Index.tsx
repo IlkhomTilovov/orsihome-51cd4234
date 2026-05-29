@@ -427,34 +427,36 @@ export default function Index() {
 
       </section>
 
-      {/* ============ PROMO TILES (DB-driven) ============ */}
+      {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
-
-        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-700 ${sec1.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-          {dbPromoTiles.map((tile, i) => {
-            const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
-            const title = language === 'uz' ? tile.title_uz : tile.title_ru;
-            return (
-              <Link
-                key={tile.id}
-                to={tile.href}
-                className={`group relative aspect-square rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
-                style={{ transitionDelay: `${i * 60}ms` }}
-              >
-                <div className="absolute inset-0 p-5 flex flex-col justify-between">
-                  <h3 className={`font-sans font-semibold text-sm lg:text-base leading-tight ${tile.text_class}`}>
-                    {title}
-                  </h3>
-                  <Icon
-                    className={`w-16 h-16 lg:w-20 lg:h-20 self-end ${tile.text_class} opacity-90 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}
-                    strokeWidth={1.5}
-                  />
-                </div>
-              </Link>
-            );
-          })}
+        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0">
+          <div className="flex gap-4 px-4 lg:px-0 snap-x snap-mandatory lg:grid lg:grid-cols-6">
+            {dbPromoTiles.map((tile, i) => {
+              const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+              const title = language === 'uz' ? tile.title_uz : tile.title_ru;
+              return (
+                <Link
+                  key={tile.id}
+                  to={tile.href}
+                  className={`group relative shrink-0 snap-start w-[44%] sm:w-[30%] md:w-[22%] lg:w-auto aspect-square rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
+                  style={{ transitionDelay: `${i * 60}ms` }}
+                >
+                  <div className="absolute inset-0 p-5 flex flex-col justify-between">
+                    <h3 className={`font-sans font-semibold text-sm lg:text-base leading-tight ${tile.text_class}`}>
+                      {title}
+                    </h3>
+                    <Icon
+                      className={`w-16 h-16 lg:w-20 lg:h-20 self-end ${tile.text_class} opacity-90 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500`}
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </section>
+
 
       <section ref={sec2.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
         <div className="flex items-end justify-between mb-8">
