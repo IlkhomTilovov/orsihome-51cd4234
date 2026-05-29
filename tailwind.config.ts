@@ -143,6 +143,8 @@ export default {
         "set-img": "set-img 1.2s cubic-bezier(0.22, 1, 0.36, 1) both",
         "slide-cinema-r": "slide-cinema-r 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
         "slide-cinema-l": "slide-cinema-l 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-out-l": "slide-out-l 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-out-r": "slide-out-r 0.85s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
