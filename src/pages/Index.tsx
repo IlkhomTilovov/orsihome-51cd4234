@@ -115,47 +115,46 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   fallbackImage: string;
 }) {
   const [current, setCurrent] = useState(0);
-  const [prev, setPrev] = useState<number | null>(null);
+  const [incoming, setIncoming] = useState<number | null>(null);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [animating, setAnimating] = useState(false);
   const count = sets.length;
   const touchStartX = useRef<number | null>(null);
+  const DURATION = 800;
 
   const go = (next: number) => {
+    if (animating) return;
     const n = ((next % count) + count) % count;
     if (n === current) return;
-    setDirection(n > current || (current === count - 1 && n === 0) ? 1 : -1);
-    setPrev(current);
-    setCurrent(n);
-    window.setTimeout(() => setPrev(null), 850);
+    const dir: 1 | -1 = n > current || (current === count - 1 && n === 0) ? 1 : -1;
+    setDirection(dir);
+    setIncoming(n);
+    requestAnimationFrame(() => requestAnimationFrame(() => setAnimating(true)));
+    window.setTimeout(() => {
+      setCurrent(n);
+      setIncoming(null);
+      setAnimating(false);
+    }, DURATION);
   };
 
   // autoplay
   useEffect(() => {
     if (count <= 1) return;
     const t = setInterval(() => {
-      setDirection(1);
-      setPrev((p) => p); // no-op
-      setCurrent((c) => {
-        const next = (c + 1) % count;
-        setPrev(c);
-        window.setTimeout(() => setPrev(null), 850);
-        return next;
-      });
+      go(current + 1);
     }, 7000);
     return () => clearInterval(t);
-  }, [count]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, current, animating]);
 
   const set = sets[current];
   if (!set) return null;
 
-  const renderSlide = (s: typeof set, anim: string, absolute: boolean) => {
+  const renderSlide = (s: typeof set) => {
     const sp = (productsBySet[s.id] || []).slice(0, 2);
     const title = language === 'uz' ? s.title_uz : s.title_ru;
     return (
-      <div
-        key={s.id + (absolute ? '-prev' : '-cur')}
-        className={`${anim} ${absolute ? 'absolute inset-0 pointer-events-none' : 'relative'}`}
-      >
+      <div className="w-full">
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
             <span className="inline-block">{title}</span>
@@ -202,13 +201,20 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     );
   };
 
-  const enterAnim = direction === 1 ? 'animate-slide-cinema-r' : 'animate-slide-cinema-l';
-  const exitAnim = direction === 1 ? 'animate-slide-out-l' : 'animate-slide-out-r';
+  // Forward (→): track = [current, incoming], translate 0% → -50%
+  // Backward (←): track = [incoming, current], translate -50% → 0%
+  const showTrack = incoming !== null;
+  const trackChildren = showTrack
+    ? (direction === 1 ? [set, sets[incoming!]] : [sets[incoming!], set])
+    : [set];
+  const startOffset = direction === 1 ? '0%' : '-50%';
+  const endOffset = direction === 1 ? '-50%' : '0%';
+  const translate = !showTrack ? '0%' : (animating ? endOffset : startOffset);
 
   return (
     <div className="relative">
       <div
-        className="relative [overflow-x:clip] [overflow-y:visible] -mx-2 px-2 py-4"
+        className="relative overflow-hidden -mx-2 px-2 py-4"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
@@ -217,8 +223,20 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           touchStartX.current = null;
         }}
       >
-        {renderSlide(set, enterAnim, false)}
-        {prev !== null && sets[prev] && renderSlide(sets[prev], exitAnim, true)}
+        <div
+          className="flex"
+          style={{
+            width: showTrack ? '200%' : '100%',
+            transform: `translate3d(${translate}, 0, 0)`,
+            transition: animating ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
+          }}
+        >
+          {trackChildren.map((s, i) => (
+            <div key={(s?.id || 'x') + '-' + i} className="w-1/2 shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
+              {s && renderSlide(s)}
+            </div>
+          ))}
+        </div>
       </div>
 
       {count > 1 && (
