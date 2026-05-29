@@ -120,8 +120,6 @@ export function Header() {
             })}
           </nav>
 
-          </nav>
-
           {/* Right Actions */}
           <div className="flex items-center gap-3 md:gap-5">
             {/* Language */}
