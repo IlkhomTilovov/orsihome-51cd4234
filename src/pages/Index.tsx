@@ -371,6 +371,24 @@ export default function Index() {
   const sec3 = useInView();
   const sec4 = useInView();
 
+  // Toifalar carousel
+  const [catPerPage, setCatPerPage] = useState(4);
+  const [catPage, setCatPage] = useState(0);
+  useEffect(() => {
+    const compute = () => {
+      if (typeof window === 'undefined') return;
+      if (window.matchMedia('(min-width: 1024px)').matches) setCatPerPage(4);
+      else if (window.matchMedia('(min-width: 768px)').matches) setCatPerPage(3);
+      else setCatPerPage(2);
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, []);
+  const catTotalPages = Math.max(1, Math.ceil(cats.length / catPerPage));
+  useEffect(() => { if (catPage >= catTotalPages) setCatPage(0); }, [catPerPage, catTotalPages, catPage]);
+  const goCat = (dir: number) => setCatPage(p => (p + dir + catTotalPages) % catTotalPages);
+
   return (
     <div className="min-h-screen bg-background">
       {/* ============ HERO (Apple-style: huge type + product + side promo) ============ */}
@@ -447,89 +465,83 @@ export default function Index() {
             </h2>
           </div>
           <div className="hidden md:flex items-center gap-3">
-            <button className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center" aria-label="Previous">
+            <button
+              onClick={() => goCat(-1)}
+              disabled={catTotalPages <= 1}
+              className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Previous"
+            >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            <button className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center" aria-label="Next">
+            <button
+              onClick={() => goCat(1)}
+              disabled={catTotalPages <= 1}
+              className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Next"
+            >
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-          {cats.slice(0, 4).map((cat: any, i) => {
-            const name = language === 'uz' ? cat.name_uz : cat.name_ru;
-            const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
-            const FallbackIcon = cat.icon;
-            return (
-              <Link
-                key={cat.slug || cat.id}
-                to={`/catalog?category=${cat.slug}`}
-                className="group relative aspect-[4/5] bg-card rounded-[2rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1"
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
-                <div className="absolute top-6 left-0 right-0 z-10 text-center">
-                  <h3 className="font-sans font-medium text-base lg:text-lg text-white px-4 drop-shadow-md">
-                    {name}
-                  </h3>
-                </div>
-                <div className="absolute inset-0">
-                  {img ? (
-                    <img
-                      src={img}
-                      alt={name}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-                    />
-                  ) : FallbackIcon ? (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <FallbackIcon className="w-32 h-32 text-primary/70 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.2} />
-                    </div>
-                  ) : null}
-                </div>
-                <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent z-[5]" />
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Second row */}
-        {cats.length > 4 && (
-          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mt-6 transition-all duration-700 ${sec2.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-            {cats.slice(4, 8).map((cat: any, i) => {
+        <div className="overflow-hidden -mx-2 lg:-mx-3">
+          <div
+            className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            style={{ transform: `translate3d(-${catPage * 100}%, 0, 0)` }}
+          >
+            {cats.map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
-              const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[(i + 2) % 4];
+              const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
               const FallbackIcon = cat.icon;
               return (
-                <Link
+                <div
                   key={cat.slug || cat.id}
-                  to={`/catalog?category=${cat.slug}`}
-                  className="group relative aspect-[4/5] bg-card rounded-[2rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1"
-                  style={{ transitionDelay: `${i * 80}ms` }}
+                  className="shrink-0 px-2 lg:px-3"
+                  style={{ width: `${100 / catPerPage}%` }}
                 >
-                  <div className="absolute top-6 left-0 right-0 z-10 text-center">
-                    <h3 className="font-sans font-medium text-base lg:text-lg text-white px-4 drop-shadow-md">
-                      {name}
-                    </h3>
-                  </div>
-                  <div className="absolute inset-0">
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-                      />
-                    ) : FallbackIcon ? (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <FallbackIcon className="w-32 h-32 text-primary/70 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.2} />
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent z-[5]" />
-                </Link>
+                  <Link
+                    to={`/catalog?category=${cat.slug}`}
+                    className="group relative block aspect-[4/5] bg-card rounded-[2rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1"
+                  >
+                    <div className="absolute top-6 left-0 right-0 z-10 text-center">
+                      <h3 className="font-sans font-medium text-base lg:text-lg text-white px-4 drop-shadow-md">
+                        {name}
+                      </h3>
+                    </div>
+                    <div className="absolute inset-0">
+                      {img ? (
+                        <img
+                          src={img}
+                          alt={name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
+                        />
+                      ) : FallbackIcon ? (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <FallbackIcon className="w-32 h-32 text-primary/70 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.2} />
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent z-[5]" />
+                  </Link>
+                </div>
               );
             })}
+          </div>
+        </div>
+
+        {catTotalPages > 1 && (
+          <div className="flex justify-center gap-2 mt-6">
+            {Array.from({ length: catTotalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCatPage(i)}
+                aria-label={`Page ${i + 1}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === catPage ? 'w-8 bg-foreground' : 'w-1.5 bg-foreground/30 hover:bg-foreground/50'
+                }`}
+              />
+            ))}
           </div>
         )}
       </section>
