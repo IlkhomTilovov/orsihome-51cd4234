@@ -29,6 +29,7 @@ export default function SetsAdmin() {
   const [uploading, setUploading] = useState(false);
   const [allProducts, setAllProducts] = useState<ProductLite[]>([]);
   const [search, setSearch] = useState('');
+  const [deleting, setDeleting] = useState<ProductSet | null>(null);
 
   useEffect(() => {
     supabase
