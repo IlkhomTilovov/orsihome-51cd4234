@@ -181,18 +181,57 @@ export function Header() {
         {isOpen && (
           <nav className="lg:hidden py-6 border-t border-border/30 mt-4 animate-fade-in">
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
-                    isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.href === '/catalog') {
+                  return (
+                    <div key={link.href}>
+                      <button
+                        onClick={() => setMobileCatalogOpen(v => !v)}
+                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
+                          isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      {mobileCatalogOpen && (
+                        <div className="pl-6 pb-2 flex flex-col gap-1 border-l border-border/30 ml-4">
+                          <Link
+                            to="/catalog"
+                            onClick={() => setIsOpen(false)}
+                            className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
+                          >
+                            {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                          </Link>
+                          {categories.map((c) => (
+                            <Link
+                              key={c.id}
+                              to={`/catalog?category=${c.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
+                            >
+                              {language === 'ru' ? c.name_ru : c.name_uz}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
+                      isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+
               <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="px-4 py-3 flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4" /> {contactPhone}
               </a>
