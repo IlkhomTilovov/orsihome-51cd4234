@@ -3,6 +3,7 @@ import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, Utensils
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
+import { useActiveSets } from '@/hooks/useSets';
 import { usePromoTiles } from '@/hooks/usePromoTiles';
 import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -114,6 +115,7 @@ export default function Index() {
   const { settings } = useSystemSettings();
   const { categories } = useCategories();
   const { data: dbPromoTiles = [] } = usePromoTiles();
+  const { sets, productsBySet, loading: setsLoading } = useActiveSets();
   const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
 
   const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
