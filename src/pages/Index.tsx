@@ -114,69 +114,102 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   language: 'uz' | 'ru';
   fallbackImage: string;
 }) {
-  const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const [count, setCount] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const count = sets.length;
+  const touchStartX = useRef<number | null>(null);
 
+  const go = (next: number) => {
+    const n = ((next % count) + count) % count;
+    setDirection(n > current || (current === count - 1 && n === 0) ? 1 : -1);
+    setCurrent(n);
+  };
+
+  // autoplay
   useEffect(() => {
-    if (!api) return;
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
-    api.on('select', () => setCurrent(api.selectedScrollSnap()));
-  }, [api]);
+    if (count <= 1) return;
+    const t = setInterval(() => {
+      setDirection(1);
+      setCurrent((c) => (c + 1) % count);
+    }, 7000);
+    return () => clearInterval(t);
+  }, [count]);
+
+  const set = sets[current];
+  if (!set) return null;
+  const setProducts = (productsBySet[set.id] || []).slice(0, 2);
+  const title = language === 'uz' ? set.title_uz : set.title_ru;
+
+  const enter = direction === 1 ? 'animate-slide-in-r' : 'animate-slide-in-l';
 
   return (
-    <div>
-      <Carousel setApi={setApi} opts={{ loop: sets.length > 1 }}>
-        <CarouselContent>
-          {sets.map((set) => {
-            const setProducts = (productsBySet[set.id] || []).slice(0, 2);
-            const title = language === 'uz' ? set.title_uz : set.title_ru;
-            return (
-              <CarouselItem key={set.id}>
-                <div className="flex items-end justify-between mb-8">
-                  <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
-                    {title}
-                    <sup className="text-xl ml-2 text-muted-foreground font-normal">{setProducts.length}</sup>
-                  </h2>
-                  <Link to={set.href || '/catalog'} className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                    {language === 'uz' ? 'Barchasi' : 'Все'}
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
+    <div className="relative">
+      <div
+        className="overflow-hidden"
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchStartX.current;
+          if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
+          touchStartX.current = null;
+        }}
+      >
+        <div key={set.id} className={enter}>
+          <div className="flex items-end justify-between mb-8">
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+              <span className="inline-block animate-set-title">{title}</span>
+              <sup className="text-xl ml-2 text-muted-foreground font-normal">{setProducts.length}</sup>
+            </h2>
+            <Link
+              to={set.href || '/catalog'}
+              className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {language === 'uz' ? 'Barchasi' : 'Все'}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
+            <Link
+              to={set.href || '/catalog'}
+              className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow animate-set-card"
+              style={{ animationDelay: '60ms' }}
+            >
+              <img
+                src={set.image || fallbackImage}
+                alt={title}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe animate-set-img"
+              />
+            </Link>
+            {setProducts.length > 0 ? (
+              setProducts.map((p, i) => (
+                <div
+                  key={p.id}
+                  className="animate-set-card"
+                  style={{ animationDelay: `${160 + i * 110}ms` }}
+                >
+                  <ProductCard product={p} />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-4 lg:gap-6">
-                  <Link to={set.href || '/catalog'} className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow">
-                    <img
-                      src={set.image || fallbackImage}
-                      alt={title}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-                    />
-                  </Link>
-                  {setProducts.length > 0 ? (
-                    setProducts.map((p) => <ProductCard key={p.id} product={p} />)
-                  ) : (
-                    <>
-                      <div className="aspect-[3/4] rounded-[2rem] bg-card flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                        {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-                      </div>
-                      <div className="aspect-[3/4] rounded-[2rem] bg-card hidden lg:flex items-center justify-center text-sm text-muted-foreground p-6 text-center">
-                        {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
-                      </div>
-                    </>
-                  )}
+              ))
+            ) : (
+              <>
+                <div className="aspect-[3/4] rounded-[2rem] bg-card flex items-center justify-center text-sm text-muted-foreground p-6 text-center animate-set-card" style={{ animationDelay: '160ms' }}>
+                  {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
                 </div>
-              </CarouselItem>
-            );
-          })}
-        </CarouselContent>
-      </Carousel>
+                <div className="aspect-[3/4] rounded-[2rem] bg-card hidden lg:flex items-center justify-center text-sm text-muted-foreground p-6 text-center animate-set-card" style={{ animationDelay: '270ms' }}>
+                  {language === 'uz' ? 'Mahsulot tanlanmagan' : 'Товары не выбраны'}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
 
       {count > 1 && (
-        <div className="flex items-center justify-center gap-6 mt-8">
+        <div className="flex items-center justify-center gap-6 mt-10">
           <button
-            onClick={() => api?.scrollPrev()}
-            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card transition-colors"
+            onClick={() => go(current - 1)}
+            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:-translate-x-0.5"
             aria-label="Previous"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -185,15 +218,15 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             {Array.from({ length: count }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => api?.scrollTo(i)}
-                className={`h-2 rounded-full transition-all ${i === current ? 'w-8 bg-primary' : 'w-2 bg-border'}`}
+                onClick={() => go(i)}
+                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/40'}`}
                 aria-label={`Slide ${i + 1}`}
               />
             ))}
           </div>
           <button
-            onClick={() => api?.scrollNext()}
-            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card transition-colors"
+            onClick={() => go(current + 1)}
+            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:translate-x-0.5"
             aria-label="Next"
           >
             <ArrowRight className="w-4 h-4" />
@@ -203,6 +236,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     </div>
   );
 }
+
 
 
 export default function Index() {
