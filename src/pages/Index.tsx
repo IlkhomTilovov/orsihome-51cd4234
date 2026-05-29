@@ -140,7 +140,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   const setProducts = (productsBySet[set.id] || []).slice(0, 2);
   const title = language === 'uz' ? set.title_uz : set.title_ru;
 
-  const enter = direction === 1 ? 'animate-slide-in-r' : 'animate-slide-in-l';
+  const enter = direction === 1 ? 'animate-slide-cinema-r' : 'animate-slide-cinema-l';
 
   return (
     <div className="relative">
