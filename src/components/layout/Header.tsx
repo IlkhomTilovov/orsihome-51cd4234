@@ -41,11 +41,12 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-500 ease-luxe ${
+      className={`sticky top-0 z-50 transition-all duration-500 ease-luxe relative ${
         scrolled
           ? 'glass-surface shadow-soft-md py-2'
           : 'bg-background/60 backdrop-blur-md py-4 border-b border-border/20'
       }`}
+    >
     >
 
       <div className="container mx-auto px-4 lg:px-8">
