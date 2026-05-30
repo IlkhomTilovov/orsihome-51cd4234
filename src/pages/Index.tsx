@@ -583,7 +583,7 @@ export default function Index() {
               transition: catAnimate ? 'transform 700ms cubic-bezier(0.22,1,0.36,1)' : 'none',
             }}
           >
-            {cats.map((cat: any, i) => {
+            {catsLooped.map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
               const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
               const FallbackIcon = cat.icon;
