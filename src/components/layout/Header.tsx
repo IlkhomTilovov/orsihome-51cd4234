@@ -222,7 +222,7 @@ export function Header() {
       {/* Full-width Catalog Mega Menu */}
       {catalogOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setCatalogOpen(false)} />
+          <div className="absolute left-0 right-0 top-full h-screen z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setCatalogOpen(false)} />
           <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
             <div className="bg-background/95 backdrop-blur-xl border-t border-border/40 shadow-soft-lg">
               <div className="container mx-auto px-4 lg:px-8 py-10">
