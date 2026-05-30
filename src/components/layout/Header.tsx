@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories } from '@/hooks/useProducts';
+import { useCategories, useProducts } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
+import { LazyImage } from '@/components/LazyImage';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
