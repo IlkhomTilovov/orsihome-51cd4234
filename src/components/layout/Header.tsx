@@ -28,6 +28,22 @@ export function Header() {
   const { categories } = useCategories();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
+  // Default-select first category when categories load
+  useEffect(() => {
+    if (!activeCategoryId && categories.length > 0) {
+      setActiveCategoryId(categories[0].id);
+    }
+  }, [categories, activeCategoryId]);
+
+  const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
+  const { products: previewProducts, loading: previewLoading } = useProducts(
+    1,
+    { categoryId: activeCategoryId || undefined },
+    6
+  );
+
 
 
   const navLinks = [
