@@ -96,7 +96,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
         <Button
           variant={inCart ? 'secondary' : 'outline'}
           aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
-          className="mt-2.5 w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
+          className="mt-auto w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
           onClick={(e) => {
             e.preventDefault();
             if (!inCart) {
