@@ -110,11 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
             }
           }}
         >
-          {inCart ? (
-            <><Check className="w-4 h-4 mr-2" />{language === 'uz' ? 'Savatda' : 'В корзине'}</>
-          ) : (
-            <><ShoppingBag className="w-4 h-4 mr-2" />{language === 'uz' ? "Sotib olish" : 'Купить'}</>
-          )}
+          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
         </Button>
       </div>
     </article>
