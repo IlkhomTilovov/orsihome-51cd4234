@@ -44,7 +44,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
   
 
   return (
-    <article className="group relative bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
+    <article className="group relative h-full flex flex-col bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
       <Link to={productUrl} className="block relative aspect-[24/25] overflow-hidden bg-background">
         {/* Primary image */}
         <LazyImage
@@ -73,9 +73,9 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
       </Link>
 
 
-      <div className="p-3 md:p-5">
+      <div className="p-3 md:p-5 flex flex-col flex-1">
         <Link to={productUrl} className="block">
-          <h3 className="font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-medium text-foreground line-clamp-2 leading-snug min-h-[2.6em] group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
         </Link>
@@ -96,7 +96,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
         <Button
           variant={inCart ? 'secondary' : 'outline'}
           aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
-          className="mt-2.5 w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
+          className="mt-auto w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
           onClick={(e) => {
             e.preventDefault();
             if (!inCart) {
