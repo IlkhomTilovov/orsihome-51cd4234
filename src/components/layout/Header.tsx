@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories } from '@/hooks/useProducts';
+import { useCategories, useProducts } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
+import { LazyImage } from '@/components/LazyImage';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,22 @@ export function Header() {
   const { categories } = useCategories();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
+  // Default-select first category when categories load
+  useEffect(() => {
+    if (!activeCategoryId && categories.length > 0) {
+      setActiveCategoryId(categories[0].id);
+    }
+  }, [categories, activeCategoryId]);
+
+  const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
+  const { products: previewProducts, loading: previewLoading } = useProducts(
+    1,
+    { categoryId: activeCategoryId || undefined },
+    6
+  );
+
 
 
   const navLinks = [
@@ -253,54 +270,92 @@ export function Header() {
                         {language === 'ru' ? 'Категории' : 'Toifalar'}
                       </p>
                       <ul className="flex flex-col">
-                        {categories.map((c) => (
-                          <li key={c.id}>
-                            <Link
-                              to={`/catalog?category=${c.slug}`}
-                              onClick={() => setCatalogOpen(false)}
-                              className="group flex items-center justify-between py-3 border-b border-border/40 text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              <span>{language === 'ru' ? c.name_ru : c.name_uz}</span>
-                              <ChevronDown className="w-4 h-4 -rotate-90 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                            </Link>
-                          </li>
-                        ))}
+                        {categories.map((c) => {
+                          const isActiveCat = c.id === activeCategoryId;
+                          return (
+                            <li key={c.id}>
+                              <button
+                                type="button"
+                                onMouseEnter={() => setActiveCategoryId(c.id)}
+                                onFocus={() => setActiveCategoryId(c.id)}
+                                onClick={() => setActiveCategoryId(c.id)}
+                                className={`group w-full flex items-center justify-between py-3 border-b border-border/40 text-sm transition-colors ${
+                                  isActiveCat
+                                    ? 'text-primary font-medium'
+                                    : 'text-muted-foreground hover:text-primary'
+                                }`}
+                              >
+                                <span>{language === 'ru' ? c.name_ru : c.name_uz}</span>
+                                <ChevronDown className={`w-4 h-4 -rotate-90 transition-all ${
+                                  isActiveCat ? 'opacity-100 translate-x-1 text-primary' : 'opacity-40 group-hover:opacity-100 group-hover:translate-x-1'
+                                }`} />
+                              </button>
+                            </li>
+                          );
+                        })}
                       </ul>
+                      {activeCategory && (
+                        <Link
+                          to={`/catalog?category=${activeCategory.slug}`}
+                          onClick={() => setCatalogOpen(false)}
+                          className="mt-6 inline-flex items-center gap-2 text-xs tracking-widest uppercase text-primary hover:translate-x-1 transition-transform"
+                        >
+                          {language === 'ru' ? 'Перейти' : "Ko'rish"} <span>→</span>
+                        </Link>
+                      )}
                     </aside>
 
-                    {/* Right image cards */}
-                    <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                      {categories.slice(0, 3).map((c) => (
-                        <Link
-                          key={c.id}
-                          to={`/catalog?category=${c.slug}`}
-                          onClick={() => setCatalogOpen(false)}
-                          className="group relative overflow-hidden rounded-xl aspect-[4/3] bg-muted shadow-soft-md hover:shadow-soft-lg transition-all duration-500"
-                        >
-                          {c.image ? (
-                            <img
-                              src={c.image}
-                              alt={language === 'ru' ? c.name_ru : c.name_uz}
-                              loading="lazy"
-                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                          ) : (
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10" />
-                          )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                          <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                            <h4 className="font-serif text-2xl md:text-3xl font-bold mb-1 leading-tight">
-                              {language === 'ru' ? c.name_ru : c.name_uz}
-                            </h4>
-                            <p className="text-xs tracking-widest uppercase opacity-80 mb-3">
-                              {language === 'ru' ? 'Смотреть коллекцию' : "Kolleksiyani ko'rish"}
-                            </p>
-                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 group-hover:bg-primary group-hover:border-primary transition-all">
-                              →
-                            </span>
-                          </div>
-                        </Link>
-                      ))}
+                    {/* Right products preview */}
+                    <div className="lg:col-span-9">
+                      {previewLoading ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                          {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
+                          ))}
+                        </div>
+                      ) : previewProducts.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                          {previewProducts.map((p) => {
+                            const img = p.images?.[0];
+                            const name = language === 'ru' ? p.name_ru : p.name_uz;
+                            const href = `/product/${p.slug || p.id}`;
+                            return (
+                              <Link
+                                key={p.id}
+                                to={href}
+                                onClick={() => setCatalogOpen(false)}
+                                className="group block"
+                              >
+                                <div className="relative overflow-hidden rounded-xl aspect-[4/5] bg-muted shadow-soft-sm hover:shadow-soft-md transition-all duration-500">
+                                  {img ? (
+                                    <LazyImage
+                                      src={img}
+                                      alt={name}
+                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                  ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
+                                  )}
+                                </div>
+                                <div className="mt-3 px-1">
+                                  <h4 className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                                    {name}
+                                  </h4>
+                                  {p.price != null && (
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                      {Number(p.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
+                                    </p>
+                                  )}
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="h-full min-h-[200px] flex items-center justify-center text-sm text-muted-foreground">
+                          {language === 'ru' ? 'В этой категории пока нет товаров' : "Bu toifada hozircha mahsulot yo'q"}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -317,6 +372,7 @@ export function Header() {
           </div>
         </>
       )}
+
 
 
       {createPortal(
