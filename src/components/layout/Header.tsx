@@ -307,55 +307,62 @@ export function Header() {
 
                     {/* Right products preview */}
                     <div className="lg:col-span-9">
-                      {previewLoading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                          {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
-                          ))}
-                        </div>
-                      ) : previewProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                          {previewProducts.map((p) => {
-                            const img = p.images?.[0];
-                            const name = language === 'ru' ? p.name_ru : p.name_uz;
-                            const href = `/product/${p.slug || p.id}`;
-                            return (
-                              <Link
-                                key={p.id}
-                                to={href}
-                                onClick={() => setCatalogOpen(false)}
-                                className="group block"
-                              >
-                                <div className="relative overflow-hidden rounded-xl aspect-[4/5] bg-muted shadow-soft-sm hover:shadow-soft-md transition-all duration-500">
-                                  {img ? (
-                                    <LazyImage
-                                      src={img}
-                                      alt={name}
-                                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                  ) : (
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
-                                  )}
-                                </div>
-                                <div className="mt-3 px-1">
-                                  <h4 className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                                    {name}
-                                  </h4>
-                                  {p.price != null && (
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                      {Number(p.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
-                                    </p>
-                                  )}
-                                </div>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div className="h-full min-h-[200px] flex items-center justify-center text-sm text-muted-foreground">
-                          {language === 'ru' ? 'В этой категории пока нет товаров' : "Bu toifada hozircha mahsulot yo'q"}
-                        </div>
-                      )}
+                      {(() => {
+                        const matched = previewProducts.filter(p => p.category_id === activeCategoryId);
+                        const showSkeleton = previewLoading || (activeCategoryId && matched.length === 0 && previewProducts.length > 0);
+                        if (showSkeleton) {
+                          return (
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                              {Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
+                              ))}
+                            </div>
+                          );
+                        }
+                        return matched.length > 0 ? (
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                            {matched.map((p) => {
+                              const img = p.images?.[0];
+                              const name = language === 'ru' ? p.name_ru : p.name_uz;
+                              const href = `/product/${p.slug || p.id}`;
+                              return (
+                                <Link
+                                  key={p.id}
+                                  to={href}
+                                  onClick={() => setCatalogOpen(false)}
+                                  className="group block"
+                                >
+                                  <div className="relative overflow-hidden rounded-xl aspect-[4/5] bg-muted shadow-soft-sm hover:shadow-soft-md transition-all duration-500">
+                                    {img ? (
+                                      <LazyImage
+                                        src={img}
+                                        alt={name}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                      />
+                                    ) : (
+                                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
+                                    )}
+                                  </div>
+                                  <div className="mt-3 px-1">
+                                    <h4 className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                                      {name}
+                                    </h4>
+                                    {p.price != null && (
+                                      <p className="text-xs text-muted-foreground mt-1">
+                                        {Number(p.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
+                                      </p>
+                                    )}
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="h-full min-h-[200px] flex items-center justify-center text-sm text-muted-foreground">
+                            {language === 'ru' ? 'В этой категории пока нет товаров' : "Bu toifada hozircha mahsulot yo'q"}
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 ) : (
