@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
 
+const loadedImageSources = new Set<string>();
+
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
@@ -21,12 +23,19 @@ export const LazyImage = memo(function LazyImage({
   priority = false,
   ...props
 }: LazyImageProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
+  const resolvedSrc = src || placeholder;
+  const [isLoaded, setIsLoaded] = useState(() => priority || loadedImageSources.has(resolvedSrc));
+  const [isInView, setIsInView] = useState(() => priority || loadedImageSources.has(resolvedSrc));
   const [error, setError] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
 
   const finalSizes = sizesProp || '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw';
+
+  useEffect(() => {
+    setError(false);
+    setIsLoaded(priority || loadedImageSources.has(resolvedSrc));
+    setIsInView(priority || loadedImageSources.has(resolvedSrc));
+  }, [resolvedSrc, priority]);
 
   useEffect(() => {
     if (priority || !imgRef.current) return;
@@ -45,18 +54,21 @@ export const LazyImage = memo(function LazyImage({
     return () => observer.disconnect();
   }, [priority]);
 
-  const handleLoad = () => setIsLoaded(true);
+  const handleLoad = () => {
+    loadedImageSources.add(imgSrc);
+    setIsLoaded(true);
+  };
   const handleError = () => { setError(true); setIsLoaded(true); };
 
-  const imgSrc = error ? placeholder : (src || placeholder);
+  const imgSrc = error ? placeholder : resolvedSrc;
 
   return (
     <div
       ref={imgRef}
-      className={cn('relative overflow-hidden bg-muted', wrapperClassName)}
+      className={cn('relative overflow-hidden', !priority && 'bg-muted', wrapperClassName)}
     >
       {/* Skeleton placeholder */}
-      {!isLoaded && (
+      {!isLoaded && !priority && (
         <div className="absolute inset-0 animate-pulse bg-muted" />
       )}
 
@@ -70,8 +82,8 @@ export const LazyImage = memo(function LazyImage({
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
           className={cn(
-            'transition-opacity duration-300',
-            isLoaded ? 'opacity-100' : 'opacity-0',
+            priority ? 'opacity-100' : 'transition-opacity duration-300',
+            !priority && (isLoaded ? 'opacity-100' : 'opacity-0'),
             className
           )}
           {...props}
