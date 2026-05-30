@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingBag, ChevronDown, Globe } from 'lucide-react';
+
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -49,46 +50,36 @@ export function Header() {
     >
 
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
             <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider text-foreground">
               ORSI<span className="text-primary"> HOME</span>
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-10">
+          {/* Desktop Nav - centered */}
+          <nav className="hidden lg:flex items-center gap-8 xl:gap-12 flex-1 justify-center">
             {navLinks.map((link) => {
               if (link.href === '/catalog') {
                 return (
-                  <div key={link.href} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setCatalogOpen(v => !v)}
-                      className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
-                        isActive(link.href) || catalogOpen
-                          ? 'text-primary after:w-full'
-                          : 'text-muted-foreground after:w-0 hover:after:w-full'
-                      }`}
-                    >
-                      {link.label}
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
-                    </button>
-
-                  </div>
-
-
+                  <button
+                    key={link.href}
+                    type="button"
+                    onClick={() => setCatalogOpen(v => !v)}
+                    className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-2.5 text-sm font-semibold tracking-wide shadow-soft-md hover:bg-primary/90 transition-all duration-300"
+                  >
+                    {link.label}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${catalogOpen ? 'rotate-180' : ''}`} />
+                  </button>
                 );
               }
               return (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
-                    isActive(link.href)
-                      ? 'text-primary after:w-full'
-                      : 'text-muted-foreground after:w-0 hover:after:w-full'
+                  className={`text-base font-medium transition-colors duration-300 hover:text-primary ${
+                    isActive(link.href) ? 'text-primary' : 'text-foreground/80'
                   }`}
                 >
                   {link.label}
@@ -98,40 +89,16 @@ export function Header() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3 md:gap-5">
+          <div className="flex items-center gap-3 md:gap-4 shrink-0">
             {/* Language */}
-            <div className="flex items-center border border-border rounded-sm overflow-hidden">
-              <button
-                onClick={() => setLanguage('uz')}
-                className={`px-2.5 py-1 text-xs font-medium tracking-wider transition-all duration-300 ${
-                  language === 'uz' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                UZ
-              </button>
-              <button
-                onClick={() => setLanguage('ru')}
-                className={`px-2.5 py-1 text-xs font-medium tracking-wider transition-all duration-300 ${
-                  language === 'ru' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                RU
-              </button>
-            </div>
-
-            {/* Phone - desktop */}
-            <a 
-              href={`tel:${contactPhone.replace(/\s/g, '')}`} 
-              className="hidden xl:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            <button
+              onClick={() => setLanguage(language === 'uz' ? 'ru' : 'uz')}
+              className="hidden md:inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
+              aria-label="Language"
             >
-              <Phone className="w-4 h-4" />
-              <span>{contactPhone}</span>
-            </a>
-
-            {/* CTA Button - desktop */}
-            <Button asChild className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm tracking-wider text-xs uppercase px-6">
-              <Link to="/contact">Bog'lanish</Link>
-            </Button>
+              <Globe className="w-5 h-5" />
+              <span className="uppercase tracking-wider">{language}</span>
+            </button>
 
             {/* Cart */}
             <button onClick={() => setCartOpen(prev => !prev)} className="relative">
@@ -153,6 +120,7 @@ export function Header() {
             </Button>
           </div>
         </div>
+
 
         {/* Mobile Nav */}
         {isOpen && (
@@ -210,8 +178,9 @@ export function Header() {
               })}
 
               <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="px-4 py-3 flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4" /> {contactPhone}
+                {contactPhone}
               </a>
+
             </div>
           </nav>
         )}
