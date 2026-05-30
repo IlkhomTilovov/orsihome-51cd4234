@@ -244,31 +244,62 @@ export function Header() {
                 </div>
 
                 {categories.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {categories.map((c, idx) => (
-                      <Link
-                        key={c.id}
-                        to={`/catalog?category=${c.slug}`}
-                        onClick={() => setCatalogOpen(false)}
-                        className="group relative overflow-hidden rounded-md border border-border/50 bg-card/50 hover:bg-card hover:border-primary/40 hover:shadow-soft-md transition-all duration-500 p-5"
-                        style={{ animationDelay: `${idx * 50}ms` }}
-                      >
-                        <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500" />
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/60 mb-2">
-                              0{idx + 1}
-                            </p>
-                            <p className="text-[15px] font-medium text-foreground group-hover:text-primary transition-colors leading-snug">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    {/* Left sidebar list */}
+                    <aside className="lg:col-span-3">
+                      <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground/60 mb-4">
+                        {language === 'ru' ? 'Категории' : 'Toifalar'}
+                      </p>
+                      <ul className="flex flex-col">
+                        {categories.map((c) => (
+                          <li key={c.id}>
+                            <Link
+                              to={`/catalog?category=${c.slug}`}
+                              onClick={() => setCatalogOpen(false)}
+                              className="group flex items-center justify-between py-3 border-b border-border/40 text-sm text-muted-foreground hover:text-primary transition-colors"
+                            >
+                              <span>{language === 'ru' ? c.name_ru : c.name_uz}</span>
+                              <ChevronDown className="w-4 h-4 -rotate-90 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </aside>
+
+                    {/* Right image cards */}
+                    <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                      {categories.slice(0, 3).map((c) => (
+                        <Link
+                          key={c.id}
+                          to={`/catalog?category=${c.slug}`}
+                          onClick={() => setCatalogOpen(false)}
+                          className="group relative overflow-hidden rounded-xl aspect-[4/3] bg-muted shadow-soft-md hover:shadow-soft-lg transition-all duration-500"
+                        >
+                          {c.image ? (
+                            <img
+                              src={c.image}
+                              alt={language === 'ru' ? c.name_ru : c.name_uz}
+                              loading="lazy"
+                              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-primary/10" />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                          <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                            <h4 className="font-serif text-2xl md:text-3xl font-bold mb-1 leading-tight">
                               {language === 'ru' ? c.name_ru : c.name_uz}
+                            </h4>
+                            <p className="text-xs tracking-widest uppercase opacity-80 mb-3">
+                              {language === 'ru' ? 'Смотреть коллекцию' : "Kolleksiyani ko'rish"}
                             </p>
+                            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 group-hover:bg-primary group-hover:border-primary transition-all">
+                              →
+                            </span>
                           </div>
-                          <span className="text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-300 text-lg">
-                            →
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <Link
