@@ -107,6 +107,57 @@ function useInView(threshold = 0.15) {
   }, [threshold]);
   return { ref, isVisible };
 }
+function ProductsTrack({ items }: { items: any[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const VISIBLE = 2;
+  const STEP_MS = 3500;
+
+  useEffect(() => {
+    if (items.length <= VISIBLE) return;
+    const el = trackRef.current;
+    if (!el) return;
+    const id = window.setInterval(() => {
+      const firstChild = el.firstElementChild as HTMLElement | null;
+      if (!firstChild) return;
+      const styles = window.getComputedStyle(el);
+      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+      const step = firstChild.offsetWidth + gap;
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (el.scrollLeft + step > maxScroll - 1) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }, STEP_MS);
+    return () => clearInterval(id);
+  }, [items.length]);
+
+  if (items.length === 0) {
+    return (
+      <div className="grid grid-cols-2 gap-3 lg:gap-6 w-full">
+        <div className="aspect-[3/4]" aria-hidden="true" />
+        <div className="aspect-[3/4]" aria-hidden="true" />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={trackRef}
+      className="flex gap-3 lg:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+    >
+      {items.map((p) => (
+        <div
+          key={p.id}
+          className="shrink-0 snap-start basis-[calc((100%-0.75rem)/2)] lg:basis-[calc((100%-1.5rem)/2)]"
+        >
+          <ProductCard product={p} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 
 function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   sets: ReturnType<typeof useActiveSets>['sets'];
@@ -248,7 +299,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             />
           </Link>
           <div className="relative">
-            {renderPair(curItems)}
+            <ProductsTrack items={productsOf(s)} />
           </div>
         </div>
       </div>
