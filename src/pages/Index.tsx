@@ -417,9 +417,10 @@ export default function Index() {
   const sec3 = useInView();
   const sec4 = useInView();
 
-  // Toifalar carousel
+  // Toifalar carousel — one-at-a-time autoplay with seamless infinite loop
   const [catPerPage, setCatPerPage] = useState(4);
-  const [catPage, setCatPage] = useState(0);
+  const [catIndex, setCatIndex] = useState(0);
+  const [catAnimate, setCatAnimate] = useState(true);
   useEffect(() => {
     const compute = () => {
       if (typeof window === 'undefined') return;
@@ -431,9 +432,51 @@ export default function Index() {
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
   }, []);
+  // Reset to 0 if data shrinks
+  useEffect(() => { if (catIndex > cats.length) setCatIndex(0); }, [cats.length, catIndex]);
+  // Build a looped list: original + clone of first `catPerPage` so we can slide past the end seamlessly
+  const catsLooped = cats.length > 0 ? [...cats, ...cats.slice(0, catPerPage)] : cats;
   const catTotalPages = Math.max(1, Math.ceil(cats.length / catPerPage));
-  useEffect(() => { if (catPage >= catTotalPages) setCatPage(0); }, [catPerPage, catTotalPages, catPage]);
-  const goCat = (dir: number) => setCatPage(p => (p + dir + catTotalPages) % catTotalPages);
+  const goCat = (dir: number) => {
+    if (cats.length === 0) return;
+    setCatAnimate(true);
+    setCatIndex((p) => p + dir);
+  };
+  // Autoplay: advance by 1 every 5s
+  useEffect(() => {
+    if (cats.length <= catPerPage) return;
+    const t = setInterval(() => {
+      setCatAnimate(true);
+      setCatIndex((p) => p + 1);
+    }, 5000);
+    return () => clearInterval(t);
+  }, [cats.length, catPerPage]);
+  // When we cross past the end (into the cloned tail), snap back without animation
+  useEffect(() => {
+    if (cats.length === 0) return;
+    if (catIndex >= cats.length) {
+      const t = setTimeout(() => {
+        setCatAnimate(false);
+        setCatIndex((p) => p - cats.length);
+      }, 700); // match transition duration
+      return () => clearTimeout(t);
+    }
+    if (catIndex < 0) {
+      const t = setTimeout(() => {
+        setCatAnimate(false);
+        setCatIndex((p) => p + cats.length);
+      }, 700);
+      return () => clearTimeout(t);
+    }
+  }, [catIndex, cats.length]);
+  // Re-enable animation on next frame after a snap
+  useEffect(() => {
+    if (!catAnimate) {
+      const r = requestAnimationFrame(() => setCatAnimate(true));
+      return () => cancelAnimationFrame(r);
+    }
+  }, [catAnimate]);
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -534,16 +577,19 @@ export default function Index() {
 
         <div className="overflow-hidden -mx-2 lg:-mx-3">
           <div
-            className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{ transform: `translate3d(-${catPage * 100}%, 0, 0)` }}
+            className="flex"
+            style={{
+              transform: `translate3d(-${(catIndex * 100) / catPerPage}%, 0, 0)`,
+              transition: catAnimate ? 'transform 700ms cubic-bezier(0.22,1,0.36,1)' : 'none',
+            }}
           >
-            {cats.map((cat: any, i) => {
+            {catsLooped.map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
               const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
               const FallbackIcon = cat.icon;
               return (
                 <div
-                  key={cat.slug || cat.id}
+                  key={(cat.slug || cat.id) + '-' + i}
                   className="shrink-0 px-2 lg:px-3"
                   style={{ width: `${100 / catPerPage}%` }}
                 >
@@ -578,20 +624,24 @@ export default function Index() {
           </div>
         </div>
 
-        {catTotalPages > 1 && (
+        {cats.length > catPerPage && (
           <div className="flex justify-center gap-2 mt-6">
-            {Array.from({ length: catTotalPages }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCatPage(i)}
-                aria-label={`Page ${i + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === catPage ? 'w-8 bg-foreground' : 'w-1.5 bg-foreground/30 hover:bg-foreground/50'
-                }`}
-              />
-            ))}
+            {cats.map((_, i) => {
+              const active = ((catIndex % cats.length) + cats.length) % cats.length === i;
+              return (
+                <button
+                  key={i}
+                  onClick={() => { setCatAnimate(true); setCatIndex(i); }}
+                  aria-label={`Slide ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    active ? 'w-8 bg-foreground' : 'w-1.5 bg-foreground/30 hover:bg-foreground/50'
+                  }`}
+                />
+              );
+            })}
           </div>
         )}
+
       </section>
 
       {/* ============ SETLAR TO'PLAMI (DB-driven sets, carousel) ============ */}
