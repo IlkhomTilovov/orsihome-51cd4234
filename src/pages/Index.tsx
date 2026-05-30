@@ -248,7 +248,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             />
           </Link>
           <div className="relative">
-            {renderPair(curItems)}
+            <ProductsTrack items={productsOf(s)} />
           </div>
         </div>
       </div>
