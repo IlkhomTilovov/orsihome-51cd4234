@@ -128,6 +128,9 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   // inner products pager: sliding by 1 (window of 2 visible, wraps around)
   const [innerStart, setInnerStart] = useState(0);
   const [innerAnimating, setInnerAnimating] = useState(false);
+  // Pause autoplay briefly after user interaction so clicks aren't fought by the timer
+  const [pausedUntil, setPausedUntil] = useState(0);
+  const pauseAutoplay = (ms = 6000) => setPausedUntil(Date.now() + ms);
 
   useEffect(() => {
     sets.forEach((item) => {
@@ -161,14 +164,16 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     if (n === current) return;
     const dir: 1 | -1 = n > current || (current === count - 1 && n === 0) ? 1 : -1;
     setDirection(dir);
+    // Reset inner window immediately so the incoming set starts at item 0
+    // (otherwise products would visually "jump" after the crossfade completes)
+    setInnerStart(0);
+    setInnerAnimating(false);
     setIncoming(n);
     requestAnimationFrame(() => requestAnimationFrame(() => setAnimating(true)));
     window.setTimeout(() => {
       setCurrent(n);
       setIncoming(null);
       setAnimating(false);
-      setInnerStart(0);
-      setInnerAnimating(false);
     }, DURATION);
   };
 
@@ -190,6 +195,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     if (count <= 1 && !canInnerSlide) return;
     const t = setInterval(() => {
       if (animating || innerAnimating) return;
+      if (Date.now() < pausedUntil) return;
       if (canInnerSlide) {
         // after innerStart wraps fully (productsLen steps), advance set
         if (count > 1 && productsLen > 0 && innerStart > 0 && innerStart % productsLen === 0) {
@@ -203,7 +209,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     }, STEP_MS);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, current, innerStart, canInnerSlide, productsLen, animating, innerAnimating]);
+  }, [count, current, innerStart, canInnerSlide, productsLen, animating, innerAnimating, pausedUntil]);
+
 
   if (!set) return null;
 
@@ -320,7 +327,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
           const dx = e.changedTouches[0].clientX - touchStartX.current;
-          if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
+          if (Math.abs(dx) > 40) { pauseAutoplay(); go(current + (dx < 0 ? 1 : -1)); }
           touchStartX.current = null;
         }}
       >
@@ -352,7 +359,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       {count > 1 && (
         <div className="flex items-center justify-center gap-6 mt-10">
           <button
-            onClick={() => go(current - 1)}
+            onClick={() => { pauseAutoplay(); go(current - 1); }}
             className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:-translate-x-0.5"
             aria-label="Previous"
           >
@@ -362,14 +369,14 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             {Array.from({ length: count }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => go(i)}
+                onClick={() => { pauseAutoplay(); go(i); }}
                 className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/40'}`}
                 aria-label={`Slide ${i + 1}`}
               />
             ))}
           </div>
           <button
-            onClick={() => go(current + 1)}
+            onClick={() => { pauseAutoplay(); go(current + 1); }}
             className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:translate-x-0.5"
             aria-label="Next"
           >
@@ -377,6 +384,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           </button>
         </div>
       )}
+
     </div>
   );
 }
