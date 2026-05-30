@@ -267,13 +267,14 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               <div className="shrink-0" style={{ width: showInnerTrack ? '50%' : '100%' }}>
                 {renderPair(curItems)}
               </div>
-              {showInnerTrack && incItems && (
+              {showInnerTrack && tailItem && (
                 <div className="shrink-0" style={{ width: '50%' }}>
-                  {renderPair(incItems)}
+                  {renderPair([curItems[1], tailItem])}
                 </div>
               )}
             </div>
           </div>
+
         </div>
       </div>
     );
