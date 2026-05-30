@@ -191,7 +191,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   );
 
   const renderPair = (items: ReturnType<typeof productsOf>) => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 w-full">
+    <div className="grid grid-cols-2 gap-3 lg:gap-6 w-full">
       {items.length > 0 ? (
         <>
           {items.map((p) => (
@@ -199,12 +199,12 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               <ProductCard product={p} />
             </div>
           ))}
-          {items.length === 1 && <EmptyCard hideOnMobile />}
+          {items.length === 1 && <EmptyCard />}
         </>
       ) : (
         <>
           <EmptyCard />
-          <EmptyCard hideOnMobile />
+          <EmptyCard />
         </>
       )}
     </div>
