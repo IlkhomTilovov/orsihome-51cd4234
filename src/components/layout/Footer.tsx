@@ -96,34 +96,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Services - editable */}
-          <div>
-            <EditableText
-              contentKey="footer_services_title"
-              fallback="Xizmatlar"
-              as="h4"
-              className="font-serif text-lg font-semibold text-foreground mb-6 tracking-wide"
-              section="footer"
-            />
-            <ul className="space-y-3">
-              {categories && categories.length > 0 ? (
-                <>
-                  {categories.map((cat) => (
-                    <li key={cat.id}>
-                      <Link
-                        to={`/catalog?category=${cat.slug}`}
-                        className="text-muted-foreground hover:text-primary text-sm transition-colors duration-300"
-                      >
-                        {language === 'ru' ? cat.name_ru : cat.name_uz}
-                      </Link>
-                    </li>
-                  ))}
-                </>
-              ) : (
-                <li className="text-muted-foreground text-sm">—</li>
-              )}
-            </ul>
-          </div>
 
           {/* Contact - editable */}
           <div>
