@@ -247,26 +247,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
-          <div className="relative overflow-hidden">
-            <div
-              className="flex"
-              style={{
-                width: showInnerTrack ? '200%' : '100%',
-                transform: `translate3d(${innerTranslate}, 0, 0)`,
-                transition: innerAnimating
-                  ? `transform ${INNER_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`
-                  : 'none',
-              }}
-            >
-              <div className="shrink-0" style={{ width: showInnerTrack ? '50%' : '100%' }}>
-                {renderPair(curItems)}
-              </div>
-              {showInnerTrack && incItems && (
-                <div className="shrink-0" style={{ width: '50%' }}>
-                  {renderPair(incItems)}
-                </div>
-              )}
-            </div>
+          <div className="relative">
+            {renderPair(curItems)}
           </div>
         </div>
       </div>
