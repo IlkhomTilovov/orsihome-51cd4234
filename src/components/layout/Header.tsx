@@ -337,7 +337,8 @@ export function Header() {
                                       <LazyImage
                                         src={img}
                                         alt={name}
-                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        wrapperClassName="absolute inset-0 w-full h-full"
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                       />
                                     ) : (
                                       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
