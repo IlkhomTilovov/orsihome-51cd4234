@@ -44,7 +44,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
   
 
   return (
-    <article className="group relative bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
+    <article className="group relative h-full flex flex-col bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
       <Link to={productUrl} className="block relative aspect-[24/25] overflow-hidden bg-background">
         {/* Primary image */}
         <LazyImage
