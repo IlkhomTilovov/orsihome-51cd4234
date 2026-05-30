@@ -80,12 +80,12 @@ export function ProductCard({ product }: ProductCardProps) {
         {price > 0 && (
           <div className="mt-3 flex flex-col">
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className="text-xs text-muted-foreground line-through tabular-nums">
                 {formatPrice(originalPrice as number)} {t.products.currency}
               </span>
             )}
-            <div className="flex items-baseline gap-2 mt-0.5">
-              <span className="font-serif font-bold text-lg md:text-xl text-foreground tracking-tight">
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="font-sans font-bold text-base md:text-lg text-foreground tracking-tight tabular-nums">
                 {formatPrice(price)}
               </span>
               <span className="text-[11px] text-muted-foreground tracking-wide uppercase">{t.products.currency}</span>
