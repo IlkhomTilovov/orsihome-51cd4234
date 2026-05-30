@@ -138,6 +138,21 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     });
   }, [sets, fallbackImage]);
 
+  useEffect(() => {
+    const productImages = new Set<string>();
+    Object.values(productsBySet).forEach((products) => {
+      products.forEach((product) => {
+        const src = product.images?.[0];
+        if (src) productImages.add(src);
+      });
+    });
+
+    productImages.forEach((src) => {
+      const image = new Image();
+      image.src = src;
+    });
+  }, [productsBySet]);
+
   const productsOf = (s: (typeof sets)[number]) => productsBySet[s.id] || [];
 
   const go = (next: number) => {
@@ -250,10 +265,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6 bg-background">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6 bg-background isolate">
           <Link
             to={s.href || '/catalog'}
-            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group"
+            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden bg-card group"
           >
             <img
               src={s.image || fallbackImage}
@@ -264,7 +279,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden bg-background">
             <div
               className="flex"
               style={{
@@ -321,7 +336,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           {/* Incoming set (absolute overlay, fades in) */}
           {showTrack && incomingSet && (
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 bg-background"
               style={{
                 opacity: animating ? 1 : 0,
                 transition: `opacity ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`,
