@@ -70,32 +70,30 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
 
 
-      <div className="p-4 md:p-5">
+      <div className="p-3 md:p-5">
         <Link to={productUrl} className="block">
-          <h3 className="font-medium text-foreground line-clamp-2 leading-snug min-h-[2.75rem] group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
         </Link>
 
         {price > 0 && (
-          <div className="mt-3 flex flex-col">
+          <div className="mt-1.5 flex flex-col leading-tight">
             {hasDiscount && (
               <span className="text-xs text-muted-foreground line-through tabular-nums">
                 {formatPrice(originalPrice as number)} {t.products.currency}
               </span>
             )}
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="font-sans font-bold text-base md:text-lg text-foreground tracking-tight tabular-nums">
-                {formatPrice(price)} {t.products.currency}
-              </span>
-            </div>
+            <span className="font-sans font-bold text-base md:text-lg text-foreground tracking-tight tabular-nums">
+              {formatPrice(price)} {t.products.currency}
+            </span>
           </div>
         )}
 
         <Button
           variant={inCart ? 'secondary' : 'outline'}
           aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
-          className="mt-4 w-full rounded-full h-11 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
+          className="mt-2.5 w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
           onClick={(e) => {
             e.preventDefault();
             if (!inCart) {
