@@ -182,41 +182,10 @@ export default function Catalog() {
                 className="pl-10 rounded-xl"
               />
             </div>
-            <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="lg:hidden gap-2 rounded-xl">
-                  <SlidersHorizontal className="w-4 h-4" /> {t.catalog.filters}
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[320px] overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>{t.catalog.filters}</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
-                  <CatalogFilterSidebar
-                    categories={categories}
-                    onApply={handleApplyFilters}
-                    initialFilters={{ categoryId: sidebarFilters.categoryId }}
-                    dynamicOptions={filterOptions}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
 
         <div className="flex gap-8">
-          <aside className="hidden lg:block w-72 flex-shrink-0">
-            <div className="sticky top-24 bg-card p-6 rounded-2xl shadow-warm border border-border/50 max-h-[calc(100vh-8rem)] overflow-y-auto">
-              <CatalogFilterSidebar
-                categories={categories}
-                onApply={handleApplyFilters}
-                initialFilters={{ categoryId: sidebarFilters.categoryId }}
-                dynamicOptions={filterOptions}
-              />
-            </div>
-          </aside>
-
           <div className="flex-1">
             <p className="text-sm text-muted-foreground mb-4">
               {loading ? (
