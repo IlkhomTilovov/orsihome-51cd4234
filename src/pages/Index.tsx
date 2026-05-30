@@ -107,101 +107,6 @@ function useInView(threshold = 0.15) {
   }, [threshold]);
   return { ref, isVisible };
 }
-function ProductsTrack({ items }: { items: any[] }) {
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const VISIBLE = 2;
-  const STEP_MS = 3500;
-  const DURATION = 700;
-  const [index, setIndex] = useState(0);
-  const [animate, setAnimate] = useState(true);
-  const [step, setStep] = useState(0);
-
-  const canLoop = items.length > VISIBLE;
-  // Clone the first VISIBLE items at the end for seamless looping
-  const renderItems = canLoop ? [...items, ...items.slice(0, VISIBLE)] : items;
-
-  // Measure single-card step (card width + gap)
-  useEffect(() => {
-    const measure = () => {
-      const track = trackRef.current;
-      if (!track) return;
-      const first = track.firstElementChild as HTMLElement | null;
-      if (!first) return;
-      const styles = window.getComputedStyle(track);
-      const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-      setStep(first.offsetWidth + gap);
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, [items.length]);
-
-  // Autoplay
-  useEffect(() => {
-    if (!canLoop) return;
-    const id = window.setInterval(() => {
-      setAnimate(true);
-      setIndex((i) => i + 1);
-    }, STEP_MS);
-    return () => clearInterval(id);
-  }, [canLoop]);
-
-  // After reaching the cloned tail, snap back to start without animation
-  useEffect(() => {
-    if (!canLoop) return;
-    if (index === items.length) {
-      const t = window.setTimeout(() => {
-        setAnimate(false);
-        setIndex(0);
-      }, DURATION);
-      return () => clearTimeout(t);
-    }
-  }, [index, items.length, canLoop]);
-
-  // Re-enable animation after the snap-back paints
-  useEffect(() => {
-    if (!animate) {
-      const r = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimate(true));
-      });
-      return () => cancelAnimationFrame(r);
-    }
-  }, [animate]);
-
-  if (items.length === 0) {
-    return (
-      <div className="grid grid-cols-2 gap-3 lg:gap-6 w-full">
-        <div className="aspect-[3/4]" aria-hidden="true" />
-        <div className="aspect-[3/4]" aria-hidden="true" />
-      </div>
-    );
-  }
-
-  return (
-    <div ref={viewportRef} className="overflow-hidden">
-      <div
-        ref={trackRef}
-        className="flex gap-3 lg:gap-6"
-        style={{
-          transform: `translate3d(-${index * step}px, 0, 0)`,
-          transition: animate ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
-        }}
-      >
-        {renderItems.map((p, i) => (
-          <div
-            key={`${p.id}-${i}`}
-            className="shrink-0 basis-[calc((100%-0.75rem)/2)] lg:basis-[calc((100%-1.5rem)/2)]"
-          >
-            <ProductCard product={p} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-
 
 function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   sets: ReturnType<typeof useActiveSets>['sets'];
@@ -330,10 +235,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_2fr] gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6">
           <Link
             to={s.href || '/catalog'}
-            className="relative aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
+            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
           >
             <img
               src={s.image || fallbackImage}
@@ -342,19 +247,98 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
-          <div className="relative">
-            <ProductsTrack items={productsOf(s)} />
+          <div className="relative overflow-hidden">
+            <div
+              className="flex"
+              style={{
+                width: showInnerTrack ? '200%' : '100%',
+                transform: `translate3d(${innerTranslate}, 0, 0)`,
+                transition: innerAnimating
+                  ? `transform ${INNER_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`
+                  : 'none',
+              }}
+            >
+              <div className="shrink-0" style={{ width: showInnerTrack ? '50%' : '100%' }}>
+                {renderPair(curItems)}
+              </div>
+              {showInnerTrack && incItems && (
+                <div className="shrink-0" style={{ width: '50%' }}>
+                  {renderPair(incItems)}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     );
   };
 
+  // Outer: forward (→) track = [current, incoming], translate 0% → -50%
+  //        backward (←) track = [incoming, current], translate -50% → 0%
+  const showTrack = incoming !== null;
+  const trackChildren = showTrack
+    ? (direction === 1 ? [set, sets[incoming!]] : [sets[incoming!], set])
+    : [set];
+  const startOffset = direction === 1 ? '0%' : '-50%';
+  const endOffset = direction === 1 ? '-50%' : '0%';
+  const translate = !showTrack ? '0%' : (animating ? endOffset : startOffset);
+
   return (
-    <div className="flex flex-col gap-16 lg:gap-24">
-      {sets.map((s) => (
-        <div key={s.id}>{renderSlide(s, true)}</div>
-      ))}
+    <div className="relative">
+      <div
+        className="relative overflow-hidden -mx-2 px-2 py-4"
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchStartX.current;
+          if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
+          touchStartX.current = null;
+        }}
+      >
+        <div
+          className="flex"
+          style={{
+            width: showTrack ? '200%' : '100%',
+            transform: `translate3d(${translate}, 0, 0)`,
+            transition: animating ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
+          }}
+        >
+          {trackChildren.map((s, i) => (
+            <div key={(s?.id || 'x') + '-' + i} className="shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
+              {s && renderSlide(s, !showTrack)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {count > 1 && (
+        <div className="flex items-center justify-center gap-6 mt-10">
+          <button
+            onClick={() => go(current - 1)}
+            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:-translate-x-0.5"
+            aria-label="Previous"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2">
+            {Array.from({ length: count }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => go(i)}
+                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/40'}`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => go(current + 1)}
+            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:translate-x-0.5"
+            aria-label="Next"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
