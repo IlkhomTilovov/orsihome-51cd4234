@@ -315,7 +315,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   return (
     <div className="relative">
       <div
-        className="relative py-4 h-[530px]"
+        className="relative py-4"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
