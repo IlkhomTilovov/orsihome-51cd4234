@@ -226,7 +226,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       {items.length > 0 ? (
         <>
           {items.map((p, i) => (
-            <div key={(p?.id || 'e') + '-' + i}>
+            <div key={(p?.id || 'e') + '-' + i} className="h-full">
               <ProductCard product={p} eager />
             </div>
           ))}
