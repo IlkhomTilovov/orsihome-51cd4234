@@ -125,14 +125,11 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   const PAGE = 2;
   const STEP_MS = 5000;
 
-  // inner products pager state
-  const [innerPage, setInnerPage] = useState(0);
-  const [innerIncoming, setInnerIncoming] = useState<number | null>(null);
+  // inner products pager: sliding by 1 (window of 2 visible, wraps around)
+  const [innerStart, setInnerStart] = useState(0);
   const [innerAnimating, setInnerAnimating] = useState(false);
 
   const productsOf = (s: (typeof sets)[number]) => productsBySet[s.id] || [];
-  const pageOf = (s: (typeof sets)[number], p: number) =>
-    productsOf(s).slice(p * PAGE, p * PAGE + PAGE);
 
   const go = (next: number) => {
     if (animating) return;
@@ -146,40 +143,43 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       setCurrent(n);
       setIncoming(null);
       setAnimating(false);
-      setInnerPage(0);
-      setInnerIncoming(null);
+      setInnerStart(0);
       setInnerAnimating(false);
     }, DURATION);
   };
 
-  const goInner = (next: number) => {
+  const goInnerNext = () => {
     if (innerAnimating || animating) return;
-    setInnerIncoming(next);
     requestAnimationFrame(() => requestAnimationFrame(() => setInnerAnimating(true)));
     window.setTimeout(() => {
-      setInnerPage(next);
-      setInnerIncoming(null);
+      setInnerStart((s) => s + 1);
       setInnerAnimating(false);
     }, INNER_DURATION);
   };
 
   const set = sets[current];
-  const totalInnerPages = set ? Math.max(1, Math.ceil(productsOf(set).length / PAGE)) : 1;
+  const productsLen = set ? productsOf(set).length : 0;
+  const canInnerSlide = productsLen > PAGE;
 
-  // unified autoplay: cycle inner pages first, then advance to next set
+  // unified autoplay: slide inner by 1 each tick; advance to next set after full loop
   useEffect(() => {
-    if (count <= 1 && totalInnerPages <= 1) return;
+    if (count <= 1 && !canInnerSlide) return;
     const t = setInterval(() => {
       if (animating || innerAnimating) return;
-      if (innerPage < totalInnerPages - 1) {
-        goInner(innerPage + 1);
+      if (canInnerSlide) {
+        // after innerStart wraps fully (productsLen steps), advance set
+        if (count > 1 && productsLen > 0 && innerStart > 0 && innerStart % productsLen === 0) {
+          go(current + 1);
+        } else {
+          goInnerNext();
+        }
       } else if (count > 1) {
         go(current + 1);
       }
     }, STEP_MS);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, current, innerPage, totalInnerPages, animating, innerAnimating]);
+  }, [count, current, innerStart, canInnerSlide, productsLen, animating, innerAnimating]);
 
   if (!set) return null;
 
@@ -194,8 +194,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     <div className="grid grid-cols-2 gap-3 lg:gap-6 w-full">
       {items.length > 0 ? (
         <>
-          {items.map((p) => (
-            <div key={p.id}>
+          {items.map((p, i) => (
+            <div key={(p?.id || 'e') + '-' + i}>
               <ProductCard product={p} />
             </div>
           ))}
@@ -215,10 +215,16 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     const title = language === 'uz' ? s.title_uz : s.title_ru;
     const all = productsOf(s);
     const innerOn = withInner && all.length > PAGE;
-    const curItems = innerOn ? pageOf(s, innerPage) : all.slice(0, PAGE);
-    const incItems = innerOn && innerIncoming !== null ? pageOf(s, innerIncoming) : null;
-    const showInnerTrack = innerOn && innerIncoming !== null;
-    const innerTranslate = !showInnerTrack ? '0%' : (innerAnimating ? '-50%' : '0%');
+    // Build sliding window: render 3 cards (current pair + next-after) so we can slide left by 1 card
+    const at = (i: number) => all[((i % all.length) + all.length) % all.length];
+    const startIdx = innerOn ? innerStart : 0;
+    const curItems = innerOn
+      ? [at(startIdx), at(startIdx + 1)]
+      : all.slice(0, PAGE);
+    const tailItem = innerOn ? at(startIdx + 2) : null;
+    const showInnerTrack = innerOn;
+    // track width = 150% (3 cards), translate by -33.333% (one card) to slide pair forward by 1
+    const innerTranslate = !showInnerTrack ? '0%' : (innerAnimating ? '-33.3333%' : '0%');
 
     return (
       <div className="w-full">
