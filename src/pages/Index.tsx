@@ -273,72 +273,11 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     );
   };
 
-  // Outer: forward (→) track = [current, incoming], translate 0% → -50%
-  //        backward (←) track = [incoming, current], translate -50% → 0%
-  const showTrack = incoming !== null;
-  const trackChildren = showTrack
-    ? (direction === 1 ? [set, sets[incoming!]] : [sets[incoming!], set])
-    : [set];
-  const startOffset = direction === 1 ? '0%' : '-50%';
-  const endOffset = direction === 1 ? '-50%' : '0%';
-  const translate = !showTrack ? '0%' : (animating ? endOffset : startOffset);
-
   return (
-    <div className="relative">
-      <div
-        className="relative overflow-hidden -mx-2 px-2 py-4"
-        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
-        onTouchEnd={(e) => {
-          if (touchStartX.current === null) return;
-          const dx = e.changedTouches[0].clientX - touchStartX.current;
-          if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
-          touchStartX.current = null;
-        }}
-      >
-        <div
-          className="flex"
-          style={{
-            width: showTrack ? '200%' : '100%',
-            transform: `translate3d(${translate}, 0, 0)`,
-            transition: animating ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
-          }}
-        >
-          {trackChildren.map((s, i) => (
-            <div key={(s?.id || 'x') + '-' + i} className="shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
-              {s && renderSlide(s, !showTrack)}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {count > 1 && (
-        <div className="flex items-center justify-center gap-6 mt-10">
-          <button
-            onClick={() => go(current - 1)}
-            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:-translate-x-0.5"
-            aria-label="Previous"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: count }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => go(i)}
-                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/40'}`}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
-          <button
-            onClick={() => go(current + 1)}
-            className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:translate-x-0.5"
-            aria-label="Next"
-          >
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+    <div className="flex flex-col gap-16 lg:gap-24">
+      {sets.map((s) => (
+        <div key={s.id}>{renderSlide(s, true)}</div>
+      ))}
     </div>
   );
 }
