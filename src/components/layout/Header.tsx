@@ -307,13 +307,19 @@ export function Header() {
 
                     {/* Right products preview */}
                     <div className="lg:col-span-9">
-                      {previewLoading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                          {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
-                          ))}
-                        </div>
-                      ) : previewProducts.length > 0 ? (
+                      {(() => {
+                        const matched = previewProducts.filter(p => p.category_id === activeCategoryId);
+                        const showSkeleton = previewLoading || (activeCategoryId && matched.length === 0 && previewProducts.length > 0);
+                        if (showSkeleton) {
+                          return (
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                              {Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
+                              ))}
+                            </div>
+                          );
+                        }
+                        return matched.length > 0 ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
                           {previewProducts.map((p) => {
                             const img = p.images?.[0];
