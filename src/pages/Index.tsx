@@ -688,43 +688,6 @@ export default function Index() {
         </section>
       )}
 
-      {/* ============ INSPIRATION ("Вместе с OrisHome" instagram-style) ============ */}
-      <section ref={sec4.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24 pb-20 lg:pb-28">
-        <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight mb-8">
-          <EditableText
-            contentKey="inspiration_title"
-            fallback={language === 'uz' ? 'OrisHome bilan birga' : 'Вместе с OrisHome'}
-            as="span"
-            section="inspiration"
-          />
-        </h2>
-
-        <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 transition-all duration-700 ${sec4.isVisible ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-          {inspirations.map((insp, i) => (
-            <a
-              key={insp.key}
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500"
-              style={{ transitionDelay: `${i * 80}ms` }}
-            >
-              <EditableImage
-                contentKey={insp.key}
-                fallbackSrc={insp.fallback}
-                alt="OrisHome interior"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
-                wrapperClassName="absolute inset-0"
-                section="inspiration"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-              <span className="absolute bottom-5 left-5 text-white/90 text-sm font-medium tracking-wide">
-                @orishome
-              </span>
-            </a>
-          ))}
-        </div>
-      </section>
     </div>
   );
 }
