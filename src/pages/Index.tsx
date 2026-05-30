@@ -282,18 +282,14 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
 
   // Outer: forward (→) track = [current, incoming], translate 0% → -50%
   //        backward (←) track = [incoming, current], translate -50% → 0%
+  // Outer transition: crossfade (no horizontal bleed of neighboring sets)
   const showTrack = incoming !== null;
-  const trackChildren = showTrack
-    ? (direction === 1 ? [set, sets[incoming!]] : [sets[incoming!], set])
-    : [set];
-  const startOffset = direction === 1 ? '0%' : '-50%';
-  const endOffset = direction === 1 ? '-50%' : '0%';
-  const translate = !showTrack ? '0%' : (animating ? endOffset : startOffset);
+  const incomingSet = incoming !== null ? sets[incoming] : null;
 
   return (
     <div className="relative">
       <div
-        className="relative overflow-hidden -mx-2 px-2 py-4"
+        className="relative py-4"
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
@@ -302,21 +298,31 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           touchStartX.current = null;
         }}
       >
-        <div
-          className="flex"
-          style={{
-            width: showTrack ? '200%' : '100%',
-            transform: `translate3d(${translate}, 0, 0)`,
-            transition: animating ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
-          }}
-        >
-          {trackChildren.map((s, i) => (
-            <div key={(s?.id || 'x') + '-' + i} className="shrink-0" style={{ width: showTrack ? '50%' : '100%' }}>
-              {s && renderSlide(s, !showTrack)}
+        <div className="relative">
+          {/* Current set */}
+          <div
+            style={{
+              opacity: showTrack && animating ? 0 : 1,
+              transition: `opacity ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+            }}
+          >
+            {renderSlide(set, !showTrack)}
+          </div>
+          {/* Incoming set (absolute overlay, fades in) */}
+          {showTrack && incomingSet && (
+            <div
+              className="absolute inset-0"
+              style={{
+                opacity: animating ? 1 : 0,
+                transition: `opacity ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+              }}
+            >
+              {renderSlide(incomingSet, false)}
             </div>
-          ))}
+          )}
         </div>
       </div>
+
 
       {count > 1 && (
         <div className="flex items-center justify-center gap-6 mt-10">
