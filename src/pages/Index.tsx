@@ -199,12 +199,12 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               <ProductCard product={p} />
             </div>
           ))}
-          {items.length === 1 && <EmptyCard hideOnMobile />}
+          {items.length === 1 && <EmptyCard />}
         </>
       ) : (
         <>
           <EmptyCard />
-          <EmptyCard hideOnMobile />
+          <EmptyCard />
         </>
       )}
     </div>
