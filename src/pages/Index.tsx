@@ -129,6 +129,15 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   const [innerStart, setInnerStart] = useState(0);
   const [innerAnimating, setInnerAnimating] = useState(false);
 
+  useEffect(() => {
+    sets.forEach((item) => {
+      const src = item.image || fallbackImage;
+      if (!src) return;
+      const image = new Image();
+      image.src = src;
+    });
+  }, [sets, fallbackImage]);
+
   const productsOf = (s: (typeof sets)[number]) => productsBySet[s.id] || [];
 
   const go = (next: number) => {
@@ -249,7 +258,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <img
               src={s.image || fallbackImage}
               alt={title}
-              loading="lazy"
+              loading="eager"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
@@ -302,8 +312,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           {/* Current set */}
           <div
             style={{
-              opacity: showTrack && animating ? 0 : 1,
-              transition: `opacity ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`,
+              opacity: 1,
             }}
           >
             {renderSlide(set, !showTrack)}
