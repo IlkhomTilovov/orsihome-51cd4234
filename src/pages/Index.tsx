@@ -330,10 +330,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_2fr] gap-4 lg:gap-6">
           <Link
             to={s.href || '/catalog'}
-            className="relative aspect-[3/4] rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
+            className="relative aspect-[4/3] lg:aspect-square rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
           >
             <img
               src={s.image || fallbackImage}
