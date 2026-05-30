@@ -128,6 +128,9 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   // inner products pager: sliding by 1 (window of 2 visible, wraps around)
   const [innerStart, setInnerStart] = useState(0);
   const [innerAnimating, setInnerAnimating] = useState(false);
+  // Pause autoplay briefly after user interaction so clicks aren't fought by the timer
+  const [pausedUntil, setPausedUntil] = useState(0);
+  const pauseAutoplay = (ms = 6000) => setPausedUntil(Date.now() + ms);
 
   useEffect(() => {
     sets.forEach((item) => {
@@ -161,14 +164,16 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     if (n === current) return;
     const dir: 1 | -1 = n > current || (current === count - 1 && n === 0) ? 1 : -1;
     setDirection(dir);
+    // Reset inner window immediately so the incoming set starts at item 0
+    // (otherwise products would visually "jump" after the crossfade completes)
+    setInnerStart(0);
+    setInnerAnimating(false);
     setIncoming(n);
     requestAnimationFrame(() => requestAnimationFrame(() => setAnimating(true)));
     window.setTimeout(() => {
       setCurrent(n);
       setIncoming(null);
       setAnimating(false);
-      setInnerStart(0);
-      setInnerAnimating(false);
     }, DURATION);
   };
 
@@ -190,6 +195,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     if (count <= 1 && !canInnerSlide) return;
     const t = setInterval(() => {
       if (animating || innerAnimating) return;
+      if (Date.now() < pausedUntil) return;
       if (canInnerSlide) {
         // after innerStart wraps fully (productsLen steps), advance set
         if (count > 1 && productsLen > 0 && innerStart > 0 && innerStart % productsLen === 0) {
@@ -203,7 +209,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
     }, STEP_MS);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, current, innerStart, canInnerSlide, productsLen, animating, innerAnimating]);
+  }, [count, current, innerStart, canInnerSlide, productsLen, animating, innerAnimating, pausedUntil]);
+
 
   if (!set) return null;
 
