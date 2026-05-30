@@ -274,10 +274,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   };
 
   return (
-    <div className="relative">
-      <div className="relative py-4">
-        {renderSlide(set, true)}
-      </div>
+    <div className="flex flex-col gap-16 lg:gap-24">
+      {sets.map((s) => (
+        <div key={s.id}>{renderSlide(s, true)}</div>
+      ))}
     </div>
   );
 }
