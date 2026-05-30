@@ -58,7 +58,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
 
         {/* Discount badge */}
         {hasDiscount && (
-          <span className="absolute top-3 left-3 bg-foreground text-background text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-soft-sm">
+          <span className="absolute top-3 left-3 bg-foreground text-background text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-lg shadow-soft-sm">
             −{discountPct}%
           </span>
         )}
