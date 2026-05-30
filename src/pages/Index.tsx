@@ -108,29 +108,66 @@ function useInView(threshold = 0.15) {
   return { ref, isVisible };
 }
 function ProductsTrack({ items }: { items: any[] }) {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const VISIBLE = 2;
   const STEP_MS = 3500;
+  const DURATION = 700;
+  const [index, setIndex] = useState(0);
+  const [animate, setAnimate] = useState(true);
+  const [step, setStep] = useState(0);
 
+  const canLoop = items.length > VISIBLE;
+  // Clone the first VISIBLE items at the end for seamless looping
+  const renderItems = canLoop ? [...items, ...items.slice(0, VISIBLE)] : items;
+
+  // Measure single-card step (card width + gap)
   useEffect(() => {
-    if (items.length <= VISIBLE) return;
-    const el = trackRef.current;
-    if (!el) return;
-    const id = window.setInterval(() => {
-      const firstChild = el.firstElementChild as HTMLElement | null;
-      if (!firstChild) return;
-      const styles = window.getComputedStyle(el);
+    const measure = () => {
+      const track = trackRef.current;
+      if (!track) return;
+      const first = track.firstElementChild as HTMLElement | null;
+      if (!first) return;
+      const styles = window.getComputedStyle(track);
       const gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-      const step = firstChild.offsetWidth + gap;
-      const maxScroll = el.scrollWidth - el.clientWidth;
-      if (el.scrollLeft + step > maxScroll - 1) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        el.scrollBy({ left: step, behavior: 'smooth' });
-      }
+      setStep(first.offsetWidth + gap);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [items.length]);
+
+  // Autoplay
+  useEffect(() => {
+    if (!canLoop) return;
+    const id = window.setInterval(() => {
+      setAnimate(true);
+      setIndex((i) => i + 1);
     }, STEP_MS);
     return () => clearInterval(id);
-  }, [items.length]);
+  }, [canLoop]);
+
+  // After reaching the cloned tail, snap back to start without animation
+  useEffect(() => {
+    if (!canLoop) return;
+    if (index === items.length) {
+      const t = window.setTimeout(() => {
+        setAnimate(false);
+        setIndex(0);
+      }, DURATION);
+      return () => clearTimeout(t);
+    }
+  }, [index, items.length, canLoop]);
+
+  // Re-enable animation after the snap-back paints
+  useEffect(() => {
+    if (!animate) {
+      const r = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setAnimate(true));
+      });
+      return () => cancelAnimationFrame(r);
+    }
+  }, [animate]);
 
   if (items.length === 0) {
     return (
@@ -142,21 +179,28 @@ function ProductsTrack({ items }: { items: any[] }) {
   }
 
   return (
-    <div
-      ref={trackRef}
-      className="flex gap-3 lg:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-    >
-      {items.map((p) => (
-        <div
-          key={p.id}
-          className="shrink-0 snap-start basis-[calc((100%-0.75rem)/2)] lg:basis-[calc((100%-1.5rem)/2)]"
-        >
-          <ProductCard product={p} />
-        </div>
-      ))}
+    <div ref={viewportRef} className="overflow-hidden">
+      <div
+        ref={trackRef}
+        className="flex gap-3 lg:gap-6"
+        style={{
+          transform: `translate3d(-${index * step}px, 0, 0)`,
+          transition: animate ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
+        }}
+      >
+        {renderItems.map((p, i) => (
+          <div
+            key={`${p.id}-${i}`}
+            className="shrink-0 basis-[calc((100%-0.75rem)/2)] lg:basis-[calc((100%-1.5rem)/2)]"
+          >
+            <ProductCard product={p} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
 
 
 function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
