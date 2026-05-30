@@ -223,8 +223,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       : all.slice(0, PAGE);
     const tailItem = innerOn ? at(startIdx + 2) : null;
     const showInnerTrack = innerOn;
-    // track width = 150% (3 cards), translate by -33.333% (one card) to slide pair forward by 1
-    const innerTranslate = !showInnerTrack ? '0%' : (innerAnimating ? '-33.3333%' : '0%');
+    // track width = 200% (two pairs), translate -50% slides one card forward (overlapping pair)
+    const innerTranslate = !showInnerTrack ? '0%' : (innerAnimating ? '-50%' : '0%');
 
     return (
       <div className="w-full">
