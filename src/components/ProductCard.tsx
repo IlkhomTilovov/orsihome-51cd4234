@@ -20,12 +20,14 @@ interface ProductCardProps {
     slug?: string | null;
     original_price?: number | null;
   };
+  eager?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, eager = false }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
+
 
   const name = language === 'uz' ? product.name_uz : product.name_ru;
   const formatPrice = (price: number) => price.toLocaleString('uz-UZ');
