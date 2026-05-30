@@ -73,9 +73,9 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
       </Link>
 
 
-      <div className="p-3 md:p-5">
+      <div className="p-3 md:p-5 flex flex-col flex-1">
         <Link to={productUrl} className="block">
-          <h3 className="font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-medium text-foreground line-clamp-2 leading-snug min-h-[2.6em] group-hover:text-primary transition-colors duration-300">
             {name}
           </h3>
         </Link>
