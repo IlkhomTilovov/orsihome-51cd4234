@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingBag, ChevronDown, Globe } from 'lucide-react';
+
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
