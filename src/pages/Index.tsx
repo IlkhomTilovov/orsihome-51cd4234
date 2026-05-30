@@ -247,7 +247,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden min-h-[520px] sm:min-h-[600px] lg:min-h-0">
             <div
               className="flex"
               style={{
