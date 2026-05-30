@@ -34,11 +34,11 @@ export const LazyImage = memo(function LazyImage({
   useEffect(() => {
     setError(false);
     setIsLoaded(priority || loadedImageSources.has(resolvedSrc));
-    setIsInView(priority || loadedImageSources.has(resolvedSrc));
+    setIsInView((wasInView) => priority || wasInView || loadedImageSources.has(resolvedSrc));
   }, [resolvedSrc, priority]);
 
   useEffect(() => {
-    if (priority || !imgRef.current) return;
+    if (priority || isInView || !imgRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -52,7 +52,7 @@ export const LazyImage = memo(function LazyImage({
 
     observer.observe(imgRef.current);
     return () => observer.disconnect();
-  }, [priority]);
+  }, [priority, isInView, resolvedSrc]);
 
   const handleLoad = () => {
     loadedImageSources.add(imgSrc);
@@ -81,6 +81,7 @@ export const LazyImage = memo(function LazyImage({
           onError={handleError}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
+          sizes={finalSizes}
           className={cn(
             priority ? 'opacity-100' : 'transition-opacity duration-300',
             !priority && (isLoaded ? 'opacity-100' : 'opacity-0'),
