@@ -589,7 +589,7 @@ export default function Index() {
               const FallbackIcon = cat.icon;
               return (
                 <div
-                  key={cat.slug || cat.id}
+                  key={(cat.slug || cat.id) + '-' + i}
                   className="shrink-0 px-2 lg:px-3"
                   style={{ width: `${100 / catPerPage}%` }}
                 >
