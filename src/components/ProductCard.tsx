@@ -86,9 +86,8 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
             <div className="flex items-baseline gap-1.5 mt-0.5">
               <span className="font-sans font-bold text-base md:text-lg text-foreground tracking-tight tabular-nums">
-                {formatPrice(price)}
+                {formatPrice(price)} {t.products.currency}
               </span>
-              <span className="text-[11px] text-muted-foreground tracking-wide uppercase">{t.products.currency}</span>
             </div>
           </div>
         )}
@@ -111,11 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
             }
           }}
         >
-          {inCart ? (
-            <><Check className="w-4 h-4 mr-2" />{language === 'uz' ? 'Savatda' : 'В корзине'}</>
-          ) : (
-            <><ShoppingBag className="w-4 h-4 mr-2" />{language === 'uz' ? "Sotib olish" : 'Купить'}</>
-          )}
+          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
         </Button>
       </div>
     </article>
