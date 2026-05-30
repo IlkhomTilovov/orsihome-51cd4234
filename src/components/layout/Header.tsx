@@ -279,10 +279,10 @@ export function Header() {
                                 onMouseEnter={() => setActiveCategoryId(c.id)}
                                 onFocus={() => setActiveCategoryId(c.id)}
                                 onClick={() => setActiveCategoryId(c.id)}
-                                className={`group w-full flex items-center justify-between py-3 px-3 -mx-3 border-b border-border/40 text-sm transition-all duration-300 ${
+                                className={`group w-full flex items-center justify-between py-3 border-b border-border/40 text-sm transition-colors duration-300 ${
                                   isActiveCat
-                                    ? 'text-primary font-semibold bg-primary/5 border-l-2 border-l-primary rounded-r-md'
-                                    : 'text-muted-foreground hover:text-primary hover:bg-muted/30'
+                                    ? 'text-primary font-semibold'
+                                    : 'text-muted-foreground hover:text-primary'
                                 }`}
                               >
                                 <span>{language === 'ru' ? c.name_ru : c.name_uz}</span>
