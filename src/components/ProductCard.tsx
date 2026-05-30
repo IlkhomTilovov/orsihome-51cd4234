@@ -77,48 +77,46 @@ export function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
 
-        <div className="mt-3 flex items-end justify-between gap-2">
-          {price > 0 ? (
-            <div className="flex flex-col">
-              <div className="flex items-baseline gap-2">
-                <span className="font-serif font-bold text-lg md:text-xl text-foreground tracking-tight">
-                  {formatPrice(price)}
-                </span>
-                <span className="text-[11px] text-muted-foreground tracking-wide uppercase">{t.products.currency}</span>
-              </div>
-              {hasDiscount && (
-                <span className="text-xs text-muted-foreground line-through mt-0.5">
-                  {formatPrice(originalPrice as number)}
-                </span>
-              )}
+        {price > 0 && (
+          <div className="mt-3 flex flex-col">
+            {hasDiscount && (
+              <span className="text-xs text-muted-foreground line-through">
+                {formatPrice(originalPrice as number)} {t.products.currency}
+              </span>
+            )}
+            <div className="flex items-baseline gap-2 mt-0.5">
+              <span className="font-serif font-bold text-lg md:text-xl text-foreground tracking-tight">
+                {formatPrice(price)}
+              </span>
+              <span className="text-[11px] text-muted-foreground tracking-wide uppercase">{t.products.currency}</span>
             </div>
+          </div>
+        )}
+
+        <Button
+          variant={inCart ? 'secondary' : 'outline'}
+          aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
+          className="mt-4 w-full rounded-full h-11 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
+          onClick={(e) => {
+            e.preventDefault();
+            if (!inCart) {
+              const cartProduct = {
+                id: product.id,
+                name_uz: product.name_uz,
+                name_ru: product.name_ru,
+                price,
+                images,
+              };
+              addItem(cartProduct as any);
+            }
+          }}
+        >
+          {inCart ? (
+            <><Check className="w-4 h-4 mr-2" />{language === 'uz' ? 'Savatda' : 'В корзине'}</>
           ) : (
-            <div />
+            <><ShoppingBag className="w-4 h-4 mr-2" />{language === 'uz' ? "Sotib olish" : 'Купить'}</>
           )}
-
-
-          <Button
-            size="icon"
-            variant={inCart ? 'secondary' : 'default'}
-            aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? 'Savatga qo\'shish' : 'В корзину')}
-            className="rounded-full min-h-11 min-w-11 shadow-soft-sm hover:shadow-soft-md transition-all duration-300 ease-spring hover:scale-105"
-            onClick={(e) => {
-              e.preventDefault();
-              if (!inCart) {
-                const cartProduct = {
-                  id: product.id,
-                  name_uz: product.name_uz,
-                  name_ru: product.name_ru,
-                  price,
-                  images,
-                };
-                addItem(cartProduct as any);
-              }
-            }}
-          >
-            {inCart ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
-          </Button>
-        </div>
+        </Button>
       </div>
     </article>
   );
