@@ -577,8 +577,11 @@ export default function Index() {
 
         <div className="overflow-hidden -mx-2 lg:-mx-3">
           <div
-            className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
-            style={{ transform: `translate3d(-${catPage * 100}%, 0, 0)` }}
+            className="flex"
+            style={{
+              transform: `translate3d(-${(catIndex * 100) / catPerPage}%, 0, 0)`,
+              transition: catAnimate ? 'transform 700ms cubic-bezier(0.22,1,0.36,1)' : 'none',
+            }}
           >
             {cats.map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
