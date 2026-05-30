@@ -30,12 +30,12 @@ export function Header() {
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
-  // Default-select first category when categories load
+  // Auto-select first category when catalog opens or categories load
   useEffect(() => {
-    if (!activeCategoryId && categories.length > 0) {
+    if (catalogOpen && categories.length > 0) {
       setActiveCategoryId(categories[0].id);
     }
-  }, [categories, activeCategoryId]);
+  }, [catalogOpen, categories]);
 
   const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
   const { products: previewProducts, loading: previewLoading } = useProducts(
