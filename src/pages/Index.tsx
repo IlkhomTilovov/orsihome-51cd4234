@@ -327,7 +327,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         onTouchEnd={(e) => {
           if (touchStartX.current === null) return;
           const dx = e.changedTouches[0].clientX - touchStartX.current;
-          if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
+          if (Math.abs(dx) > 40) { pauseAutoplay(); go(current + (dx < 0 ? 1 : -1)); }
           touchStartX.current = null;
         }}
       >
@@ -359,7 +359,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
       {count > 1 && (
         <div className="flex items-center justify-center gap-6 mt-10">
           <button
-            onClick={() => go(current - 1)}
+            onClick={() => { pauseAutoplay(); go(current - 1); }}
             className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:-translate-x-0.5"
             aria-label="Previous"
           >
@@ -369,14 +369,14 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             {Array.from({ length: count }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => go(i)}
+                onClick={() => { pauseAutoplay(); go(i); }}
                 className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/40'}`}
                 aria-label={`Slide ${i + 1}`}
               />
             ))}
           </div>
           <button
-            onClick={() => go(current + 1)}
+            onClick={() => { pauseAutoplay(); go(current + 1); }}
             className="w-11 h-11 rounded-full border border-border flex items-center justify-center hover:bg-card hover:border-primary/40 transition-all hover:translate-x-0.5"
             aria-label="Next"
           >
@@ -384,6 +384,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
           </button>
         </div>
       )}
+
     </div>
   );
 }
