@@ -253,13 +253,14 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6 bg-background">
           <Link
             to={s.href || '/catalog'}
-            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group shadow-soft hover:shadow-soft-lg transition-shadow"
+            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden group"
           >
             <img
               src={s.image || fallbackImage}
               alt={title}
               loading="eager"
-              decoding="async"
+              decoding="sync"
+              fetchPriority="high"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
