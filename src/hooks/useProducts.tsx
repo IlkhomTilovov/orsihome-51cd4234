@@ -156,6 +156,17 @@ export function useProducts(
         query = query.contains('promo_tile_ids', [filters.promoTileId]);
       }
 
+      // Filter by specific product IDs (e.g. when viewing a set)
+      if (filters.productIds) {
+        if (filters.productIds.length === 0) {
+          // No products in set — short-circuit
+          setData({ products: [], totalCount: 0, totalPages: 0, currentPage: page });
+          setLoading(false);
+          return;
+        }
+        query = query.in('id', filters.productIds);
+      }
+
       // Pagination
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
