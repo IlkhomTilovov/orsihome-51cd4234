@@ -265,7 +265,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <sup className="text-xl ml-2 text-muted-foreground font-normal">{all.length}</sup>
           </h2>
           <Link
-            to={s.href || '/catalog'}
+            to={`/catalog?set=${s.id}`}
             className="hidden md:flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             {language === 'uz' ? 'Barchasi' : 'Все'}
@@ -274,7 +274,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6 bg-background isolate">
           <Link
-            to={s.href || '/catalog'}
+            to={`/catalog?set=${s.id}`}
             className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden bg-card group"
           >
             <img
