@@ -100,6 +100,13 @@ export default function Catalog() {
   const filters: ProductFilters = useMemo(() => {
     const f: ProductFilters = { isActive: true };
 
+    // When viewing a set, show ALL products in that set — ignore other filters
+    if (setProductIds) {
+      f.productIds = setProductIds;
+      if (debouncedSearch) f.search = debouncedSearch;
+      return f;
+    }
+
     if (debouncedSearch) f.search = debouncedSearch;
     // Only pass category if it's a valid UUID
     if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
@@ -113,10 +120,10 @@ export default function Catalog() {
     if (sidebarFilters.inStock) f.inStock = true;
     if (sidebarFilters.discounted) f.discounted = true;
     if (promoTileId) f.promoTileId = promoTileId;
-    if (setProductIds) f.productIds = setProductIds;
 
     return f;
   }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds]);
+
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
 
