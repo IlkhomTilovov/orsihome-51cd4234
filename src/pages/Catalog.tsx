@@ -162,9 +162,10 @@ export default function Catalog() {
     if (sidebarFilters.inStock) params.set('in_stock', '1');
     if (sidebarFilters.discounted) params.set('discount', '1');
     if (promoTileId) params.set('promo', promoTileId);
+    if (setId) params.set('set', setId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId]);
 
 
 
