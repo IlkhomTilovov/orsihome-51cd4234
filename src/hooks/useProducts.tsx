@@ -63,6 +63,7 @@ export interface ProductFilters {
   isActive?: boolean;
   discounted?: boolean;
   promoTileId?: string;
+  productIds?: string[];
 }
 
 export interface ProductsResponse {
@@ -153,6 +154,17 @@ export function useProducts(
       // Promo tile filter (array contains)
       if (filters.promoTileId) {
         query = query.contains('promo_tile_ids', [filters.promoTileId]);
+      }
+
+      // Filter by specific product IDs (e.g. when viewing a set)
+      if (filters.productIds) {
+        if (filters.productIds.length === 0) {
+          // No products in set — short-circuit
+          setData({ products: [], totalCount: 0, totalPages: 0, currentPage: page });
+          setLoading(false);
+          return;
+        }
+        query = query.in('id', filters.productIds);
       }
 
       // Pagination
