@@ -72,6 +72,28 @@ export default function Catalog() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  // Fetch set product_ids when ?set= is in URL
+  useEffect(() => {
+    if (!setId) {
+      setSetProductIds(null);
+      setSetTitle(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('sets')
+        .select('product_ids, title_uz, title_ru')
+        .eq('id', setId)
+        .maybeSingle();
+      if (cancelled) return;
+      setSetProductIds((data?.product_ids as string[]) || []);
+      setSetTitle(data ? { uz: data.title_uz, ru: data.title_ru } : null);
+      setCurrentPage(1);
+    })();
+    return () => { cancelled = true; };
+  }, [setId]);
+
   // Map sidebar filters to DB query filters
   const isUUID = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
   
