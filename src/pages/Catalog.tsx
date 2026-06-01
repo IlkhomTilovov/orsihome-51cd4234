@@ -155,6 +155,15 @@ export default function Catalog() {
     if (resolvedCategoryId !== sidebarFilters.categoryId) return;
 
     const params = new URLSearchParams();
+
+    // When a set is active, only keep the set param (drop stale filters)
+    if (setId) {
+      params.set('set', setId);
+      if (currentPage > 1) params.set('page', currentPage.toString());
+      setSearchParams(params, { replace: true });
+      return;
+    }
+
     if (sidebarFilters.categoryId !== 'all') {
       // Write slug to URL for better readability
       const cat = categories.find(c => c.id === sidebarFilters.categoryId);
@@ -169,7 +178,6 @@ export default function Catalog() {
     if (sidebarFilters.inStock) params.set('in_stock', '1');
     if (sidebarFilters.discounted) params.set('discount', '1');
     if (promoTileId) params.set('promo', promoTileId);
-    if (setId) params.set('set', setId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
   }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId]);
