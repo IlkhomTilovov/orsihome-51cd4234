@@ -23,7 +23,11 @@ export default function Catalog() {
   
   const initialCategoryParam = searchParams.get('category') || 'all';
   const promoTileId = searchParams.get('promo') || '';
+  const setId = searchParams.get('set') || '';
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
+
+  const [setProductIds, setSetProductIds] = useState<string[] | null>(null);
+  const [setTitle, setSetTitle] = useState<{ uz: string; ru: string } | null>(null);
   
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
