@@ -200,7 +200,24 @@ export default function Catalog() {
     <div id="hero" className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">{t.catalog.title}</h1>
+          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
+            {setTitle ? (language === 'uz' ? setTitle.uz : setTitle.ru) : t.catalog.title}
+          </h1>
+          {setId && setTitle && (
+            <div className="mb-4">
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams(searchParams);
+                  params.delete('set');
+                  setSearchParams(params, { replace: true });
+                }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground text-sm hover:bg-secondary/80 transition-colors"
+              >
+                {language === 'uz' ? 'Set' : 'Сет'}: {language === 'uz' ? setTitle.uz : setTitle.ru}
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -213,6 +230,7 @@ export default function Catalog() {
             </div>
           </div>
         </div>
+
 
         <div className="flex gap-8">
           <div className="flex-1">
