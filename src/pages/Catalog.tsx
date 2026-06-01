@@ -113,9 +113,10 @@ export default function Catalog() {
     if (sidebarFilters.inStock) f.inStock = true;
     if (sidebarFilters.discounted) f.discounted = true;
     if (promoTileId) f.promoTileId = promoTileId;
+    if (setProductIds) f.productIds = setProductIds;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds]);
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
 
