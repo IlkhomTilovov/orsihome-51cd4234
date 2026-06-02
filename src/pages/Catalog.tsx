@@ -44,6 +44,7 @@ export default function Catalog() {
     return found ? found.id : null; // null means still resolving
   }, [initialCategoryParam, categories]);
 
+  const [priceTouched, setPriceTouched] = useState(false);
   const [sidebarFilters, setSidebarFilters] = useState<SidebarFilters>({
     categoryId: 'all',
     priceMin: 0,
@@ -55,6 +56,13 @@ export default function Catalog() {
     inStock: false,
     discounted: false,
   });
+
+  // Sync price max with filter options until the user explicitly changes it
+  useEffect(() => {
+    if (!priceTouched) {
+      setSidebarFilters(prev => ({ ...prev, priceMax: filterOptions.maxPrice }));
+    }
+  }, [filterOptions.maxPrice, priceTouched]);
 
   // Update category filter when URL slug changes (e.g., footer navigation)
   useEffect(() => {
