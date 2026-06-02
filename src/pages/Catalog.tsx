@@ -194,6 +194,7 @@ export default function Catalog() {
 
   const handleApplyFilters = useCallback((newFilters: SidebarFilters) => {
     setSidebarFilters(newFilters);
+    setPriceTouched(true);
     setCurrentPage(1);
   }, []);
 
