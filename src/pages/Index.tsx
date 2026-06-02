@@ -519,7 +519,7 @@ export default function Index() {
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
         <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0">
-          <div className="flex gap-3 px-4 lg:px-0 snap-x snap-mandatory lg:grid lg:grid-cols-6 lg:gap-4">
+          <div className="flex gap-3 lg:gap-4 px-4 lg:px-0 snap-x snap-mandatory">
             {dbPromoTiles.map((tile, i) => {
               const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
               const title = language === 'uz' ? tile.title_uz : tile.title_ru;
@@ -527,7 +527,7 @@ export default function Index() {
                 <Link
                   key={tile.id}
                   to={tile.href}
-                  className={`group relative shrink-0 snap-start w-[32%] sm:w-[24%] md:w-[18%] lg:w-auto aspect-square rounded-2xl lg:rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
+                  className={`group relative shrink-0 snap-start w-[32%] sm:w-[24%] md:w-[18%] lg:w-[14%] aspect-square rounded-2xl lg:rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
                   style={{ transitionDelay: `${i * 60}ms` }}
                 >
                   <div className="absolute inset-0 p-3 lg:p-5 flex flex-col justify-between">
