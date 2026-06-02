@@ -216,7 +216,7 @@ export default function Catalog() {
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-            {setTitle ? (language === 'uz' ? setTitle.uz : setTitle.ru) : t.catalog.title}
+            {setTitle ? (language === 'uz' ? setTitle.uz : setTitle.ru) : (categoryName || t.catalog.title)}
           </h1>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
