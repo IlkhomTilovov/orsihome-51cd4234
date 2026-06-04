@@ -120,8 +120,11 @@ export default function Catalog() {
     if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
       f.categoryId = sidebarFilters.categoryId;
     }
-    if (sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
-    if (sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
+    // Only apply price filters after the user has explicitly changed them.
+    // Prevents a race where the initial default (700000) is sent before
+    // filterOptions.maxPrice resolves, causing a double-fetch flicker.
+    if (priceTouched && sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
+    if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
     if (sidebarFilters.colors.length > 0) f.colors = sidebarFilters.colors;
     if (sidebarFilters.furLengths.length > 0) f.furLengths = sidebarFilters.furLengths;
