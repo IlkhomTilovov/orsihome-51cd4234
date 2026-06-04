@@ -133,7 +133,7 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
