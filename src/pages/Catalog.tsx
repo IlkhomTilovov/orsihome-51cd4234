@@ -191,7 +191,7 @@ export default function Catalog() {
     if (promoTileId) params.set('promo', promoTileId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId, priceTouched]);
 
 
 
