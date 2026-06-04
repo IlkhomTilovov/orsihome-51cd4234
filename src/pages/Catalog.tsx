@@ -180,8 +180,8 @@ export default function Catalog() {
       const cat = categories.find(c => c.id === sidebarFilters.categoryId);
       params.set('category', cat?.slug || sidebarFilters.categoryId);
     }
-    if (sidebarFilters.priceMin > 0) params.set('min_price', sidebarFilters.priceMin.toString());
-    if (sidebarFilters.priceMax < filterOptions.maxPrice) params.set('max_price', sidebarFilters.priceMax.toString());
+    if (priceTouched && sidebarFilters.priceMin > 0) params.set('min_price', sidebarFilters.priceMin.toString());
+    if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) params.set('max_price', sidebarFilters.priceMax.toString());
     if (sidebarFilters.materials.length > 0) params.set('material', sidebarFilters.materials.join(','));
     if (sidebarFilters.colors.length > 0) params.set('color', sidebarFilters.colors.join(','));
     if (sidebarFilters.furLengths.length > 0) params.set('fur_length', sidebarFilters.furLengths.join(','));
