@@ -120,8 +120,11 @@ export default function Catalog() {
     if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
       f.categoryId = sidebarFilters.categoryId;
     }
-    if (sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
-    if (sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
+    // Only apply price filters after the user has explicitly changed them.
+    // Prevents a race where the initial default (700000) is sent before
+    // filterOptions.maxPrice resolves, causing a double-fetch flicker.
+    if (priceTouched && sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
+    if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
     if (sidebarFilters.colors.length > 0) f.colors = sidebarFilters.colors;
     if (sidebarFilters.furLengths.length > 0) f.furLengths = sidebarFilters.furLengths;
@@ -130,7 +133,7 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
@@ -177,8 +180,8 @@ export default function Catalog() {
       const cat = categories.find(c => c.id === sidebarFilters.categoryId);
       params.set('category', cat?.slug || sidebarFilters.categoryId);
     }
-    if (sidebarFilters.priceMin > 0) params.set('min_price', sidebarFilters.priceMin.toString());
-    if (sidebarFilters.priceMax < filterOptions.maxPrice) params.set('max_price', sidebarFilters.priceMax.toString());
+    if (priceTouched && sidebarFilters.priceMin > 0) params.set('min_price', sidebarFilters.priceMin.toString());
+    if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) params.set('max_price', sidebarFilters.priceMax.toString());
     if (sidebarFilters.materials.length > 0) params.set('material', sidebarFilters.materials.join(','));
     if (sidebarFilters.colors.length > 0) params.set('color', sidebarFilters.colors.join(','));
     if (sidebarFilters.furLengths.length > 0) params.set('fur_length', sidebarFilters.furLengths.join(','));
@@ -188,7 +191,7 @@ export default function Catalog() {
     if (promoTileId) params.set('promo', promoTileId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId, priceTouched]);
 
 
 
