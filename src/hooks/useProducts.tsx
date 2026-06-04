@@ -367,67 +367,53 @@ export function useProductById(idOrSlug: string) {
 }
 
 // Hook to get unique filter values from all active products
+const DEFAULT_FILTER_OPTIONS = {
+  materials: [] as string[],
+  colors: [] as string[],
+  furLengths: [] as string[],
+  applications: [] as string[],
+  maxPrice: 700000,
+};
+
 export function useProductFilterOptions() {
-  const [options, setOptions] = useState<{
-    materials: string[];
-    colors: string[];
-    furLengths: string[];
-    applications: string[];
-    maxPrice: number;
-  }>({
-    materials: [],
-    colors: [],
-    furLengths: [],
-    applications: [],
-    maxPrice: 700000,
+  const { data, isLoading } = useQuery({
+    queryKey: ['product-filter-options'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('materials, colors, fur_length, application, price')
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      const materialsSet = new Set<string>();
+      const colorsSet = new Set<string>();
+      const furLengthsSet = new Set<string>();
+      const applicationsSet = new Set<string>();
+      let maxPrice = 0;
+
+      (data || []).forEach((p: any) => {
+        (p.materials || []).forEach((m: string) => m && materialsSet.add(m));
+        (p.colors || []).forEach((c: string) => c && colorsSet.add(c));
+        (p.fur_length || []).forEach((f: string) => f && furLengthsSet.add(f));
+        (p.application || []).forEach((a: string) => a && applicationsSet.add(a));
+        if (p.price && p.price > maxPrice) maxPrice = p.price;
+      });
+
+      maxPrice = Math.ceil(maxPrice / 100000) * 100000 || 700000;
+
+      return {
+        materials: Array.from(materialsSet).sort(),
+        colors: Array.from(colorsSet).sort(),
+        furLengths: Array.from(furLengthsSet).sort(),
+        applications: Array.from(applicationsSet).sort(),
+        maxPrice,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
   });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('materials, colors, fur_length, application, price')
-          .eq('is_active', true);
-
-        if (error) throw error;
-
-        const materialsSet = new Set<string>();
-        const colorsSet = new Set<string>();
-        const furLengthsSet = new Set<string>();
-        const applicationsSet = new Set<string>();
-        let maxPrice = 0;
-
-        (data || []).forEach((p: any) => {
-          (p.materials || []).forEach((m: string) => m && materialsSet.add(m));
-          (p.colors || []).forEach((c: string) => c && colorsSet.add(c));
-          (p.fur_length || []).forEach((f: string) => f && furLengthsSet.add(f));
-          (p.application || []).forEach((a: string) => a && applicationsSet.add(a));
-          if (p.price && p.price > maxPrice) maxPrice = p.price;
-        });
-
-        // Round max price up to nearest 100k
-        maxPrice = Math.ceil(maxPrice / 100000) * 100000 || 700000;
-
-        setOptions({
-          materials: Array.from(materialsSet).sort(),
-          colors: Array.from(colorsSet).sort(),
-          furLengths: Array.from(furLengthsSet).sort(),
-          applications: Array.from(applicationsSet).sort(),
-          maxPrice,
-        });
-      } catch (err) {
-        console.error('Error fetching filter options:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOptions();
-  }, []);
-
-  return { options, loading };
+  return { options: data || DEFAULT_FILTER_OPTIONS, loading: isLoading };
 }
 
 // Materials list for filtering (legacy)
