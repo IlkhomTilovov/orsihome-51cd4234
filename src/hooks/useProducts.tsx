@@ -259,31 +259,21 @@ export function useFeaturedProducts(limit: number = 8) {
 }
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ['categories', 'active'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name_uz, name_ru, slug, icon, image, is_active, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+      if (error) throw error;
+      return (data || []) as Category[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('categories')
-          .select('id, name_uz, name_ru, slug, icon, image, is_active, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setCategories(data || []);
-      } catch (err) {
-        console.error('Error fetching categories:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  return { categories, loading };
+  return { categories: data || [], loading: isLoading };
 }
 
 export function useProductBySlug(slug: string) {
