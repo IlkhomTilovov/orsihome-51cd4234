@@ -29,6 +29,7 @@ export default function Catalog() {
 
   const [setProductIds, setSetProductIds] = useState<string[] | null>(null);
   const [setTitle, setSetTitle] = useState<{ uz: string; ru: string } | null>(null);
+  const [setImage, setSetImage] = useState<string | null>(null);
   
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
