@@ -43,6 +43,12 @@ export function Header() {
     { categoryId: activeCategoryId || undefined },
     6
   );
+  // Promo card uchun faqat chegirmadagi mahsulotlar
+  const { products: discountedProducts } = useProducts(
+    1,
+    { discounted: true },
+    1
+  );
 
 
 
@@ -274,8 +280,8 @@ export function Header() {
                   </div>
 
                   {/* Right: promo card */}
-                  {previewProducts.length > 0 && (() => {
-                    const promo = previewProducts[0];
+                  {discountedProducts.length > 0 && (() => {
+                    const promo = discountedProducts[0];
                     const img = promo.images?.[0];
                     const name = language === 'ru' ? promo.name_ru : promo.name_uz;
                     return (
