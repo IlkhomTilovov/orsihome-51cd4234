@@ -400,6 +400,12 @@ export default function ProductsNew() {
       variants_uz: (product as any).variants_uz || product.keyword_variations || [],
       variants_ru: (product as any).variants_ru || [],
       promo_tile_ids: (product as any).promo_tile_ids || [],
+      show_in_hero: (product as any).show_in_hero ?? false,
+      hero_priority: String((product as any).hero_priority ?? 0),
+      hero_title_uz: (product as any).hero_title_uz || '',
+      hero_title_ru: (product as any).hero_title_ru || '',
+      hero_subtitle_uz: (product as any).hero_subtitle_uz || '',
+      hero_subtitle_ru: (product as any).hero_subtitle_ru || '',
     });
     setSlugError('');
     setActiveTab('basic');
