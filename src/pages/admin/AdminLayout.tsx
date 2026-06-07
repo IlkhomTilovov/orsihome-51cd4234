@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Settings,
   Menu,
   X,
   LogOut,
@@ -19,7 +19,12 @@ import {
   MessageSquare,
   LayoutGrid,
   Layers,
-  LucideIcon
+  ChevronDown,
+  ShoppingBag,
+  Boxes,
+  PaintBucket,
+  Cog,
+  LucideIcon,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -35,22 +40,55 @@ interface NavItem {
   module: keyof RolePermissions;
 }
 
-const navItems: NavItem[] = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
-  { title: 'Buyurtmalar', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
-  { title: 'Toifalar', url: '/admin/categories', icon: FolderTree, module: 'categories' },
-  { title: 'Mahsulotlar', url: '/admin/products', icon: Package, module: 'products' },
-  { title: 'Mijozlar', url: '/admin/customers', icon: Users, module: 'customers' },
-  { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
-  { title: 'Sayt kontenti', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
-  { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
-  { title: 'Setlar to\'plami', url: '/admin/sets', icon: Layers, module: 'siteContent' },
-  { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
+interface NavGroup {
+  title: string;
+  icon: LucideIcon;
+  items: NavItem[];
+}
 
-  { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
-  { title: 'Adminlar', url: '/admin/admins', icon: Shield, module: 'admins' },
-  { title: 'Telegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
-  { title: 'Tizim sozlamalari', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
+// Standalone (no group) items
+const standaloneItems: NavItem[] = [
+  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
+];
+
+const navGroups: NavGroup[] = [
+  {
+    title: 'Sotuv',
+    icon: ShoppingBag,
+    items: [
+      { title: 'Buyurtmalar', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
+      { title: 'Mijozlar', url: '/admin/customers', icon: Users, module: 'customers' },
+      { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
+    ],
+  },
+  {
+    title: 'Katalog',
+    icon: Boxes,
+    items: [
+      { title: 'Toifalar', url: '/admin/categories', icon: FolderTree, module: 'categories' },
+      { title: 'Mahsulotlar', url: '/admin/products', icon: Package, module: 'products' },
+    ],
+  },
+  {
+    title: 'Sayt kontenti',
+    icon: PaintBucket,
+    items: [
+      { title: 'Sayt kontenti', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
+      { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
+      { title: "Setlar to'plami", url: '/admin/sets', icon: Layers, module: 'siteContent' },
+      { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
+      { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
+    ],
+  },
+  {
+    title: 'Tizim',
+    icon: Cog,
+    items: [
+      { title: 'Adminlar', url: '/admin/admins', icon: Shield, module: 'admins' },
+      { title: 'Telegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
+      { title: 'Tizim sozlamalari', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
+    ],
+  },
 ];
 
 export default function AdminLayout() {
@@ -64,35 +102,109 @@ export default function AdminLayout() {
     return location.pathname.startsWith(path);
   };
 
-  // Filter nav items based on user permissions
-  const filteredNavItems = navItems.filter(item => canViewModule(item.module));
+  const filteredStandalone = standaloneItems.filter((i) => canViewModule(i.module));
+  const filteredGroups = navGroups
+    .map((g) => ({ ...g, items: g.items.filter((i) => canViewModule(i.module)) }))
+    .filter((g) => g.items.length > 0);
+
+  // Open groups that contain the active route by default
+  const initialOpen: Record<string, boolean> = {};
+  filteredGroups.forEach((g) => {
+    initialOpen[g.title] = g.items.some((i) => isActive(i.url));
+  });
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(initialOpen);
+
+  const toggleGroup = (title: string) =>
+    setOpenGroups((p) => ({ ...p, [title]: !p[title] }));
 
   const roleInfo = userRole ? roleDisplayInfo[userRole] : null;
 
+  const renderNav = (onItemClick?: () => void) => (
+    <>
+      {filteredStandalone.map((item) => (
+        <Link
+          key={item.url}
+          to={item.url}
+          onClick={onItemClick}
+          className={cn(
+            'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+            isActive(item.url)
+              ? 'bg-primary text-primary-foreground'
+              : 'text-gray-600 hover:bg-gray-100'
+          )}
+        >
+          <item.icon className="h-5 w-5" />
+          {item.title}
+        </Link>
+      ))}
+
+      {filteredGroups.map((group) => {
+        const open = openGroups[group.title];
+        const hasActive = group.items.some((i) => isActive(i.url));
+        return (
+          <div key={group.title} className="space-y-1">
+            <button
+              type="button"
+              onClick={() => toggleGroup(group.title)}
+              className={cn(
+                'w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                hasActive ? 'text-primary' : 'text-gray-700 hover:bg-gray-100'
+              )}
+            >
+              <span className="flex items-center gap-3">
+                <group.icon className="h-5 w-5" />
+                {group.title}
+              </span>
+              <ChevronDown
+                className={cn(
+                  'h-4 w-4 transition-transform',
+                  open ? 'rotate-180' : 'rotate-0'
+                )}
+              />
+            </button>
+            {open && (
+              <div className="ml-4 pl-3 border-l border-gray-200 space-y-1">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.url}
+                    to={item.url}
+                    onClick={onItemClick}
+                    className={cn(
+                      'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                      isActive(item.url)
+                        ? 'bg-primary text-primary-foreground font-medium'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Mobile header - fixed */}
+      {/* Mobile header */}
       <header className="sticky top-0 z-30 h-16 bg-white border-b flex items-center justify-between px-4 lg:hidden">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setSidebarOpen(true)}
-        >
+        <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)}>
           <Menu className="h-5 w-5" />
         </Button>
-
         <Link to="/admin" className="font-serif text-lg font-bold text-primary">
           Admin Panel
         </Link>
-
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
@@ -101,63 +213,48 @@ export default function AdminLayout() {
       </header>
 
       {/* Mobile sidebar */}
-      <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform lg:hidden",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <div className="flex items-center justify-between h-16 px-6 border-b">
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform lg:hidden flex flex-col',
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        <div className="flex items-center justify-between h-16 px-6 border-b shrink-0">
           <Link to="/admin" className="font-serif text-xl font-bold text-primary">
             Admin Panel
           </Link>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setSidebarOpen(false)}
-          >
+          <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        {/* User info */}
         {roleInfo && (
-          <div className="p-4 border-b">
+          <div className="p-4 border-b shrink-0">
             <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-            <Badge className={cn("mt-1", roleInfo.color)}>{roleInfo.label}</Badge>
+            <Badge className={cn('mt-1', roleInfo.color)}>{roleInfo.label}</Badge>
           </div>
         )}
 
-        <nav className="p-4 space-y-2">
-          {filteredNavItems.map((item) => (
-            <Link
-              key={item.url}
-              to={item.url}
-              onClick={() => setSidebarOpen(false)}
-              className={cn(
-                "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                isActive(item.url)
-                  ? "bg-primary text-primary-foreground"
-                  : "text-gray-600 hover:bg-gray-100"
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.title}
-            </Link>
-          ))}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {renderNav(() => setSidebarOpen(false))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t space-y-2">
-          <Button 
-            variant="outline" 
+        <div className="p-4 border-t space-y-2 shrink-0">
+          <Button
+            variant="outline"
             className="w-full justify-start gap-3"
             onClick={() => navigate('/')}
           >
             <LogOut className="h-4 w-4" />
             Saytga qaytish
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             className="w-full justify-start gap-3"
-            onClick={async () => { await signOut(); navigate('/admin/auth'); }}
+            onClick={async () => {
+              await signOut();
+              navigate('/admin/auth');
+            }}
           >
             <LogOut className="h-4 w-4" />
             Admindan chiqish
@@ -167,7 +264,6 @@ export default function AdminLayout() {
 
       {/* Desktop layout */}
       <div className="hidden lg:flex min-h-screen">
-        {/* Desktop sidebar - fixed to viewport */}
         <aside className="w-64 bg-white border-r fixed inset-y-0 left-0 flex flex-col">
           <div className="flex items-center h-16 px-6 border-b">
             <Link to="/admin" className="font-serif text-xl font-bold text-primary">
@@ -175,45 +271,31 @@ export default function AdminLayout() {
             </Link>
           </div>
 
-          {/* User info */}
           {roleInfo && (
             <div className="p-4 border-b">
               <p className="text-sm text-muted-foreground truncate">{user?.email}</p>
-              <Badge className={cn("mt-1", roleInfo.color)}>{roleInfo.label}</Badge>
+              <Badge className={cn('mt-1', roleInfo.color)}>{roleInfo.label}</Badge>
             </div>
           )}
 
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            {filteredNavItems.map((item) => (
-              <Link
-                key={item.url}
-                to={item.url}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
-                  isActive(item.url)
-                    ? "bg-primary text-primary-foreground"
-                    : "text-gray-600 hover:bg-gray-100"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.title}
-              </Link>
-            ))}
-          </nav>
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">{renderNav()}</nav>
 
           <div className="p-4 border-t mt-auto space-y-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full justify-start gap-3"
               onClick={() => navigate('/')}
             >
               <LogOut className="h-4 w-4" />
               Saytga qaytish
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               className="w-full justify-start gap-3"
-              onClick={async () => { await signOut(); navigate('/admin/auth'); }}
+              onClick={async () => {
+                await signOut();
+                navigate('/admin/auth');
+              }}
             >
               <LogOut className="h-4 w-4" />
               Admindan chiqish
@@ -221,12 +303,9 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Spacer for fixed sidebar */}
         <div className="w-64 flex-shrink-0" />
 
-        {/* Main content */}
         <div className="flex-1 min-w-0">
-          {/* Desktop top header */}
           <header className="sticky top-0 z-20 h-16 bg-white border-b flex items-center justify-end px-6">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon">
@@ -238,14 +317,12 @@ export default function AdminLayout() {
             </div>
           </header>
 
-          {/* Page content */}
           <main className="p-6">
             <Outlet />
           </main>
         </div>
       </div>
 
-      {/* Mobile content */}
       <main className="p-4 lg:hidden">
         <Outlet />
       </main>
