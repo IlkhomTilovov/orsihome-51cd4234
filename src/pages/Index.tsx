@@ -13,6 +13,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
+import { HeroConfigurator } from '@/components/HeroConfigurator';
 
 
 import serviceWardrobe from '@/assets/service-wardrobe.jpg';
@@ -480,41 +481,9 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ============ HERO (Apple-style: huge type + product + side promo) ============ */}
-      <section className="container mx-auto px-4 lg:px-8 pt-6 lg:pt-10">
-        <div className="grid grid-cols-1 gap-6">
-          {/* Main hero card */}
-          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft min-h-[460px] lg:min-h-[620px]">
-            {/* Full-bleed background image */}
-            <EditableImage
-              contentKey="hero_product_image"
-              fallbackSrc={fallbackImages[0]}
-              alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-cover"
-              wrapperClassName="absolute inset-0 w-full h-full"
-              section="hero"
-            />
+      {/* ============ HERO — Luxury Configurator (Porsche / Minotti style) ============ */}
+      <HeroConfigurator fallbackImage={fallbackImages[0]} />
 
-            {/* Dark gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
-
-            {/* Text content overlay */}
-            <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-              <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
-                <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
-                <EditableText contentKey="hero_title_line2" fallback="OLIVIA" as="span" className="block" section="hero" />
-              </h1>
-              <p className="mt-6 text-white/80 text-base lg:text-lg italic font-serif">
-                <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
 
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
