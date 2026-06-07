@@ -282,28 +282,27 @@ export function Header() {
                       <Link
                         to={`/product/${promo.slug || promo.id}`}
                         onClick={() => setCatalogOpen(false)}
-                        className="lg:col-span-4 relative bg-[hsl(var(--accent))] m-4 lg:my-6 lg:mr-6 rounded-2xl p-6 flex items-center justify-between overflow-hidden group hover:shadow-soft-md transition-shadow"
+                        className="lg:col-span-4 relative bg-[hsl(var(--accent))] m-4 lg:my-6 lg:mr-6 rounded-2xl overflow-hidden group hover:shadow-soft-md transition-shadow min-h-[200px]"
                       >
-                        <div className="relative z-10 max-w-[55%]">
-                          <p className="text-sm font-semibold text-accent-foreground leading-snug">
+                        {img && (
+                          <LazyImage
+                            src={img}
+                            alt={name}
+                            wrapperClassName="absolute inset-0 w-full h-full"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
+                          <p className="text-sm font-semibold text-white leading-snug">
                             {name}
                           </p>
                           {promo.price != null && (
-                            <p className="text-xs text-accent-foreground/80 mt-2">
+                            <p className="text-xs text-white/85 mt-1">
                               {Number(promo.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
                             </p>
                           )}
                         </div>
-                        {img && (
-                          <div className="relative w-32 h-32 lg:w-40 lg:h-40 shrink-0">
-                            <LazyImage
-                              src={img}
-                              alt={name}
-                              wrapperClassName="absolute inset-0 w-full h-full"
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                          </div>
-                        )}
                       </Link>
                     );
                   })()}
