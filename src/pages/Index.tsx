@@ -12,6 +12,7 @@ import { useSEO } from '@/hooks/useSEO';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
+import { HeroSlider } from '@/components/HeroSlider';
 import { useState, useRef, useEffect } from 'react';
 
 
