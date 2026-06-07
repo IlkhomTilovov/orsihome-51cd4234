@@ -484,7 +484,7 @@ export default function Index() {
       <section className="container mx-auto px-4 lg:px-8 pt-6 lg:pt-10">
         <div className="grid grid-cols-1 gap-6">
           {/* Main hero card */}
-          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft min-h-[460px] lg:min-h-[620px]">
+          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px]">
             {/* Full-bleed background image */}
             <EditableImage
               contentKey="hero_product_image"
