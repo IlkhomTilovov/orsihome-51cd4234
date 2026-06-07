@@ -504,7 +504,7 @@ export default function Index() {
               <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
                 <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
               </h1>
-              <p className="mt-6 text-foreground/70 text-base lg:text-lg italic font-serif">
+              <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans">
                 <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
               </p>
 
