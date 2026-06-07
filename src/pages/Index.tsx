@@ -13,6 +13,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
+import { HeroConfigurator } from '@/components/HeroConfigurator';
 
 
 import serviceWardrobe from '@/assets/service-wardrobe.jpg';
