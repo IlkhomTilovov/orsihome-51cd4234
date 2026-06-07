@@ -490,7 +490,7 @@ export default function Index() {
               contentKey="hero_product_image"
               fallbackSrc={fallbackImages[0]}
               alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-contain lg:object-cover object-center"
               wrapperClassName="absolute inset-0 w-full h-full"
               section="hero"
             />
