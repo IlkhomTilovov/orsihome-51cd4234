@@ -241,140 +241,73 @@ export function Header() {
         <>
           <div className="absolute left-0 right-0 top-full h-screen z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setCatalogOpen(false)} />
           <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
-            <div className="bg-background/95 backdrop-blur-xl border-t border-border/40 shadow-soft-lg">
-              <div className="container mx-auto px-4 lg:px-8 py-10">
-                <div className="flex items-end justify-between mb-8 pb-4 border-b border-border/40">
-                  <div>
-                    <p className="text-xs tracking-[0.3em] uppercase text-primary/70 mb-2">
-                      {language === 'ru' ? 'Каталог' : 'Katalog'}
-                    </p>
-                    <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                      {language === 'ru' ? 'Наши товары' : 'Bizning tovarlar'}
+            <div className="container mx-auto px-4 lg:px-8 py-6">
+              <div className="bg-background rounded-3xl shadow-soft-lg border border-border/40 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+                  {/* Left: categories */}
+                  <div className="lg:col-span-8 p-8 lg:p-10">
+                    <h3 className="text-2xl font-bold text-foreground mb-6">
+                      {language === 'ru' ? 'Товары' : 'Tovarlar'}
                     </h3>
+                    {categories.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                        {categories.map((c) => (
+                          <Link
+                            key={c.id}
+                            to={`/catalog?category=${c.slug}`}
+                            onClick={() => setCatalogOpen(false)}
+                            className="text-sm text-foreground/80 hover:text-primary transition-colors py-1"
+                          >
+                            {language === 'ru' ? c.name_ru : c.name_uz}
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <Link
+                        to="/catalog"
+                        onClick={() => setCatalogOpen(false)}
+                        className="text-sm text-muted-foreground hover:text-primary"
+                      >
+                        {language === 'ru' ? 'Перейти в каталог' : "Katalogga o'tish"}
+                      </Link>
+                    )}
                   </div>
-                  <Link
-                    to="/catalog"
-                    onClick={() => setCatalogOpen(false)}
-                    className="hidden md:inline-flex items-center gap-2 text-xs tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors group"
-                  >
-                    {language === 'ru' ? 'Все товары' : 'Barchasi'}
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
-                  </Link>
+
+                  {/* Right: promo card */}
+                  {previewProducts.length > 0 && (() => {
+                    const promo = previewProducts[0];
+                    const img = promo.images?.[0];
+                    const name = language === 'ru' ? promo.name_ru : promo.name_uz;
+                    return (
+                      <Link
+                        to={`/product/${promo.slug || promo.id}`}
+                        onClick={() => setCatalogOpen(false)}
+                        className="lg:col-span-4 relative bg-[hsl(var(--accent))] m-4 lg:my-6 lg:mr-6 rounded-2xl p-6 flex items-center justify-between overflow-hidden group hover:shadow-soft-md transition-shadow"
+                      >
+                        <div className="relative z-10 max-w-[55%]">
+                          <p className="text-sm font-semibold text-accent-foreground leading-snug">
+                            {name}
+                          </p>
+                          {promo.price != null && (
+                            <p className="text-xs text-accent-foreground/80 mt-2">
+                              {Number(promo.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
+                            </p>
+                          )}
+                        </div>
+                        {img && (
+                          <div className="relative w-32 h-32 lg:w-40 lg:h-40 shrink-0">
+                            <LazyImage
+                              src={img}
+                              alt={name}
+                              wrapperClassName="absolute inset-0 w-full h-full"
+                              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                            />
+                          </div>
+                        )}
+                      </Link>
+                    );
+                  })()}
                 </div>
-
-                {categories.length > 0 ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Left sidebar list */}
-                    <aside className="lg:col-span-3">
-                      <p className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground/60 mb-4">
-                        {language === 'ru' ? 'Категории' : 'Toifalar'}
-                      </p>
-                      <ul className="flex flex-col">
-                        {categories.map((c) => {
-                          const isActiveCat = c.id === activeCategoryId;
-                          return (
-                            <li key={c.id}>
-                              <button
-                                type="button"
-                                onMouseEnter={() => setActiveCategoryId(c.id)}
-                                onFocus={() => setActiveCategoryId(c.id)}
-                                onClick={() => setActiveCategoryId(c.id)}
-                                className={`group w-full flex items-center justify-between py-3 border-b border-border/40 text-sm transition-colors duration-300 ${
-                                  isActiveCat
-                                    ? 'text-primary font-semibold'
-                                    : 'text-muted-foreground hover:text-primary'
-                                }`}
-                              >
-                                <span>{language === 'ru' ? c.name_ru : c.name_uz}</span>
-                                <ChevronDown className={`w-4 h-4 -rotate-90 transition-all ${
-                                  isActiveCat ? 'opacity-100 translate-x-1 text-primary' : 'opacity-40 group-hover:opacity-100 group-hover:translate-x-1'
-                                }`} />
-                              </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                      {activeCategory && (
-                        <Link
-                          to={`/catalog?category=${activeCategory.slug}`}
-                          onClick={() => setCatalogOpen(false)}
-                          className="mt-6 inline-flex items-center gap-2 text-xs tracking-widest uppercase text-primary hover:translate-x-1 transition-transform"
-                        >
-                          {language === 'ru' ? 'Перейти' : "Ko'rish"} <span>→</span>
-                        </Link>
-                      )}
-                    </aside>
-
-                    {/* Right products preview */}
-                    <div className="lg:col-span-9">
-                      {(() => {
-                        const matched = previewProducts.filter(p => p.category_id === activeCategoryId);
-                        const showSkeleton = previewLoading || (activeCategoryId && matched.length === 0 && previewProducts.length > 0);
-                        if (showSkeleton) {
-                          return (
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                              {Array.from({ length: 6 }).map((_, i) => (
-                                <div key={i} className="aspect-[4/5] rounded-xl bg-muted animate-pulse" />
-                              ))}
-                            </div>
-                          );
-                        }
-                        return matched.length > 0 ? (
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-                            {matched.map((p) => {
-                              const img = p.images?.[0];
-                              const name = language === 'ru' ? p.name_ru : p.name_uz;
-                              const href = `/product/${p.slug || p.id}`;
-                              return (
-                                <Link
-                                  key={p.id}
-                                  to={href}
-                                  onClick={() => setCatalogOpen(false)}
-                                  className="group block"
-                                >
-                                  <div className="relative overflow-hidden rounded-xl aspect-[4/5] bg-muted shadow-soft-sm hover:shadow-soft-md transition-all duration-500">
-                                    {img ? (
-                                      <LazyImage
-                                        src={img}
-                                        alt={name}
-                                        wrapperClassName="absolute inset-0 w-full h-full"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                      />
-                                    ) : (
-                                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5" />
-                                    )}
-                                  </div>
-                                  <div className="mt-3 px-1">
-                                    <h4 className="text-sm font-medium text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                                      {name}
-                                    </h4>
-                                    {p.price != null && (
-                                      <p className="text-xs text-muted-foreground mt-1">
-                                        {Number(p.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
-                                      </p>
-                                    )}
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <div className="h-full min-h-[200px] flex items-center justify-center text-sm text-muted-foreground">
-                            {language === 'ru' ? 'В этой категории пока нет товаров' : "Bu toifada hozircha mahsulot yo'q"}
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                ) : (
-                  <Link
-                    to="/catalog"
-                    onClick={() => setCatalogOpen(false)}
-                    className="text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {language === 'ru' ? 'Перейти в каталог' : "Katalogga o'tish"}
-                  </Link>
-                )}
               </div>
             </div>
           </div>
