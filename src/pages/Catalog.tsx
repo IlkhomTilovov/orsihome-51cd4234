@@ -83,12 +83,11 @@ export default function Catalog() {
 
   // Fetch set product_ids when ?set= is in URL
   useEffect(() => {
-    if (!setId) {
-      setSetProductIds(null);
-      setSetTitle(null);
-      setSetImage(null);
-      return;
-    }
+    // Reset stale set data immediately when setId changes
+    setSetProductIds(null);
+    setSetTitle(null);
+    setSetImage(null);
+    if (!setId) return;
     let cancelled = false;
     (async () => {
       const { data } = await supabase
