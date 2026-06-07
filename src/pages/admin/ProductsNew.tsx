@@ -113,6 +113,12 @@ interface FormData {
   variants_uz: string[];
   variants_ru: string[];
   promo_tile_ids: string[];
+  show_in_hero: boolean;
+  hero_priority: string;
+  hero_title_uz: string;
+  hero_title_ru: string;
+  hero_subtitle_uz: string;
+  hero_subtitle_ru: string;
 }
 
 const emptyForm: FormData = {
@@ -148,6 +154,12 @@ const emptyForm: FormData = {
   variants_uz: [],
   variants_ru: [],
   promo_tile_ids: [],
+  show_in_hero: false,
+  hero_priority: '0',
+  hero_title_uz: '',
+  hero_title_ru: '',
+  hero_subtitle_uz: '',
+  hero_subtitle_ru: '',
 };
 
 const ADMIN_PAGE_SIZE = 20;
