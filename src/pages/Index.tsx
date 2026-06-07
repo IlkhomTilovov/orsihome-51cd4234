@@ -496,7 +496,7 @@ export default function Index() {
             />
 
             {/* Light blur overlay for readability */}
-            <div className="absolute inset-0 bg-[#f9f9f6]/60 backdrop-blur-[2px] pointer-events-none" />
+            <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
 
 
             {/* Text content overlay */}
