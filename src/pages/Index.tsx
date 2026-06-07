@@ -262,7 +262,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         <div className="flex items-end justify-between mb-8">
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
             <span className="inline-block">{title}</span>
-            <sup className="text-xl ml-2 text-muted-foreground font-normal">{all.length}</sup>
+            
           </h2>
           <Link
             to={`/catalog?set=${s.id}`}
@@ -552,7 +552,7 @@ export default function Index() {
           <div>
             <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
               {language === 'uz' ? 'Toifalar' : 'Категория'}
-              <sup className="text-xl ml-2 text-muted-foreground font-normal">{cats.length}</sup>
+              
             </h2>
           </div>
           <div className="hidden md:flex items-center gap-3">
