@@ -1023,6 +1023,72 @@ export default function ProductsNew() {
                   <Label>Faol</Label>
                 </div>
               </div>
+
+              {/* ============ HERO SLIDER SETTINGS ============ */}
+              <Separator />
+              <div className="space-y-4 rounded-lg border border-border p-4 bg-muted/30">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base font-semibold">Hero Slider</Label>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Mahsulot bosh sahifadagi premium Hero slayderda chiqishi uchun. <b>Tanlangan</b> ham yoqilgan bo'lishi shart.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={formData.show_in_hero}
+                    onCheckedChange={(checked) => setFormData({ ...formData, show_in_hero: checked })}
+                  />
+                </div>
+
+                {formData.show_in_hero && (
+                  <div className="space-y-4 pt-2">
+                    <div className="space-y-2 max-w-xs">
+                      <Label>Tartib (hero_priority)</Label>
+                      <Input
+                        type="number"
+                        value={formData.hero_priority}
+                        onChange={(e) => setFormData({ ...formData, hero_priority: e.target.value })}
+                        placeholder="0"
+                      />
+                      <p className="text-xs text-muted-foreground">Kichik raqam birinchi chiqadi.</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Hero sarlavha (UZ)</Label>
+                        <Input
+                          value={formData.hero_title_uz}
+                          onChange={(e) => setFormData({ ...formData, hero_title_uz: e.target.value })}
+                          placeholder="Masalan: OLIVIA"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hero sarlavha (RU)</Label>
+                        <Input
+                          value={formData.hero_title_ru}
+                          onChange={(e) => setFormData({ ...formData, hero_title_ru: e.target.value })}
+                          placeholder="Например: OLIVIA"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hero subtitle (UZ)</Label>
+                        <Input
+                          value={formData.hero_subtitle_uz}
+                          onChange={(e) => setFormData({ ...formData, hero_subtitle_uz: e.target.value })}
+                          placeholder="Premium Kolleksiya"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Hero subtitle (RU)</Label>
+                        <Input
+                          value={formData.hero_subtitle_ru}
+                          onChange={(e) => setFormData({ ...formData, hero_subtitle_ru: e.target.value })}
+                          placeholder="Премиум Коллекция"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
             {/* Description Tab */}
