@@ -557,6 +557,12 @@ export default function ProductsNew() {
       variants_uz: (formData.variants_uz || []).length > 0 ? formData.variants_uz : [],
       variants_ru: (formData.variants_ru || []).length > 0 ? formData.variants_ru : [],
       promo_tile_ids: formData.promo_tile_ids || [],
+      show_in_hero: formData.show_in_hero,
+      hero_priority: parseInt(formData.hero_priority || '0', 10) || 0,
+      hero_title_uz: formData.hero_title_uz || null,
+      hero_title_ru: formData.hero_title_ru || null,
+      hero_subtitle_uz: formData.hero_subtitle_uz || null,
+      hero_subtitle_ru: formData.hero_subtitle_ru || null,
     };
 
     try {
