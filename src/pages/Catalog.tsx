@@ -86,18 +86,20 @@ export default function Catalog() {
     if (!setId) {
       setSetProductIds(null);
       setSetTitle(null);
+      setSetImage(null);
       return;
     }
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from('sets')
-        .select('product_ids, title_uz, title_ru')
+        .select('product_ids, title_uz, title_ru, image')
         .eq('id', setId)
         .maybeSingle();
       if (cancelled) return;
       setSetProductIds((data?.product_ids as string[]) || []);
       setSetTitle(data ? { uz: data.title_uz, ru: data.title_ru } : null);
+      setSetImage((data?.image as string) || null);
       setCurrentPage(1);
     })();
     return () => { cancelled = true; };
