@@ -499,8 +499,8 @@ export default function Index() {
             <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
 
 
-            {/* Text content overlay */}
-            <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
+            {/* Text content overlay - hidden on mobile */}
+            <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
               <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
                 <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
               </h1>
