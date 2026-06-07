@@ -300,7 +300,7 @@ export function Header() {
                               src={img}
                               alt={name}
                               wrapperClassName="absolute inset-0 w-full h-full"
-                              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           </div>
                         )}
