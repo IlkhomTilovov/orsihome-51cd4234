@@ -192,8 +192,6 @@ const App = () => (
                           </main>
                           <Footer />
                           
-                          <EditModeToggle />
-                          <EditorPanel />
                         </div>
                         </TelegramShell>
                         } />
