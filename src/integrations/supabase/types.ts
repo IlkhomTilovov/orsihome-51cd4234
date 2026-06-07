@@ -319,6 +319,11 @@ export type Database = {
           full_description_ru: string | null
           full_description_uz: string | null
           fur_length: string[] | null
+          hero_priority: number
+          hero_subtitle_ru: string | null
+          hero_subtitle_uz: string | null
+          hero_title_ru: string | null
+          hero_title_uz: string | null
           id: string
           images: string[] | null
           in_stock: boolean | null
@@ -341,6 +346,7 @@ export type Database = {
           original_price: number | null
           price: number | null
           promo_tile_ids: string[]
+          show_in_hero: boolean
           sizes: string[] | null
           slug: string | null
           sort_order: number | null
@@ -359,6 +365,11 @@ export type Database = {
           full_description_ru?: string | null
           full_description_uz?: string | null
           fur_length?: string[] | null
+          hero_priority?: number
+          hero_subtitle_ru?: string | null
+          hero_subtitle_uz?: string | null
+          hero_title_ru?: string | null
+          hero_title_uz?: string | null
           id?: string
           images?: string[] | null
           in_stock?: boolean | null
@@ -381,6 +392,7 @@ export type Database = {
           original_price?: number | null
           price?: number | null
           promo_tile_ids?: string[]
+          show_in_hero?: boolean
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
@@ -399,6 +411,11 @@ export type Database = {
           full_description_ru?: string | null
           full_description_uz?: string | null
           fur_length?: string[] | null
+          hero_priority?: number
+          hero_subtitle_ru?: string | null
+          hero_subtitle_uz?: string | null
+          hero_title_ru?: string | null
+          hero_title_uz?: string | null
           id?: string
           images?: string[] | null
           in_stock?: boolean | null
@@ -421,6 +438,7 @@ export type Database = {
           original_price?: number | null
           price?: number | null
           promo_tile_ids?: string[]
+          show_in_hero?: boolean
           sizes?: string[] | null
           slug?: string | null
           sort_order?: number | null
