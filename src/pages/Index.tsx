@@ -495,8 +495,6 @@ export default function Index() {
               section="hero"
             />
 
-            {/* Dark gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent pointer-events-none" />
 
             {/* Text content overlay */}
             <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
