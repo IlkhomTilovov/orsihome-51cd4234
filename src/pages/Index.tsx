@@ -526,7 +526,7 @@ export default function Index() {
               return (
                 <Link
                   key={tile.id}
-                  to={tile.href}
+                  to={`/catalog?promo=${tile.id}`}
                   className={`group relative shrink-0 snap-start w-[32%] sm:w-[24%] md:w-[18%] lg:w-[14%] aspect-square rounded-2xl lg:rounded-[1.75rem] overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500 ease-luxe hover:-translate-y-1 ${tile.bg_class}`}
                   style={{ transitionDelay: `${i * 60}ms` }}
                 >
