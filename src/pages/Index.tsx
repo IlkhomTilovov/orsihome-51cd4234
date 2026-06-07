@@ -495,8 +495,8 @@ export default function Index() {
               section="hero"
             />
 
-            {/* Theme-colored gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 via-primary/50 to-transparent pointer-events-none" />
+            {/* Light blur overlay for readability */}
+            <div className="absolute inset-0 bg-[#f9f9f6]/60 backdrop-blur-[2px] pointer-events-none" />
 
 
             {/* Text content overlay */}
