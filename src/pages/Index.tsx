@@ -503,7 +503,6 @@ export default function Index() {
             <div className="relative h-full flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
               <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
                 <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
-                <EditableText contentKey="hero_title_line2" fallback="OLIVIA" as="span" className="block" section="hero" />
               </h1>
               <p className="mt-6 text-foreground/70 text-base lg:text-lg italic font-serif">
                 <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
