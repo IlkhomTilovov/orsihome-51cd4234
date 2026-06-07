@@ -229,10 +229,27 @@ export default function Catalog() {
   return (
     <div id="hero" className="min-h-screen py-8">
       <div className="container mx-auto px-4">
+        {setTitle && setImage ? (
+          <div className="mb-8 relative rounded-[2rem] overflow-hidden aspect-[21/8] md:aspect-[21/7]">
+            <img src={setImage} alt={language === 'uz' ? setTitle.uz : setTitle.ru} className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12">
+              <p className="text-white/80 text-sm md:text-base mb-2">
+                {language === 'uz' ? 'Setlar to\'plami' : 'Набор сетов'}
+              </p>
+              <h1 className="font-serif text-3xl md:text-5xl font-bold text-white">
+                {language === 'uz' ? setTitle.uz : setTitle.ru}
+              </h1>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-8">
+            <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
+              {categoryName || t.catalog.title}
+            </h1>
+          </div>
+        )}
         <div className="mb-8">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-            {setTitle ? (language === 'uz' ? setTitle.uz : setTitle.ru) : (categoryName || t.catalog.title)}
-          </h1>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -245,6 +262,7 @@ export default function Catalog() {
             </div>
           </div>
         </div>
+
 
 
         <div className="flex gap-8">
