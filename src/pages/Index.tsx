@@ -283,7 +283,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               loading="eager"
               decoding="sync"
               fetchPriority="high"
-              className="absolute inset-0 w-full h-full object-cover scale-[1.45] lg:scale-100 group-hover:scale-[1.5] lg:group-hover:scale-105 transition-transform duration-700 ease-luxe"
+              className="absolute inset-0 w-full h-full object-cover lg:scale-100 group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
           <div className="relative overflow-hidden bg-background">
