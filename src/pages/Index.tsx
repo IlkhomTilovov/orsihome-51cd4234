@@ -279,12 +279,20 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             className="relative aspect-[16/10] lg:aspect-auto rounded-[2rem] overflow-hidden bg-card group"
           >
             <img
+              src={heroSofaMobile.url}
+              alt={title}
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe lg:hidden"
+            />
+            <img
               src={s.image || fallbackImage}
               alt={title}
               loading="eager"
               decoding="sync"
               fetchPriority="high"
-              className="absolute inset-0 w-full h-full object-cover lg:scale-100 group-hover:scale-105 transition-transform duration-700 ease-luxe"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe hidden lg:block"
             />
           </Link>
           <div className="relative overflow-hidden bg-background">
