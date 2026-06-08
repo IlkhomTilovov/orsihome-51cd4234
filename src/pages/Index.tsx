@@ -272,10 +272,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-4 lg:gap-6 bg-background isolate">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_2fr] gap-2 lg:gap-6 bg-background isolate">
           <Link
             to={`/catalog?set=${s.id}`}
-            className="relative aspect-[4/3] lg:aspect-auto rounded-[2rem] overflow-hidden bg-card group"
+            className="relative aspect-[16/10] lg:aspect-auto rounded-[2rem] overflow-hidden bg-card group"
           >
             <img
               src={s.image || fallbackImage}
@@ -283,7 +283,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               loading="eager"
               decoding="sync"
               fetchPriority="high"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
+              className="absolute inset-0 w-full h-full object-cover scale-[1.45] lg:scale-100 group-hover:scale-[1.5] lg:group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
           </Link>
           <div className="relative overflow-hidden bg-background">
