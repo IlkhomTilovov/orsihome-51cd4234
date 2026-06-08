@@ -19,6 +19,7 @@ import serviceWardrobe from '@/assets/service-wardrobe.jpg';
 import serviceKitchen from '@/assets/service-kitchen.jpg';
 import serviceTvzone from '@/assets/service-tvzone.jpg';
 import serviceBedroom from '@/assets/service-bedroom.jpg';
+import heroSofaMobile from '@/assets/hero-sofa-mobile.png.asset.json';
 
 const defaultServiceImages: Record<string, string> = {
   'shkaflar': serviceWardrobe,
