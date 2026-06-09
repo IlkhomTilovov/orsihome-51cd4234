@@ -155,7 +155,7 @@ export function Header() {
 
             {/* CTA Button - desktop */}
             <Button asChild className="hidden md:inline-flex bg-primary text-primary-foreground hover:bg-primary/90 rounded-sm tracking-wider text-xs uppercase px-6">
-              <Link to="/contact">Bog'lanish</Link>
+              <Link to="/contact">{language === 'ru' ? 'Связаться' : "Bog'lanish"}</Link>
             </Button>
 
             {/* Cart */}
