@@ -494,21 +494,16 @@ export default function Index() {
         <div className="grid grid-cols-1 gap-6">
           {/* Main hero card */}
           <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px]">
-            {/* Mobile-only hero image (uploaded asset) */}
-            <img
-              src={heroSofaMobile.url}
-              alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-cover object-center sm:hidden"
-            />
-            {/* Full-bleed background image (tablet/desktop) */}
+            {/* Full-bleed background image (admin-managed) */}
             <EditableImage
               contentKey="hero_product_image"
               fallbackSrc={fallbackImages[0]}
               alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-cover object-center hidden sm:block"
-              wrapperClassName="absolute inset-0 w-full h-full hidden sm:block"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+              wrapperClassName="absolute inset-0 w-full h-full"
               section="hero"
             />
+
 
             {/* Light blur overlay for readability */}
             <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
