@@ -53,10 +53,10 @@ export function Header() {
 
 
   const navLinks = [
-    { href: '/', label: 'Bosh sahifa' },
-    { href: '/catalog', label: 'Katalog' },
-    { href: '/about', label: 'Portfolio' },
-    { href: '/contact', label: 'Aloqa' },
+    { href: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
+    { href: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
+    { href: '/about', label: language === 'ru' ? 'Портфолио' : 'Portfolio' },
+    { href: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
