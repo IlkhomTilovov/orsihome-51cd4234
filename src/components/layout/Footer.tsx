@@ -28,10 +28,10 @@ export function Footer() {
   const workingHours = getWorkingHours(language);
 
   const navLinks = [
-    { to: '/', label: 'Bosh sahifa' },
-    { to: '/catalog', label: 'Katalog' },
-    { to: '/about', label: 'Portfolio' },
-    { to: '/contact', label: 'Aloqa' },
+    { to: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
+    { to: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
+    { to: '/about', label: language === 'ru' ? 'Портфолио' : 'Portfolio' },
+    { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
   return (
