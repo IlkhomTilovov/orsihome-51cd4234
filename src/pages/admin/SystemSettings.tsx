@@ -634,7 +634,7 @@ export default function SystemSettings() {
                   Sitemap avtomatik ravishda yaratiladi va quyidagi manzilda mavjud:
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
-                  {(formData.primary_domain || window.location.origin).replace(/\/+$/, '')}/sitemap.xml
+                  {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/sitemap.xml
                 </code>
               </div>
 
@@ -644,7 +644,7 @@ export default function SystemSettings() {
                   robots.txt fayli quyidagi manzilda mavjud:
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
-                  {(formData.primary_domain || window.location.origin).replace(/\/+$/, '')}/robots.txt
+                  {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/robots.txt
                 </code>
               </div>
             </CardContent>
