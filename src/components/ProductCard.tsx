@@ -95,7 +95,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
 
         <Button
           variant={inCart ? 'secondary' : 'outline'}
-          aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
+          aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Buyurtma berish" : 'Заказать')}
           className="mt-auto w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
           onClick={(e) => {
             e.preventDefault();
@@ -111,7 +111,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
             }
           }}
         >
-          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
+          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Buyurtma berish" : 'Заказать')}
         </Button>
       </div>
     </article>
