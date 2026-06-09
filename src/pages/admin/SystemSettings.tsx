@@ -695,9 +695,12 @@ export default function SystemSettings() {
                   <p className="text-primary text-sm font-medium truncate">
                     {formData.seo_title || formData.site_name || 'Sayt nomi'}
                   </p>
-                  <p className="text-xs text-green-600 truncate">
-                    {formData.primary_domain || window.location.origin}
-                  </p>
+                  {formData.primary_domain && (
+                    <p className="text-xs text-green-600 truncate">
+                      {formData.primary_domain.replace(/\/+$/, '')}
+                    </p>
+                  )}
+
                   <p className="text-xs text-muted-foreground line-clamp-2">
                     {formData.seo_description || 'Sayt tavsifi bu yerda ko\'rinadi...'}
                   </p>
