@@ -111,7 +111,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
             }
           }}
         >
-          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Sotib olish" : 'Купить')}
+          {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Buyurtma berish" : 'Заказать')}
         </Button>
       </div>
     </article>
