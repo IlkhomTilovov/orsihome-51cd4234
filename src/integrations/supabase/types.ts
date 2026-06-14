@@ -313,6 +313,7 @@ export type Database = {
           application: string[] | null
           category_id: string | null
           colors: string[] | null
+          colors_ru: string[]
           created_at: string
           description_ru: string | null
           description_uz: string | null
@@ -336,6 +337,7 @@ export type Database = {
           keyword_uz: string | null
           keyword_variations: string[] | null
           materials: string[] | null
+          materials_ru: string[]
           meta_description_ru: string | null
           meta_description_uz: string | null
           meta_keywords: string | null
@@ -348,6 +350,7 @@ export type Database = {
           promo_tile_ids: string[]
           show_in_hero: boolean
           sizes: string[] | null
+          sizes_ru: string[]
           slug: string | null
           sort_order: number | null
           target_keyword: string | null
@@ -359,6 +362,7 @@ export type Database = {
           application?: string[] | null
           category_id?: string | null
           colors?: string[] | null
+          colors_ru?: string[]
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
@@ -382,6 +386,7 @@ export type Database = {
           keyword_uz?: string | null
           keyword_variations?: string[] | null
           materials?: string[] | null
+          materials_ru?: string[]
           meta_description_ru?: string | null
           meta_description_uz?: string | null
           meta_keywords?: string | null
@@ -394,6 +399,7 @@ export type Database = {
           promo_tile_ids?: string[]
           show_in_hero?: boolean
           sizes?: string[] | null
+          sizes_ru?: string[]
           slug?: string | null
           sort_order?: number | null
           target_keyword?: string | null
@@ -405,6 +411,7 @@ export type Database = {
           application?: string[] | null
           category_id?: string | null
           colors?: string[] | null
+          colors_ru?: string[]
           created_at?: string
           description_ru?: string | null
           description_uz?: string | null
@@ -428,6 +435,7 @@ export type Database = {
           keyword_uz?: string | null
           keyword_variations?: string[] | null
           materials?: string[] | null
+          materials_ru?: string[]
           meta_description_ru?: string | null
           meta_description_uz?: string | null
           meta_keywords?: string | null
@@ -440,6 +448,7 @@ export type Database = {
           promo_tile_ids?: string[]
           show_in_hero?: boolean
           sizes?: string[] | null
+          sizes_ru?: string[]
           slug?: string | null
           sort_order?: number | null
           target_keyword?: string | null
