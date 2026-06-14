@@ -767,7 +767,7 @@ export default function ProductsNew() {
                           variant="ghost" 
                           size="icon"
                           onClick={() => toggleFeatured(product)}
-                          title={product.is_featured ? "Tanlanganlardan olib tashlash" : "Tanlanganlarga qo'shish"}
+                          title={product.is_featured ? t.products.removeFromFeatured : t.products.addToFeatured}
                         >
                           <Star className={`h-4 w-4 ${product.is_featured ? 'fill-yellow-400 text-yellow-400' : ''}`} />
                         </Button>
