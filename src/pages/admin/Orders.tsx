@@ -182,8 +182,8 @@ export default function Orders() {
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Buyurtmalarni yuklashda xatolik yuz berdi',
+        title: t.orders.error,
+        description: t.orders.loadError,
         variant: 'destructive',
       });
     } finally {
@@ -232,8 +232,8 @@ export default function Orders() {
       }
 
       toast({
-        title: 'Muvaffaqiyat',
-        description: 'Buyurtma holati yangilandi',
+        title: t.orders.success,
+        description: t.orders.statusUpdated,
       });
 
       // Send Telegram notification on status change
@@ -243,8 +243,8 @@ export default function Orders() {
     } catch (error) {
       console.error('Error updating order status:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Holatni yangilashda xatolik',
+        title: t.orders.error,
+        description: t.orders.statusUpdateError,
         variant: 'destructive',
       });
     }
@@ -271,14 +271,14 @@ export default function Orders() {
       setDeleteOrderId(null);
 
       toast({
-        title: 'Muvaffaqiyat',
-        description: 'Buyurtma o\'chirildi',
+        title: t.orders.success,
+        description: t.orders.orderDeleted,
       });
     } catch (error) {
       console.error('Error deleting order:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Buyurtmani o\'chirishda xatolik',
+        title: t.orders.error,
+        description: t.orders.deleteError,
         variant: 'destructive',
       });
     }
@@ -287,8 +287,8 @@ export default function Orders() {
   const sendTelegramNotification = async (order: Order, message?: string) => {
     if (!telegramSettings?.bot_token || !telegramSettings?.chat_id) {
       toast({
-        title: 'Xatolik',
-        description: 'Telegram sozlamalari to\'liq emas',
+        title: t.orders.error,
+        description: 'Telegram',
         variant: 'destructive',
       });
       return;
@@ -328,8 +328,8 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
       
       if (result.ok) {
         toast({
-          title: 'Muvaffaqiyat',
-          description: 'Telegram xabari yuborildi',
+          title: t.orders.success,
+          description: 'Telegram OK',
         });
       } else {
         throw new Error(result.description);
@@ -337,8 +337,8 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
     } catch (error) {
       console.error('Error sending Telegram:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Telegram xabarini yuborishda xatolik',
+        title: t.orders.error,
+        description: 'Telegram error',
         variant: 'destructive',
       });
     } finally {
@@ -366,7 +366,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('uz-UZ', {
+    return new Date(dateString).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'uz-UZ', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -377,7 +377,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
 
   const formatPrice = (price: number | null) => {
     if (!price) return '-';
-    return new Intl.NumberFormat('uz-UZ').format(price) + ' so\'m';
+    return new Intl.NumberFormat(language === 'ru' ? 'ru-RU' : 'uz-UZ').format(price) + ' ' + t.orders.currency;
   };
 
   const clearFilters = () => {
@@ -426,17 +426,17 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Buyurtmalar</h1>
-          <p className="text-muted-foreground">Barcha buyurtmalarni boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.orders.title}</h1>
+          <p className="text-muted-foreground">{t.orders.subtitle}</p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setCreateOrderOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
-            Yangi buyurtma
+            {t.orders.newOrder}
           </Button>
           <Button variant="outline" onClick={fetchOrders} className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            Yangilash
+            {t.orders.refresh}
           </Button>
         </div>
       </div>
@@ -447,7 +447,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Yangi</p>
+                <p className="text-sm text-muted-foreground">{t.orders.statusNew}</p>
                 <p className="text-2xl font-bold text-blue-600">{statusCounts.new || 0}</p>
               </div>
               <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
@@ -460,7 +460,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Jarayonda</p>
+                <p className="text-sm text-muted-foreground">{t.orders.statusInProgress}</p>
                 <p className="text-2xl font-bold text-amber-600">{statusCounts.in_progress || 0}</p>
               </div>
               <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center">
@@ -473,7 +473,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Bajarildi</p>
+                <p className="text-sm text-muted-foreground">{t.orders.statusCompleted}</p>
                 <p className="text-2xl font-bold text-green-600">{statusCounts.completed || 0}</p>
               </div>
               <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
@@ -486,7 +486,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Bekor qilindi</p>
+                <p className="text-sm text-muted-foreground">{t.orders.statusCancelled}</p>
                 <p className="text-2xl font-bold text-red-600">{statusCounts.cancelled || 0}</p>
               </div>
               <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
@@ -505,7 +505,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Buyurtma №, telefon yoki ism bo'yicha qidirish..."
+                placeholder={t.orders.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -517,14 +517,14 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               <Filter className="h-4 w-4 text-muted-foreground" />
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Holat" />
+                  <SelectValue placeholder={t.orders.status} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Barchasi</SelectItem>
-                  <SelectItem value="new">Yangi</SelectItem>
-                  <SelectItem value="in_progress">Jarayonda</SelectItem>
-                  <SelectItem value="completed">Bajarildi</SelectItem>
-                  <SelectItem value="cancelled">Bekor qilindi</SelectItem>
+                  <SelectItem value="all">{t.orders.all}</SelectItem>
+                  <SelectItem value="new">{t.orders.statusNew}</SelectItem>
+                  <SelectItem value="in_progress">{t.orders.statusInProgress}</SelectItem>
+                  <SelectItem value="completed">{t.orders.statusCompleted}</SelectItem>
+                  <SelectItem value="cancelled">{t.orders.statusCancelled}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -553,7 +553,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
             {hasActiveFilters && (
               <Button variant="ghost" onClick={clearFilters} className="gap-2">
                 <X className="h-4 w-4" />
-                Tozalash
+                {t.orders.clear}
               </Button>
             )}
           </div>
@@ -568,15 +568,13 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
                 <ShoppingBag className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Buyurtmalar topilmadi</h3>
+              <h3 className="text-lg font-semibold mb-2">{t.orders.notFound}</h3>
               <p className="text-muted-foreground max-w-sm mx-auto">
-                {hasActiveFilters 
-                  ? 'Tanlangan filtrlar bo\'yicha buyurtmalar mavjud emas. Filtrlarni o\'zgartirib ko\'ring.'
-                  : 'Hozircha buyurtmalar yo\'q. Mijozlar saytdan buyurtma berganda, ular shu yerda ko\'rinadi.'}
+                {hasActiveFilters ? t.orders.notFoundFilters : t.orders.notFoundEmpty}
               </p>
               {hasActiveFilters && (
                 <Button variant="outline" onClick={clearFilters} className="mt-4">
-                  Filtrlarni tozalash
+                  {t.orders.clearFilters}
                 </Button>
               )}
             </div>
@@ -585,13 +583,13 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Buyurtma №</TableHead>
-                    <TableHead>Mijoz</TableHead>
-                    <TableHead>Telefon</TableHead>
-                    <TableHead>Jami</TableHead>
-                    <TableHead>Holat</TableHead>
-                    <TableHead>Sana</TableHead>
-                    <TableHead className="text-right">Amallar</TableHead>
+                    <TableHead>{t.orders.orderNo}</TableHead>
+                    <TableHead>{t.orders.customer}</TableHead>
+                    <TableHead>{t.orders.phone}</TableHead>
+                    <TableHead>{t.orders.total}</TableHead>
+                    <TableHead>{t.orders.status}</TableHead>
+                    <TableHead>{t.orders.date}</TableHead>
+                    <TableHead className="text-right">{t.orders.actions}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -618,7 +616,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                             variant="ghost"
                             size="icon"
                             onClick={() => callCustomer(order.customer_phone)}
-                            title="Qo'ng'iroq qilish"
+                            title={t.orders.call}
                           >
                             <Phone className="h-4 w-4 text-green-600" />
                           </Button>
@@ -626,7 +624,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                             variant="ghost"
                             size="icon"
                             onClick={() => openTelegram(order.customer_phone)}
-                            title="Telegramda yozish"
+                            title={t.orders.writeTelegram}
                           >
                             <MessageCircle className="h-4 w-4 text-blue-600" />
                           </Button>
@@ -634,7 +632,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                             variant="ghost"
                             size="icon"
                             onClick={() => fetchOrderDetails(order.id)}
-                            title="Ko'rish"
+                            title={t.orders.view}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
@@ -642,7 +640,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                             variant="ghost"
                             size="icon"
                             onClick={() => setDeleteOrderId(order.id)}
-                            title="O'chirish"
+                            title={t.orders.delete}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
@@ -663,7 +661,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Package className="h-5 w-5" />
-              Buyurtma tafsilotlari
+              {t.orders.orderDetails}
             </DialogTitle>
             <DialogDescription>
               {selectedOrder?.order_number}
@@ -681,7 +679,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                   className="gap-2"
                 >
                   <Phone className="h-4 w-4" />
-                  Qo'ng'iroq
+                  {t.orders.callShort}
                 </Button>
                 <Button
                   variant="outline"
@@ -690,7 +688,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                   className="gap-2"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Telegram
+                  {t.orders.telegram}
                 </Button>
                 {telegramSettings?.enabled && (
                   <Button
@@ -701,7 +699,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                     className="gap-2"
                   >
                     <Send className="h-4 w-4" />
-                    {sendingTelegram ? 'Yuborilmoqda...' : 'Telegramga yuborish'}
+                    {sendingTelegram ? t.orders.sending : t.orders.sendToTelegram}
                   </Button>
                 )}
               </div>
@@ -712,23 +710,23 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               <div>
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
                   <User className="h-4 w-4" />
-                  Mijoz ma'lumotlari
+                  {t.orders.customerInfo}
                 </h3>
                 <div className="grid grid-cols-2 gap-4 bg-muted/50 p-4 rounded-lg">
                   <div>
-                    <label className="text-sm text-muted-foreground">Ism</label>
+                    <label className="text-sm text-muted-foreground">{t.orders.name}</label>
                     <p className="font-medium">{selectedOrder.customer_name}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Telefon</label>
+                    <label className="text-sm text-muted-foreground">{t.orders.phone}</label>
                     <p className="font-medium">{selectedOrder.customer_phone}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Sana</label>
+                    <label className="text-sm text-muted-foreground">{t.orders.date}</label>
                     <p>{formatDate(selectedOrder.created_at)}</p>
                   </div>
                   <div>
-                    <label className="text-sm text-muted-foreground">Holat</label>
+                    <label className="text-sm text-muted-foreground">{t.orders.status}</label>
                     <Select
                       value={selectedOrder.status}
                       onValueChange={(value) => updateOrderStatus(selectedOrder.id, value)}
@@ -737,10 +735,10 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="new">Yangi</SelectItem>
-                        <SelectItem value="in_progress">Jarayonda</SelectItem>
-                        <SelectItem value="completed">Bajarildi</SelectItem>
-                        <SelectItem value="cancelled">Bekor qilindi</SelectItem>
+                        <SelectItem value="new">{t.orders.statusNew}</SelectItem>
+                        <SelectItem value="in_progress">{t.orders.statusInProgress}</SelectItem>
+                        <SelectItem value="completed">{t.orders.statusCompleted}</SelectItem>
+                        <SelectItem value="cancelled">{t.orders.statusCancelled}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -749,7 +747,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
 
               {selectedOrder.customer_message && (
                 <div>
-                  <h3 className="font-semibold mb-2">💬 Mijoz xabari</h3>
+                  <h3 className="font-semibold mb-2">{t.orders.customerMessage}</h3>
                   <p className="p-4 bg-muted rounded-lg border-l-4 border-primary">
                     {selectedOrder.customer_message}
                   </p>
@@ -760,7 +758,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               <div>
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4" />
-                  Buyurtma mahsulotlari
+                  {t.orders.orderProducts}
                 </h3>
                 <div className="space-y-3">
                   {selectedOrder.order_items?.length ? (
@@ -772,13 +770,13 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                             {item.selected_options && (
                               <div className="mt-2 flex flex-wrap gap-2">
                                 {item.selected_options.size && (
-                                  <Badge variant="secondary">O'lcham: {item.selected_options.size}</Badge>
+                                  <Badge variant="secondary">{t.orders.size}: {item.selected_options.size}</Badge>
                                 )}
                                 {item.selected_options.color && (
-                                  <Badge variant="secondary">Rang: {item.selected_options.color}</Badge>
+                                  <Badge variant="secondary">{t.orders.color}: {item.selected_options.color}</Badge>
                                 )}
                                 {item.selected_options.material && (
-                                  <Badge variant="secondary">Material: {item.selected_options.material}</Badge>
+                                  <Badge variant="secondary">{t.orders.material}: {item.selected_options.material}</Badge>
                                 )}
                               </div>
                             )}
@@ -793,7 +791,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                       </div>
                     ))
                   ) : (
-                    <p className="text-muted-foreground text-center py-4">Mahsulotlar topilmadi</p>
+                    <p className="text-muted-foreground text-center py-4">{t.orders.noProducts}</p>
                   )}
                 </div>
               </div>
@@ -802,7 +800,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
               {selectedOrder.total_price && (
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center text-lg">
-                    <span className="font-medium">Jami summa:</span>
+                    <span className="font-medium">{t.orders.grandTotal}</span>
                     <span className="text-xl font-bold text-primary">
                       {formatPrice(selectedOrder.total_price)}
                     </span>
@@ -823,7 +821,7 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
                   className="gap-2"
                 >
                   <Trash2 className="h-4 w-4" />
-                  Buyurtmani o'chirish
+                  {t.orders.deleteOrder}
                 </Button>
               </div>
             </div>
@@ -835,16 +833,15 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
       <AlertDialog open={!!deleteOrderId} onOpenChange={() => setDeleteOrderId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Buyurtmani o'chirish</AlertDialogTitle>
+            <AlertDialogTitle>{t.orders.deleteConfirmTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              Haqiqatan ham bu buyurtmani o'chirmoqchimisiz? Bu amal barcha buyurtma 
-              mahsulotlarini ham o'chiradi va qaytarib bo'lmaydi.
+              {t.orders.deleteConfirmDesc}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+            <AlertDialogCancel>{t.orders.cancel}</AlertDialogCancel>
             <AlertDialogAction onClick={deleteOrder} className="bg-destructive text-destructive-foreground">
-              O'chirish
+              {t.orders.delete}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
