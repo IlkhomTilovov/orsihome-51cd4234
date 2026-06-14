@@ -684,10 +684,10 @@ export default function ProductsNew() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
-            <span>Barcha mahsulotlar ({totalCount})</span>
+            <span>{t.products.allProducts(totalCount)}</span>
             <div className="flex gap-2">
-              <Badge variant="outline">{products.filter(p => p.is_active).length} faol</Badge>
-              <Badge variant="secondary">{products.filter(p => p.is_featured).length} tanlangan</Badge>
+              <Badge variant="outline">{t.products.activeCount(products.filter(p => p.is_active).length)}</Badge>
+              <Badge variant="secondary">{t.products.featuredCount(products.filter(p => p.is_featured).length)}</Badge>
             </div>
           </CardTitle>
         </CardHeader>
@@ -695,13 +695,13 @@ export default function ProductsNew() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-16">Rasm</TableHead>
-                <TableHead>Nomi</TableHead>
-                <TableHead>Toifa</TableHead>
-                <TableHead>Narxi</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>SEO</TableHead>
-                <TableHead className="text-right">Amallar</TableHead>
+                <TableHead className="w-16">{t.products.colImage}</TableHead>
+                <TableHead>{t.products.colName}</TableHead>
+                <TableHead>{t.products.colCategory}</TableHead>
+                <TableHead>{t.products.colPrice}</TableHead>
+                <TableHead>{t.products.colStatus}</TableHead>
+                <TableHead>{t.products.colSeo}</TableHead>
+                <TableHead className="text-right">{t.products.colActions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
