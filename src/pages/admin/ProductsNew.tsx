@@ -815,7 +815,7 @@ export default function ProductsNew() {
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              Oldingi
+              {t.products.previous}
             </Button>
             <span className="text-sm text-muted-foreground">
               {currentPage} / {totalPages}
@@ -826,7 +826,7 @@ export default function ProductsNew() {
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              Keyingi
+              {t.products.next}
             </Button>
           </div>
         )}
