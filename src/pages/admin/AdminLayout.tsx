@@ -32,6 +32,8 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { RolePermissions, roleDisplayInfo } from '@/lib/permissions';
 import { Badge } from '@/components/ui/badge';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface NavItem {
   title: string;
