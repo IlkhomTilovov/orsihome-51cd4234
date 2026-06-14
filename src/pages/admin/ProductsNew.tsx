@@ -645,7 +645,7 @@ export default function ProductsNew() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Mahsulot nomi yoki slug bo'yicha qidirish..."
+                placeholder={t.products.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -653,10 +653,10 @@ export default function ProductsNew() {
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Toifa" />
+                <SelectValue placeholder={t.products.category} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barcha toifalar</SelectItem>
+                <SelectItem value="all">{t.products.allCategories}</SelectItem>
                 {categories.map(cat => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {language === 'uz' ? cat.name_uz : cat.name_ru}
@@ -666,14 +666,14 @@ export default function ProductsNew() {
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t.products.status} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barchasi</SelectItem>
-                <SelectItem value="active">Faol</SelectItem>
-                <SelectItem value="inactive">Nofaol</SelectItem>
-                <SelectItem value="featured">Tanlangan</SelectItem>
-                <SelectItem value="out_of_stock">Tugagan</SelectItem>
+                <SelectItem value="all">{t.products.statusAll}</SelectItem>
+                <SelectItem value="active">{t.products.statusActive}</SelectItem>
+                <SelectItem value="inactive">{t.products.statusInactive}</SelectItem>
+                <SelectItem value="featured">{t.products.statusFeatured}</SelectItem>
+                <SelectItem value="out_of_stock">{t.products.statusOutOfStock}</SelectItem>
               </SelectContent>
             </Select>
           </div>
