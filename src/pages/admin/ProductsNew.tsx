@@ -1123,32 +1123,63 @@ export default function ProductsNew() {
 
             {/* Attributes Tab */}
             <TabsContent value="attributes" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>O'lchamlar</Label>
-                <Input
-                  value={formData.sizes}
-                  onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
-                  placeholder="Masalan: 200x100x80, 180x90x75 (vergul bilan ajrating)"
-                />
-                <p className="text-xs text-muted-foreground">Bir nechta o'lchamlarni vergul bilan ajrating</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>O'lchamlar (UZ)</Label>
+                  <Input
+                    value={formData.sizes}
+                    onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
+                    placeholder="Masalan: 200x100x80, 180x90x75"
+                  />
+                  <p className="text-xs text-muted-foreground">Vergul bilan ajrating</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>Размеры (RU)</Label>
+                  <Input
+                    value={formData.sizes_ru}
+                    onChange={(e) => setFormData({ ...formData, sizes_ru: e.target.value })}
+                    placeholder="Например: 200x100x80, 180x90x75"
+                  />
+                  <p className="text-xs text-muted-foreground">Разделяйте запятыми</p>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Ranglar</Label>
-                <Input
-                  value={formData.colors}
-                  onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
-                  placeholder="Masalan: Oq, Qora, Jigarrang (vergul bilan ajrating)"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Ranglar (UZ)</Label>
+                  <Input
+                    value={formData.colors}
+                    onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
+                    placeholder="Masalan: Oq, Qora, Jigarrang"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Цвета (RU)</Label>
+                  <Input
+                    value={formData.colors_ru}
+                    onChange={(e) => setFormData({ ...formData, colors_ru: e.target.value })}
+                    placeholder="Например: Белый, Чёрный, Коричневый"
+                  />
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label>Materiallar</Label>
-                <Input
-                  value={formData.materials}
-                  onChange={(e) => setFormData({ ...formData, materials: e.target.value })}
-                  placeholder="Masalan: Yog'och, Temir, Mato (vergul bilan ajrating)"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Materiallar (UZ)</Label>
+                  <Input
+                    value={formData.materials}
+                    onChange={(e) => setFormData({ ...formData, materials: e.target.value })}
+                    placeholder="Masalan: Yog'och, Temir, Mato"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Материалы (RU)</Label>
+                  <Input
+                    value={formData.materials_ru}
+                    onChange={(e) => setFormData({ ...formData, materials_ru: e.target.value })}
+                    placeholder="Например: Дерево, Металл, Ткань"
+                  />
+                </div>
               </div>
 
               {/* Preview */}
