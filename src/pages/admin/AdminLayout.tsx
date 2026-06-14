@@ -334,6 +334,7 @@ export default function AdminLayout() {
         <div className="flex-1 min-w-0">
           <header className="sticky top-0 z-20 h-16 bg-white border-b flex items-center justify-end px-6">
             <div className="flex items-center gap-4">
+              <LanguageToggle />
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
