@@ -173,10 +173,10 @@ export default function Dashboard() {
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string; className?: string }> = {
-      new: { variant: 'default', label: 'Yangi', className: 'bg-blue-500' },
-      in_progress: { variant: 'secondary', label: 'Jarayonda', className: 'bg-yellow-500 text-white' },
-      completed: { variant: 'outline', label: 'Bajarildi', className: 'border-green-500 text-green-600' },
-      cancelled: { variant: 'destructive', label: 'Bekor qilindi' },
+      new: { variant: 'default', label: t.dashboard.statusNew, className: 'bg-blue-500' },
+      in_progress: { variant: 'secondary', label: t.dashboard.statusInProgress, className: 'bg-yellow-500 text-white' },
+      completed: { variant: 'outline', label: t.dashboard.statusCompleted, className: 'border-green-500 text-green-600' },
+      cancelled: { variant: 'destructive', label: t.dashboard.statusCancelled },
     };
     const config = variants[status] || variants.new;
     return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
