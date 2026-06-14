@@ -423,6 +423,7 @@ export default function Index() {
   const [catPerPage, setCatPerPage] = useState(4);
   const [catIndex, setCatIndex] = useState(0);
   const [catAnimate, setCatAnimate] = useState(true);
+  const catTouchStartX = useRef<number | null>(null);
   useEffect(() => {
     const compute = () => {
       if (typeof window === 'undefined') return;
@@ -443,6 +444,20 @@ export default function Index() {
     if (cats.length === 0) return;
     setCatAnimate(true);
     setCatIndex((p) => p + dir);
+  };
+  const onCatTouchStart = (e: React.TouchEvent) => {
+    catTouchStartX.current = e.touches[0].clientX;
+  };
+  const onCatTouchEnd = (e: React.TouchEvent) => {
+    if (catTouchStartX.current === null) return;
+    const diff = catTouchStartX.current - e.changedTouches[0].clientX;
+    const SWIPE_THRESHOLD = 50;
+    if (diff > SWIPE_THRESHOLD) {
+      goCat(1);
+    } else if (diff < -SWIPE_THRESHOLD) {
+      goCat(-1);
+    }
+    catTouchStartX.current = null;
   };
   // Autoplay: advance by 1 every 5s
   useEffect(() => {
@@ -578,7 +593,11 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="overflow-hidden -mx-2 lg:-mx-3">
+        <div
+          className="overflow-hidden -mx-2 lg:-mx-3"
+          onTouchStart={onCatTouchStart}
+          onTouchEnd={onCatTouchEnd}
+        >
           <div
             className="flex"
             style={{
