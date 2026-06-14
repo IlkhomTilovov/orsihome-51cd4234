@@ -593,7 +593,11 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="overflow-hidden -mx-2 lg:-mx-3">
+        <div
+          className="overflow-hidden -mx-2 lg:-mx-3"
+          onTouchStart={onCatTouchStart}
+          onTouchEnd={onCatTouchEnd}
+        >
           <div
             className="flex"
             style={{
