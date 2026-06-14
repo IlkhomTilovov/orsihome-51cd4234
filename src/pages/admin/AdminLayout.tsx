@@ -98,6 +98,8 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { canViewModule, userRole, user, signOut } = useAuth();
+  const t = useAdminT();
+  const { language, setLanguage } = useLanguage();
 
   const isActive = (path: string) => {
     if (path === '/admin') return location.pathname === '/admin';
@@ -112,14 +114,35 @@ export default function AdminLayout() {
   // Open groups that contain the active route by default
   const initialOpen: Record<string, boolean> = {};
   filteredGroups.forEach((g) => {
-    initialOpen[g.title] = g.items.some((i) => isActive(i.url));
+    initialOpen[g.titleKey] = g.items.some((i) => isActive(i.url));
   });
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(initialOpen);
 
-  const toggleGroup = (title: string) =>
-    setOpenGroups((p) => ({ ...p, [title]: !p[title] }));
+  const toggleGroup = (key: string) =>
+    setOpenGroups((p) => ({ ...p, [key]: !p[key] }));
 
   const roleInfo = userRole ? roleDisplayInfo[userRole] : null;
+
+  const LanguageToggle = () => (
+    <div className="flex items-center gap-1 rounded-full border border-border bg-background p-0.5">
+      {(['uz', 'ru'] as const).map((lng) => (
+        <button
+          key={lng}
+          type="button"
+          onClick={() => setLanguage(lng)}
+          className={cn(
+            'px-2.5 py-1 text-xs font-semibold rounded-full transition-colors',
+            language === lng
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+          aria-label={`Switch language to ${lng}`}
+        >
+          {lng.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
 
   const renderNav = (onItemClick?: () => void) => (
     <>
@@ -136,18 +159,18 @@ export default function AdminLayout() {
           )}
         >
           <item.icon className="h-5 w-5" />
-          {item.title}
+          {t.layout[item.titleKey]}
         </Link>
       ))}
 
       {filteredGroups.map((group) => {
-        const open = openGroups[group.title];
+        const open = openGroups[group.titleKey];
         const hasActive = group.items.some((i) => isActive(i.url));
         return (
-          <div key={group.title} className="space-y-1">
+          <div key={group.titleKey} className="space-y-1">
             <button
               type="button"
-              onClick={() => toggleGroup(group.title)}
+              onClick={() => toggleGroup(group.titleKey)}
               className={cn(
                 'w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                 hasActive ? 'text-primary' : 'text-gray-700 hover:bg-gray-100'
@@ -155,7 +178,7 @@ export default function AdminLayout() {
             >
               <span className="flex items-center gap-3">
                 <group.icon className="h-5 w-5" />
-                {group.title}
+                {t.layout[group.titleKey]}
               </span>
               <ChevronDown
                 className={cn(
@@ -179,7 +202,7 @@ export default function AdminLayout() {
                     )}
                   >
                     <item.icon className="h-4 w-4" />
-                    {item.title}
+                    {t.layout[item.titleKey]}
                   </Link>
                 ))}
               </div>
