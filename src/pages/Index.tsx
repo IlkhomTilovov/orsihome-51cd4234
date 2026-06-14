@@ -558,11 +558,11 @@ export default function Index() {
               
             </h2>
           </div>
-          <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={() => goCat(-1)}
               disabled={catTotalPages <= 1}
-              className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Previous"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -570,7 +570,7 @@ export default function Index() {
             <button
               onClick={() => goCat(1)}
               disabled={catTotalPages <= 1}
-              className="w-12 h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border hover:border-foreground/40 hover:bg-card transition-colors flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Next"
             >
               <ArrowRight className="w-4 h-4" />
