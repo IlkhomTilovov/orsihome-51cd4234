@@ -57,6 +57,8 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface OrderItem {
   id: string;
@@ -88,23 +90,11 @@ interface TelegramSettings {
   enabled: boolean;
 }
 
-const STATUS_CONFIG = {
-  new: { 
-    label: 'Yangi', 
-    className: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300' 
-  },
-  in_progress: { 
-    label: 'Jarayonda', 
-    className: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300' 
-  },
-  completed: { 
-    label: 'Bajarildi', 
-    className: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300' 
-  },
-  cancelled: { 
-    label: 'Bekor qilindi', 
-    className: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300' 
-  },
+const STATUS_CLASS: Record<string, string> = {
+  new: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300',
+  in_progress: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300',
+  completed: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300',
+  cancelled: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300',
 };
 
 export default function Orders() {
@@ -121,6 +111,17 @@ export default function Orders() {
   const [createOrderOpen, setCreateOrderOpen] = useState(false);
   const { toast } = useToast();
   const { user, isSeller, isAdmin } = useAuth();
+  const t = useAdminT();
+  const { language } = useLanguage();
+  const statusLabel = (s: string) => {
+    const map: Record<string, string> = {
+      new: t.orders.statusNew,
+      in_progress: t.orders.statusInProgress,
+      completed: t.orders.statusCompleted,
+      cancelled: t.orders.statusCancelled,
+    };
+    return map[s] || s;
+  };
 
   useEffect(() => {
     fetchOrders();
