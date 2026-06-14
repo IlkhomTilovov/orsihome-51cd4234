@@ -354,10 +354,10 @@ export default function Customers() {
                 <SelectValue placeholder={t.customers.sort} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="last_activity">Oxirgi faoliyat</SelectItem>
-                <SelectItem value="created_at">Ro'yxatdan o'tgan</SelectItem>
-                <SelectItem value="order_count">Buyurtmalar soni</SelectItem>
-                <SelectItem value="name">Ism bo'yicha</SelectItem>
+                <SelectItem value="last_activity">{t.customers.lastActivity}</SelectItem>
+                <SelectItem value="created_at">{t.customers.registered}</SelectItem>
+                <SelectItem value="order_count">{t.customers.orderCount}</SelectItem>
+                <SelectItem value="name">{t.customers.byName}</SelectItem>
               </SelectContent>
             </Select>
           </div>
