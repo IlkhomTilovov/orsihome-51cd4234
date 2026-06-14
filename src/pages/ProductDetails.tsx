@@ -185,9 +185,9 @@ export default function ProductDetails() {
   const formatPrice = (price: number) => price.toLocaleString('uz-UZ');
   const inCart = isInCart(product.id);
   const images = galleryImages;
-  const materials = product.materials || [];
-  const sizes = product.sizes || [];
-  const colors = product.colors || [];
+  const materials = (language === 'ru' && (product as any).materials_ru?.length ? (product as any).materials_ru : product.materials) || [];
+  const sizes = (language === 'ru' && (product as any).sizes_ru?.length ? (product as any).sizes_ru : product.sizes) || [];
+  const colors = (language === 'ru' && (product as any).colors_ru?.length ? (product as any).colors_ru : product.colors) || [];
   const price = product.price || 0;
 
   // Get category name
