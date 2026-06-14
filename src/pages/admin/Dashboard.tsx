@@ -75,6 +75,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { currentTheme } = useTheme();
+  const t = useAdminT();
 
   useEffect(() => {
     fetchAllData();
