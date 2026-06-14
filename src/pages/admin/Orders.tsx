@@ -306,7 +306,7 @@ ${message ? `\n📌 ${message}\n` : ''}
 👤 *Mijoz:* ${order.customer_name}
 📞 *Telefon:* ${order.customer_phone}
 📅 *Sana:* ${formatDate(order.created_at)}
-📋 *Status:* ${STATUS_CONFIG[order.status as keyof typeof STATUS_CONFIG]?.label || order.status}
+📋 *Status:* ${statusLabel(order.status)}
 
 🛒 *Mahsulotlar:*
 ${items}
@@ -357,10 +357,10 @@ ${order.customer_message ? `\n💬 *Xabar:* ${order.customer_message}` : ''}
   };
 
   const getStatusBadge = (status: string) => {
-    const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.new;
+    const cls = STATUS_CLASS[status] || STATUS_CLASS.new;
     return (
-      <Badge variant="outline" className={`${config.className} font-medium`}>
-        {config.label}
+      <Badge variant="outline" className={`${cls} font-medium`}>
+        {statusLabel(status)}
       </Badge>
     );
   };
