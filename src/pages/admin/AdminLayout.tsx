@@ -247,7 +247,7 @@ export default function AdminLayout() {
       >
         <div className="flex items-center justify-between h-16 px-6 border-b shrink-0">
           <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-            Admin Panel
+            {t.layout.adminPanel}
           </Link>
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
