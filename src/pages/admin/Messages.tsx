@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminT } from '@/hooks/useAdminT';
 import {
   Table,
   TableBody,
@@ -18,11 +19,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Mail, MailOpen, Trash2, Eye, Phone, Clock } from 'lucide-react';
+import { Mail, MailOpen, Trash2, Phone, Clock } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function Messages() {
   const { toast } = useToast();
+  const t = useAdminT();
   const queryClient = useQueryClient();
   const [selectedMessage, setSelectedMessage] = useState<any>(null);
 
@@ -59,7 +61,7 @@ export default function Messages() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contact-messages'] });
-      toast({ title: "Xabar o'chirildi" });
+      toast({ title: t.messages.deleted });
     },
   });
 
@@ -76,32 +78,32 @@ export default function Messages() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Aloqa xabarlari</h1>
+          <h1 className="text-2xl font-bold">{t.messages.title}</h1>
           <p className="text-muted-foreground text-sm">
-            Saytdan kelgan xabarlar
+            {t.messages.subtitle}
             {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2">{unreadCount} yangi</Badge>
+              <Badge variant="destructive" className="ml-2">{unreadCount} {t.messages.newBadge}</Badge>
             )}
           </p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-10 text-muted-foreground">Yuklanmoqda...</div>
+        <div className="text-center py-10 text-muted-foreground">{t.messages.loading}</div>
       ) : messages.length === 0 ? (
-        <div className="text-center py-10 text-muted-foreground">Hozircha xabar yo'q</div>
+        <div className="text-center py-10 text-muted-foreground">{t.messages.empty}</div>
       ) : (
         <div className="border rounded-lg overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10"></TableHead>
-                <TableHead>Ism</TableHead>
-                <TableHead>Telefon</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Xabar</TableHead>
-                <TableHead>Sana</TableHead>
-                <TableHead className="w-20">Amallar</TableHead>
+                <TableHead>{t.messages.name}</TableHead>
+                <TableHead>{t.messages.phone}</TableHead>
+                <TableHead>{t.messages.email}</TableHead>
+                <TableHead>{t.messages.message}</TableHead>
+                <TableHead>{t.messages.date}</TableHead>
+                <TableHead className="w-20">{t.messages.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -144,11 +146,10 @@ export default function Messages() {
         </div>
       )}
 
-      {/* Message Detail Dialog */}
       <Dialog open={!!selectedMessage} onOpenChange={() => setSelectedMessage(null)}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Xabar tafsilotlari</DialogTitle>
+            <DialogTitle>{t.messages.details}</DialogTitle>
           </DialogHeader>
           {selectedMessage && (
             <div className="space-y-4">

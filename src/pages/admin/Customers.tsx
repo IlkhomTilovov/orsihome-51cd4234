@@ -11,6 +11,8 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface Customer {
   id: string;
@@ -47,6 +49,8 @@ export default function Customers() {
   const [sortField, setSortField] = useState<SortField>('last_activity');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const { toast } = useToast();
+  const t = useAdminT();
+  const { language } = useLanguage();
 
   useEffect(() => {
     fetchCustomers();
@@ -97,7 +101,7 @@ export default function Customers() {
       setCustomers(customersWithStats);
     } catch (error) {
       console.error('Error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Mijozlarni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.customers.error, description: t.customers.loadError });
     } finally {
       setLoading(false);
     }
@@ -191,17 +195,17 @@ export default function Customers() {
 
       if (error) throw error;
 
-      toast({ title: 'Muvaffaqiyat', description: 'Izoh saqlandi' });
+      toast({ title: t.customers.success, description: t.customers.noteSaved });
       setCustomers((prev) =>
         prev.map((c) => (c.id === selectedCustomer.id ? { ...c, notes } : c))
       );
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+      toast({ variant: 'destructive', title: t.customers.error, description: error.message });
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('uz-UZ', {
+    return new Date(dateString).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'uz-UZ', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -210,15 +214,15 @@ export default function Customers() {
 
   const formatPrice = (price: number | null) => {
     if (!price) return '—';
-    return new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
+    return new Intl.NumberFormat(language === 'ru' ? 'ru-RU' : 'uz-UZ').format(price) + ' ' + t.customers.currency;
   };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
-      new: { variant: 'default', label: 'Yangi' },
-      in_progress: { variant: 'secondary', label: 'Jarayonda' },
-      completed: { variant: 'outline', label: 'Bajarildi' },
-      cancelled: { variant: 'destructive', label: 'Bekor qilindi' },
+      new: { variant: 'default', label: t.customers.statusNew },
+      in_progress: { variant: 'secondary', label: t.customers.statusInProgress },
+      completed: { variant: 'outline', label: t.customers.statusCompleted },
+      cancelled: { variant: 'destructive', label: t.customers.statusCancelled },
     };
     const config = variants[status] || variants.new;
     return <Badge variant={config.variant}>{config.label}</Badge>;
@@ -255,12 +259,12 @@ export default function Customers() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Mijozlar</h1>
-          <p className="text-muted-foreground">Barcha mijozlar va ularning buyurtmalari</p>
+          <h1 className="text-2xl font-bold">{t.customers.title}</h1>
+          <p className="text-muted-foreground">{t.customers.subtitle}</p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchCustomers}>
           <RefreshCw className="h-4 w-4 mr-2" />
-          Yangilash
+          {t.customers.refresh}
         </Button>
       </div>
 
@@ -270,7 +274,7 @@ export default function Customers() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Jami mijozlar</p>
+                <p className="text-sm text-muted-foreground">{t.customers.totalCustomers}</p>
                 <p className="text-2xl font-bold">{stats.totalCustomers}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -283,7 +287,7 @@ export default function Customers() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Faol mijozlar</p>
+                <p className="text-sm text-muted-foreground">{t.customers.activeCustomers}</p>
                 <p className="text-2xl font-bold">{stats.activeCustomers}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-green-500/10 flex items-center justify-center">
@@ -296,7 +300,7 @@ export default function Customers() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Jami buyurtmalar</p>
+                <p className="text-sm text-muted-foreground">{t.customers.totalOrders}</p>
                 <p className="text-2xl font-bold">{stats.totalOrders}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center">
@@ -309,7 +313,7 @@ export default function Customers() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Jami daromad</p>
+                <p className="text-sm text-muted-foreground">{t.customers.totalRevenue}</p>
                 <p className="text-2xl font-bold">{formatPrice(stats.totalRevenue)}</p>
               </div>
               <div className="h-12 w-12 rounded-full bg-yellow-500/10 flex items-center justify-center">
@@ -327,7 +331,7 @@ export default function Customers() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Telefon yoki ism bo'yicha qidirish..."
+                placeholder={t.customers.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -335,25 +339,25 @@ export default function Customers() {
             </div>
             <Select value={orderCountFilter} onValueChange={setOrderCountFilter}>
               <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Buyurtmalar soni" />
+                <SelectValue placeholder={t.customers.orderCount} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barcha mijozlar</SelectItem>
-                <SelectItem value="0">0 buyurtma</SelectItem>
-                <SelectItem value="1">1 buyurtma</SelectItem>
-                <SelectItem value="2-5">2-5 buyurtma</SelectItem>
-                <SelectItem value="5+">5+ buyurtma</SelectItem>
+                <SelectItem value="all">{t.customers.allCustomers}</SelectItem>
+                <SelectItem value="0">{t.customers.order0}</SelectItem>
+                <SelectItem value="1">{t.customers.order1}</SelectItem>
+                <SelectItem value="2-5">{t.customers.order25}</SelectItem>
+                <SelectItem value="5+">{t.customers.order5plus}</SelectItem>
               </SelectContent>
             </Select>
             <Select value={sortField} onValueChange={(v) => setSortField(v as SortField)}>
               <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="Saralash" />
+                <SelectValue placeholder={t.customers.sort} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="last_activity">Oxirgi faoliyat</SelectItem>
-                <SelectItem value="created_at">Ro'yxatdan o'tgan</SelectItem>
-                <SelectItem value="order_count">Buyurtmalar soni</SelectItem>
-                <SelectItem value="name">Ism bo'yicha</SelectItem>
+                <SelectItem value="last_activity">{t.customers.lastActivity}</SelectItem>
+                <SelectItem value="created_at">{t.customers.registered}</SelectItem>
+                <SelectItem value="order_count">{t.customers.orderCount}</SelectItem>
+                <SelectItem value="name">{t.customers.byName}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -364,10 +368,10 @@ export default function Customers() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Barcha mijozlar ({filteredCustomers.length})</span>
+            <span>{t.customers.allCustomers} ({filteredCustomers.length})</span>
             <Button variant="ghost" size="sm" onClick={() => toggleSort(sortField)}>
               <ArrowUpDown className="h-4 w-4 mr-1" />
-              {sortOrder === 'desc' ? 'Kamayish' : 'O\'sish'}
+              {sortOrder === 'desc' ? t.customers.decreasing : t.customers.increasing}
             </Button>
           </CardTitle>
         </CardHeader>
@@ -378,24 +382,22 @@ export default function Customers() {
               <div className="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
                 <Users className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Mijozlar topilmadi</h3>
+              <h3 className="text-lg font-semibold mb-2">{t.customers.notFoundTitle}</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                {searchQuery || orderCountFilter !== 'all'
-                  ? "Qidiruv natijasi bo'yicha mijozlar topilmadi. Filtrlarni o'zgartirib ko'ring."
-                  : "Hali mijozlar mavjud emas. Mijozlar saytdan buyurtma berganda avtomatik ro'yxatga olinadi."}
+                {searchQuery || orderCountFilter !== 'all' ? t.customers.notFoundSearch : t.customers.notFoundEmpty}
               </p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Mijoz</TableHead>
-                  <TableHead>Telefon</TableHead>
-                  <TableHead className="text-center">Buyurtmalar</TableHead>
-                  <TableHead>Jami xarid</TableHead>
-                  <TableHead>Izohlar</TableHead>
-                  <TableHead>Sana</TableHead>
-                  <TableHead className="text-right">Amallar</TableHead>
+                  <TableHead>{t.customers.customer}</TableHead>
+                  <TableHead>{t.customers.phone}</TableHead>
+                  <TableHead className="text-center">{t.customers.orders}</TableHead>
+                  <TableHead>{t.customers.totalSpent}</TableHead>
+                  <TableHead>{t.customers.notes}</TableHead>
+                  <TableHead>{t.customers.date}</TableHead>
+                  <TableHead className="text-right">{t.customers.actions}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -407,10 +409,10 @@ export default function Customers() {
                           <User className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium">{customer.name || 'Noma\'lum'}</p>
+                          <p className="font-medium">{customer.name || t.customers.unknown}</p>
                           {customer.last_order_date && (
                             <p className="text-xs text-muted-foreground">
-                              Oxirgi: {formatDate(customer.last_order_date)}
+                              {t.customers.last} {formatDate(customer.last_order_date)}
                             </p>
                           )}
                         </div>
@@ -450,7 +452,7 @@ export default function Customers() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleCall(customer.phone)}
-                          title="Qo'ng'iroq qilish"
+                          title={t.customers.call}
                         >
                           <Phone className="h-4 w-4" />
                         </Button>
@@ -458,12 +460,12 @@ export default function Customers() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleTelegram(customer.phone)}
-                          title="Telegram orqali bog'lanish"
+                          title={t.customers.telegramTooltip}
                         >
                           <MessageCircle className="h-4 w-4" />
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => openCustomerDialog(customer)}>
-                          Batafsil
+                          {t.customers.details}
                         </Button>
                       </div>
                     </TableCell>
@@ -481,7 +483,7 @@ export default function Customers() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Mijoz ma'lumotlari
+              {t.customers.customerInfo}
             </DialogTitle>
           </DialogHeader>
 
@@ -490,19 +492,19 @@ export default function Customers() {
               {/* Customer Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Ism</Label>
-                  <p className="font-medium">{selectedCustomer.name || 'Noma\'lum'}</p>
+                  <Label className="text-xs text-muted-foreground">{t.customers.name}</Label>
+                  <p className="font-medium">{selectedCustomer.name || t.customers.unknown}</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Telefon</Label>
+                  <Label className="text-xs text-muted-foreground">{t.customers.phone}</Label>
                   <p className="font-medium font-mono">{selectedCustomer.phone}</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Jami buyurtmalar</Label>
+                  <Label className="text-xs text-muted-foreground">{t.customers.totalOrdersField}</Label>
                   <p className="font-medium">{selectedCustomer.order_count || 0}</p>
                 </div>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Jami xarid</Label>
+                  <Label className="text-xs text-muted-foreground">{t.customers.totalSpentField}</Label>
                   <p className="font-medium">{formatPrice(selectedCustomer.total_spent || 0)}</p>
                 </div>
               </div>
@@ -511,26 +513,26 @@ export default function Customers() {
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => handleCall(selectedCustomer.phone)}>
                   <Phone className="h-4 w-4 mr-2" />
-                  Qo'ng'iroq
+                  {t.customers.callShort}
                 </Button>
                 <Button variant="outline" onClick={() => handleTelegram(selectedCustomer.phone)}>
                   <MessageCircle className="h-4 w-4 mr-2" />
-                  Telegram
+                  {t.customers.telegram}
                 </Button>
               </div>
 
               {/* Notes */}
               <div className="space-y-2">
-                <Label>Admin izohlari</Label>
+                <Label>{t.customers.adminNotes}</Label>
                 <Textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Mijoz haqida izoh qo'shing (faqat admin ko'radi)..."
+                  placeholder={t.customers.notesPlaceholder}
                   rows={3}
                 />
                 <Button size="sm" onClick={saveNotes}>
                   <FileText className="h-4 w-4 mr-2" />
-                  Izohni saqlash
+                  {t.customers.saveNotes}
                 </Button>
               </div>
 
@@ -538,7 +540,7 @@ export default function Customers() {
               <div className="space-y-3">
                 <Label className="flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4" />
-                  Buyurtmalar tarixi ({customerOrders.length})
+                  {t.customers.ordersHistory} ({customerOrders.length})
                 </Label>
                 {customerOrders.length > 0 ? (
                   <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -558,7 +560,7 @@ export default function Customers() {
                 ) : (
                   <div className="text-center py-8 bg-muted/50 rounded-lg">
                     <ShoppingBag className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">Hali buyurtmalar mavjud emas</p>
+                    <p className="text-muted-foreground">{t.customers.noOrders}</p>
                   </div>
                 )}
               </div>
@@ -567,7 +569,7 @@ export default function Customers() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Yopish
+              {t.customers.close}
             </Button>
           </DialogFooter>
         </DialogContent>
