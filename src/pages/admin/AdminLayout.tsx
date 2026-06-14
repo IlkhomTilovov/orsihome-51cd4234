@@ -272,7 +272,7 @@ export default function AdminLayout() {
             onClick={() => navigate('/')}
           >
             <LogOut className="h-4 w-4" />
-            Saytga qaytish
+            {t.layout.backToSite}
           </Button>
           <Button
             variant="destructive"
@@ -283,7 +283,7 @@ export default function AdminLayout() {
             }}
           >
             <LogOut className="h-4 w-4" />
-            Admindan chiqish
+            {t.layout.signOut}
           </Button>
         </div>
       </aside>
