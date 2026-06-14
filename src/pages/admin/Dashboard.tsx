@@ -451,12 +451,12 @@ export default function Dashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-lg">So'nggi buyurtmalar</CardTitle>
-            <CardDescription>Oxirgi 10 ta buyurtma</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.recentOrders}</CardTitle>
+            <CardDescription>{t.dashboard.recentOrdersSub}</CardDescription>
           </div>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/admin/orders" className="flex items-center gap-1">
-              Barchasini ko'rish
+              {t.common.viewAll}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -465,9 +465,9 @@ export default function Dashboard() {
           {recentOrders.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Hali buyurtmalar yo'q</p>
+              <p className="text-muted-foreground">{t.dashboard.noOrders}</p>
               <p className="text-sm text-muted-foreground">
-                Yangi buyurtmalar bu yerda ko'rinadi
+                {t.dashboard.noOrdersSub}
               </p>
             </div>
           ) : (
