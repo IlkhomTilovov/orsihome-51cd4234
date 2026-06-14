@@ -238,7 +238,7 @@ export default function Orders() {
 
       // Send Telegram notification on status change
       if (telegramSettings?.enabled && selectedOrder) {
-        await sendTelegramNotification(selectedOrder, `Status yangilandi: ${STATUS_CONFIG[newStatus as keyof typeof STATUS_CONFIG]?.label || newStatus}`);
+        await sendTelegramNotification(selectedOrder, `Status: ${statusLabel(newStatus)}`);
       }
     } catch (error) {
       console.error('Error updating order status:', error);
