@@ -99,6 +99,9 @@ interface FormData {
   materials: string;
   sizes: string;
   colors: string;
+  materials_ru: string;
+  sizes_ru: string;
+  colors_ru: string;
   is_negotiable: boolean;
   in_stock: boolean;
   is_featured: boolean;
