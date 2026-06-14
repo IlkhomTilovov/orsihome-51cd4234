@@ -29,6 +29,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface Category {
   id: string;
@@ -99,6 +101,9 @@ export default function Categories() {
   const [imageUploading, setImageUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const t = useAdminT();
+  const { language } = useLanguage();
+  const catName = (c: Category) => language === 'ru' ? c.name_ru : c.name_uz;
 
   const handleImageUpload = async (file: File) => {
     if (!file) return;
@@ -106,13 +111,13 @@ export default function Categories() {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Faqat JPG, PNG, WebP yoki GIF formatlarini yuklash mumkin' });
+      toast({ variant: 'destructive', title: t.categories.error, description: t.categories.imageTypeError });
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Rasm hajmi 5MB dan oshmasligi kerak' });
+      toast({ variant: 'destructive', title: t.categories.error, description: t.categories.imageSizeError });
       return;
     }
 
@@ -134,10 +139,10 @@ export default function Categories() {
         .getPublicUrl(filePath);
 
       setFormData(prev => ({ ...prev, image: publicUrl }));
-      toast({ title: 'Muvaffaqiyat', description: 'Rasm yuklandi' });
+      toast({ title: t.categories.success, description: t.categories.imageUploaded });
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Rasm yuklanmadi: ' + error.message });
+      toast({ variant: 'destructive', title: t.categories.error, description: t.categories.imageError + ': ' + error.message });
     } finally {
       setImageUploading(false);
     }
@@ -177,7 +182,7 @@ export default function Categories() {
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Toifalarni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.categories.error, description: t.categories.loadError });
     } finally {
       setLoading(false);
     }
@@ -269,7 +274,7 @@ export default function Categories() {
     
     if (cleanSlug) {
       const isUnique = await checkSlugUnique(cleanSlug, selectedCategory?.id);
-      setSlugError(isUnique ? '' : 'Bu slug allaqachon mavjud');
+      setSlugError(isUnique ? '' : t.categories.slugTaken);
     } else {
       setSlugError('');
     }
@@ -277,7 +282,7 @@ export default function Categories() {
 
   const handleSubmit = async () => {
     if (!formData.name_uz || !formData.name_ru) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Barcha majburiy maydonlarni to\'ldiring' });
+      toast({ variant: 'destructive', title: t.categories.error, description: t.categories.requiredFields });
       return;
     }
 
@@ -286,7 +291,7 @@ export default function Categories() {
     // Check slug uniqueness
     const isUnique = await checkSlugUnique(slug, selectedCategory?.id);
     if (!isUnique) {
-      setSlugError('Bu slug allaqachon mavjud');
+      setSlugError(t.categories.slugTaken);
       return;
     }
 
@@ -315,23 +320,23 @@ export default function Categories() {
           .eq('id', selectedCategory.id);
 
         if (error) throw error;
-        toast({ title: 'Muvaffaqiyat', description: 'Toifa yangilandi' });
+        toast({ title: t.categories.success, description: t.categories.updated });
       } else {
         const { error } = await supabase
           .from('categories')
           .insert([categoryData]);
 
         if (error) throw error;
-        toast({ title: 'Muvaffaqiyat', description: 'Toifa yaratildi' });
+        toast({ title: t.categories.success, description: t.categories.created });
       }
 
       setDialogOpen(false);
       fetchCategories();
     } catch (error: any) {
       if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
-        setSlugError('Bu slug allaqachon mavjud');
+        setSlugError(t.categories.slugTaken);
       } else {
-        toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+        toast({ variant: 'destructive', title: t.categories.error, description: error.message });
       }
     }
   };
@@ -344,8 +349,8 @@ export default function Categories() {
     if (count > 0) {
       toast({ 
         variant: 'destructive', 
-        title: 'O\'chirib bo\'lmaydi', 
-        description: `Bu toifada ${count} ta mahsulot bor. Avval mahsulotlarni boshqa toifaga o'tkazing.` 
+        title: t.categories.cantDelete, 
+        description: t.categories.hasProducts(catName(selectedCategory), count) 
       });
       setDeleteDialogOpen(false);
       return;
@@ -358,11 +363,11 @@ export default function Categories() {
         .eq('id', selectedCategory.id);
 
       if (error) throw error;
-      toast({ title: 'Muvaffaqiyat', description: 'Toifa o\'chirildi' });
+      toast({ title: t.categories.success, description: t.categories.deleted });
       setDeleteDialogOpen(false);
       fetchCategories();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+      toast({ variant: 'destructive', title: t.categories.error, description: error.message });
     }
   };
 
@@ -376,11 +381,11 @@ export default function Categories() {
       if (error) throw error;
       fetchCategories();
       toast({ 
-        title: 'Muvaffaqiyat', 
-        description: `Toifa ${!category.is_active ? 'faollashtirildi' : 'o\'chirildi'}` 
+        title: t.categories.success, 
+        description: t.categories.toggled(!category.is_active) 
       });
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+      toast({ variant: 'destructive', title: t.categories.error, description: error.message });
     }
   };
 
@@ -399,11 +404,11 @@ export default function Categories() {
     const hasDescription = category.meta_description_uz || category.meta_description_ru;
     
     if (hasTitle && hasDescription) {
-      return { status: 'complete', label: 'SEO tayyor' };
+      return { status: 'complete', label: t.categories.seoReady };
     } else if (hasTitle || hasDescription) {
-      return { status: 'partial', label: 'SEO qisman' };
+      return { status: 'partial', label: t.categories.seoPartial };
     }
-    return { status: 'missing', label: 'SEO yo\'q' };
+    return { status: 'missing', label: t.categories.seoMissing };
   };
 
   if (loading) {
@@ -419,8 +424,8 @@ export default function Categories() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Toifalar</h1>
-          <p className="text-muted-foreground">Mahsulot toifalarini boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.categories.title}</h1>
+          <p className="text-muted-foreground">{t.categories.subtitle}</p>
         </div>
         <div className="flex items-center gap-3">
           <a 
@@ -430,12 +435,12 @@ export default function Categories() {
             className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
           >
             <Globe className="h-4 w-4" />
-            Sitemap
+            {t.categories.sitemap}
             <ExternalLink className="h-3 w-3" />
           </a>
           <Button onClick={openCreateDialog}>
             <Plus className="mr-2 h-4 w-4" />
-            Yangi toifa
+            {t.categories.newCategory}
           </Button>
         </div>
       </div>
@@ -444,7 +449,7 @@ export default function Categories() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Toifa nomi yoki slug bo'yicha qidirish..."
+          placeholder={t.categories.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -455,9 +460,9 @@ export default function Categories() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
-            <span>Barcha toifalar ({filteredCategories.length})</span>
+            <span>{t.categories.allCategories} ({filteredCategories.length})</span>
             <Badge variant="outline" className="font-normal">
-              {categories.filter(c => c.is_active).length} faol
+              {t.categories.activeCount(categories.filter(c => c.is_active).length)}
             </Badge>
           </CardTitle>
         </CardHeader>
@@ -466,13 +471,13 @@ export default function Categories() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12"></TableHead>
-                <TableHead className="w-16">Rasm</TableHead>
-                <TableHead>Nomi (UZ / RU)</TableHead>
-                <TableHead>Slug</TableHead>
-                <TableHead className="text-center">Mahsulotlar</TableHead>
-                <TableHead>SEO</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Amallar</TableHead>
+                <TableHead className="w-16">{t.categories.image}</TableHead>
+                <TableHead>{t.categories.nameUzRu}</TableHead>
+                <TableHead>{t.categories.slug}</TableHead>
+                <TableHead className="text-center">{t.categories.products}</TableHead>
+                <TableHead>{t.categories.seo}</TableHead>
+                <TableHead>{t.categories.status}</TableHead>
+                <TableHead className="text-right">{t.categories.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -500,8 +505,8 @@ export default function Categories() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{category.name_uz}</p>
-                        <p className="text-sm text-muted-foreground">{category.name_ru}</p>
+                        <p className="font-medium">{catName(category)}</p>
+                        <p className="text-sm text-muted-foreground">{language === 'ru' ? category.name_uz : category.name_ru}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -523,7 +528,7 @@ export default function Categories() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={category.is_active ? 'default' : 'secondary'}>
-                        {category.is_active ? 'Faol' : 'Nofaol'}
+                        {category.is_active ? t.categories.active : t.categories.inactive}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -552,10 +557,10 @@ export default function Categories() {
                   <TableCell colSpan={8} className="text-center py-12">
                     <div className="flex flex-col items-center gap-2">
                       <Package className="h-8 w-8 text-muted-foreground" />
-                      <p className="text-muted-foreground">Toifalar topilmadi</p>
+                      <p className="text-muted-foreground">{t.categories.notFound}</p>
                       {searchQuery && (
                         <Button variant="link" onClick={() => setSearchQuery('')}>
-                          Qidiruvni tozalash
+                          {t.categories.clearSearch}
                         </Button>
                       )}
                     </div>
@@ -571,15 +576,15 @@ export default function Categories() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedCategory ? 'Toifani tahrirlash' : 'Yangi toifa'}</DialogTitle>
+            <DialogTitle>{selectedCategory ? t.categories.editTitle : t.categories.newTitle}</DialogTitle>
           </DialogHeader>
           
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="general">Asosiy</TabsTrigger>
+              <TabsTrigger value="general">{t.categories.general}</TabsTrigger>
               <TabsTrigger value="seo" className="gap-2">
                 <Globe className="h-4 w-4" />
-                SEO
+                {t.categories.seo}
               </TabsTrigger>
             </TabsList>
 
@@ -587,29 +592,29 @@ export default function Categories() {
             <TabsContent value="general" className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nomi (UZ) *</Label>
+                  <Label>{t.categories.nameUz}</Label>
                   <Input
                     value={formData.name_uz}
                     onChange={(e) => handleNameChange(e.target.value, 'name_uz')}
-                    placeholder="O'zbek tilida"
+                    placeholder={t.categories.placeholderUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Nomi (RU) *</Label>
+                  <Label>{t.categories.nameRu}</Label>
                   <Input
                     value={formData.name_ru}
                     onChange={(e) => handleNameChange(e.target.value, 'name_ru')}
-                    placeholder="На русском"
+                    placeholder={t.categories.placeholderRu}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Slug (URL)</Label>
+                <Label>{t.categories.slugUrl}</Label>
                 <Input
                   value={formData.slug}
                   onChange={(e) => handleSlugChange(e.target.value)}
-                  placeholder="avtomatik yaratiladi"
+                  placeholder={t.categories.slugAuto}
                   className={slugError ? 'border-destructive' : ''}
                 />
                 {slugError ? (
@@ -622,7 +627,7 @@ export default function Categories() {
               </div>
 
               <div className="space-y-2">
-                <Label>Rasm</Label>
+                <Label>{t.categories.image}</Label>
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -666,7 +671,7 @@ export default function Categories() {
                     ) : (
                       <>
                         <Plus className="h-8 w-8 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">Rasm yuklash</span>
+                        <span className="text-xs text-muted-foreground">{t.categories.uploadImage}</span>
                       </>
                     )}
                   </Button>
@@ -674,14 +679,14 @@ export default function Categories() {
                 
                 {!formData.image && (
                   <p className="text-xs text-muted-foreground">
-                    JPG, PNG, WebP yoki GIF. Maksimum 5MB
+                    {t.categories.imageHint}
                   </p>
                 )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Tartib raqami</Label>
+                  <Label>{t.categories.sortOrder}</Label>
                   <Input
                     type="number"
                     value={formData.sort_order}
@@ -693,7 +698,7 @@ export default function Categories() {
                     checked={formData.is_active}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
-                  <Label>Faol</Label>
+                  <Label>{t.categories.active}</Label>
                 </div>
               </div>
             </TabsContent>
@@ -702,37 +707,37 @@ export default function Categories() {
             <TabsContent value="seo" className="space-y-4 mt-4">
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  SEO maydonlari bo'sh bo'lsa, toifa nomi avtomatik ishlatiladi.
+                  {t.categories.seoHint}
                 </p>
               </div>
 
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="font-medium">Meta Title</h3>
+                <h3 className="font-medium">{t.categories.metaTitle}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Meta Title (UZ)</Label>
+                    <Label>{t.categories.metaTitleUz}</Label>
                     <Input
                       value={formData.meta_title_uz}
                       onChange={(e) => setFormData({ ...formData, meta_title_uz: e.target.value })}
-                      placeholder={formData.name_uz || 'Toifa nomi'}
+                      placeholder={formData.name_uz || t.categories.metaTitlePlaceholderUz}
                       maxLength={60}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.meta_title_uz.length}/60 belgi
+                      {t.categories.chars60(formData.meta_title_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Meta Title (RU)</Label>
+                    <Label>{t.categories.metaTitleRu}</Label>
                     <Input
                       value={formData.meta_title_ru}
                       onChange={(e) => setFormData({ ...formData, meta_title_ru: e.target.value })}
-                      placeholder={formData.name_ru || 'Название категории'}
+                      placeholder={formData.name_ru || t.categories.metaTitlePlaceholderRu}
                       maxLength={60}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.meta_title_ru.length}/60 belgi
+                      {t.categories.chars60(formData.meta_title_ru.length)}
                     </p>
                   </div>
                 </div>
@@ -741,32 +746,32 @@ export default function Categories() {
               <Separator />
 
               <div className="space-y-4">
-                <h3 className="font-medium">Meta Description</h3>
+                <h3 className="font-medium">{t.categories.metaDescription}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Meta Description (UZ)</Label>
+                    <Label>{t.categories.metaDescriptionUz}</Label>
                     <Textarea
                       value={formData.meta_description_uz}
                       onChange={(e) => setFormData({ ...formData, meta_description_uz: e.target.value })}
-                      placeholder="Toifa tavsifi..."
+                      placeholder={t.categories.metaDescPlaceholderUz}
                       maxLength={160}
                       rows={3}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.meta_description_uz.length}/160 belgi
+                      {t.categories.chars160(formData.meta_description_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label>Meta Description (RU)</Label>
+                    <Label>{t.categories.metaDescriptionRu}</Label>
                     <Textarea
                       value={formData.meta_description_ru}
                       onChange={(e) => setFormData({ ...formData, meta_description_ru: e.target.value })}
-                      placeholder="Описание категории..."
+                      placeholder={t.categories.metaDescPlaceholderRu}
                       maxLength={160}
                       rows={3}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {formData.meta_description_ru.length}/160 belgi
+                      {t.categories.chars160(formData.meta_description_ru.length)}
                     </p>
                   </div>
                 </div>
@@ -775,11 +780,11 @@ export default function Categories() {
               <Separator />
 
               <div className="space-y-2">
-                <Label>Meta Keywords (ixtiyoriy)</Label>
+                <Label>{t.categories.metaKeywords}</Label>
                 <Input
                   value={formData.meta_keywords}
                   onChange={(e) => setFormData({ ...formData, meta_keywords: e.target.value })}
-                  placeholder="mebel, yotoqxona, divan..."
+                  placeholder={t.categories.metaKeywordsPlaceholder}
                 />
               </div>
 
@@ -792,9 +797,9 @@ export default function Categories() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_indexed: checked })}
                   />
                   <div>
-                    <Label>Indexlash</Label>
+                    <Label>{t.categories.indexing}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_indexed ? 'Google indeksida' : 'Noindex'}
+                      {formData.is_indexed ? t.categories.indexOn : t.categories.indexOff}
                     </p>
                   </div>
                 </div>
@@ -804,9 +809,9 @@ export default function Categories() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_followed: checked })}
                   />
                   <div>
-                    <Label>Follow</Label>
+                    <Label>{t.categories.follow}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_followed ? 'Havolalar kuzatiladi' : 'Nofollow'}
+                      {formData.is_followed ? t.categories.followOn : t.categories.followOff}
                     </p>
                   </div>
                 </div>
@@ -815,9 +820,9 @@ export default function Categories() {
           </Tabs>
 
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Bekor qilish</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>{t.categories.cancel}</Button>
             <Button onClick={handleSubmit} disabled={!!slugError}>
-              {selectedCategory ? 'Saqlash' : 'Yaratish'}
+              {selectedCategory ? t.categories.save : t.categories.create}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -831,28 +836,25 @@ export default function Categories() {
               {(productCounts[selectedCategory?.id || ''] || 0) > 0 && (
                 <AlertTriangle className="h-5 w-5 text-amber-500" />
               )}
-              Toifani o'chirish
+              {t.categories.deleteTitle}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {(productCounts[selectedCategory?.id || ''] || 0) > 0 ? (
                 <>
-                  <span className="text-amber-600 font-medium">Diqqat!</span> "{selectedCategory?.name_uz}" toifasida{' '}
-                  <strong>{productCounts[selectedCategory?.id || '']}</strong> ta mahsulot bor. 
-                  Avval mahsulotlarni boshqa toifaga o'tkazing.
+                  <span className="text-amber-600 font-medium">{t.categories.attention}</span>{' '}{t.categories.hasProducts(selectedCategory ? catName(selectedCategory) : '', productCounts[selectedCategory?.id || ''] || 0)}
                 </>
               ) : (
                 <>
-                  Haqiqatan ham "{selectedCategory?.name_uz}" toifasini o'chirmoqchimisiz? 
-                  Bu amalni qaytarib bo'lmaydi.
+                  {t.categories.confirmDelete(selectedCategory ? catName(selectedCategory) : '')}
                 </>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+            <AlertDialogCancel>{t.categories.cancel}</AlertDialogCancel>
             {(productCounts[selectedCategory?.id || ''] || 0) === 0 && (
               <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-                O'chirish
+                {t.categories.delete}
               </AlertDialogAction>
             )}
           </AlertDialogFooter>
