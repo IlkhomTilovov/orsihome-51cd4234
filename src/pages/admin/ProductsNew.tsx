@@ -729,7 +729,7 @@ export default function ProductsNew() {
                     <TableCell>{getCategoryName(product.category_id)}</TableCell>
                     <TableCell>
                       {product.is_negotiable ? (
-                        <Badge variant="outline">Kelishiladi</Badge>
+                        <Badge variant="outline">{t.products.negotiable}</Badge>
                       ) : (
                         <div>
                           <p className="font-medium">{formatPrice(product.price)}</p>
@@ -744,12 +744,12 @@ export default function ProductsNew() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                          {product.is_active ? 'Faol' : 'Nofaol'}
+                          {product.is_active ? t.products.active : t.products.inactive}
                         </Badge>
                         {product.in_stock ? (
-                          <Badge variant="outline" className="text-green-600 border-green-200">Mavjud</Badge>
+                          <Badge variant="outline" className="text-green-600 border-green-200">{t.products.inStock}</Badge>
                         ) : (
-                          <Badge variant="destructive">Tugagan</Badge>
+                          <Badge variant="destructive">{t.products.outOfStock}</Badge>
                         )}
                       </div>
                     </TableCell>
