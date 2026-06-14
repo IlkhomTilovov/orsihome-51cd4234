@@ -330,32 +330,32 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Tezkor harakatlar</CardTitle>
-            <CardDescription>Tez-tez ishlatiladigan amallar</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.quickActions}</CardTitle>
+            <CardDescription>{t.dashboard.quickActionsSub}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Button asChild>
               <Link to="/admin/orders">
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                Buyurtmalarni ko'rish
+                {t.dashboard.viewOrders}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/products">
                 <Plus className="mr-2 h-4 w-4" />
-                Mahsulot qo'shish
+                {t.dashboard.addProduct}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/settings">
                 <Settings className="mr-2 h-4 w-4" />
-                Telegram sozlamalari
+                {t.dashboard.telegramSettings}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/themes">
                 <Palette className="mr-2 h-4 w-4" />
-                Mavzular
+                {t.dashboard.themes}
               </Link>
             </Button>
           </CardContent>
@@ -363,36 +363,36 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Status bo'yicha</CardTitle>
-            <CardDescription>Buyurtmalar holati</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.byStatus}</CardTitle>
+            <CardDescription>{t.dashboard.byStatusSub}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-blue-500" />
-                  <span className="text-sm">Yangi</span>
+                  <span className="text-sm">{t.dashboard.statusNew}</span>
                 </div>
                 <Badge variant="secondary">{stats.new}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                  <span className="text-sm">Jarayonda</span>
+                  <span className="text-sm">{t.dashboard.statusInProgress}</span>
                 </div>
                 <Badge variant="secondary">{stats.inProgress}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
-                  <span className="text-sm">Bajarildi</span>
+                  <span className="text-sm">{t.dashboard.statusCompleted}</span>
                 </div>
                 <Badge variant="outline" className="border-green-500 text-green-600">{stats.completed}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-red-500" />
-                  <span className="text-sm">Bekor qilindi</span>
+                  <span className="text-sm">{t.dashboard.statusCancelled}</span>
                 </div>
                 <Badge variant="destructive">{stats.cancelled}</Badge>
               </div>
