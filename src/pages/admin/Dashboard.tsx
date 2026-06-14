@@ -265,12 +265,12 @@ export default function Dashboard() {
             </div>
             <div className="flex-1">
               <p className="font-medium text-yellow-900">
-                Telegram bot ulanmagan
+                {t.dashboard.telegramNotConnected}
               </p>
-              <p className="text-sm text-yellow-700">Buyurtma xabarnomalarini olish uchun sozlang</p>
+              <p className="text-sm text-yellow-700">{t.dashboard.telegramNotConnectedSub}</p>
             </div>
             <Button asChild variant="outline" size="sm">
-              <Link to="/admin/settings">Sozlash</Link>
+              <Link to="/admin/settings">{t.dashboard.setup}</Link>
             </Button>
           </CardContent>
         </Card>
