@@ -245,12 +245,12 @@ export default function Dashboard() {
             </div>
             <div className="flex-1">
               <p className="font-medium text-blue-900">
-                Bugun {stats.todayNew} ta yangi buyurtma bor!
+                {t.dashboard.todayNewAlert(stats.todayNew)}
               </p>
-              <p className="text-sm text-blue-700">Buyurtmalarni ko'rib chiqing</p>
+              <p className="text-sm text-blue-700">{t.dashboard.todayNewAlertSub}</p>
             </div>
             <Button asChild size="sm">
-              <Link to="/admin/orders">Ko'rish</Link>
+              <Link to="/admin/orders">{t.common.view}</Link>
             </Button>
           </CardContent>
         </Card>
