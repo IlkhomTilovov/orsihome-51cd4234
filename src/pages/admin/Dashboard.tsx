@@ -280,48 +280,48 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Jami buyurtmalar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.totalOrders}</CardTitle>
             <ShoppingCart className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{stats.total}</div>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
-              Bugun: +{stats.todayTotal}
+              {t.dashboard.today}: +{stats.todayTotal}
             </p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Yangi buyurtmalar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.newOrders}</CardTitle>
             <Clock className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-blue-600">{stats.new}</div>
-            <p className="text-sm text-muted-foreground">Kutilmoqda</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.pending}</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Bajarilgan</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.completed}</CardTitle>
             <CheckCircle className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{stats.completed}</div>
-            <p className="text-sm text-muted-foreground">Muvaffaqiyatli</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.successful}</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Mahsulotlar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.products}</CardTitle>
             <Package className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{systemStatus.totalProducts}</div>
-            <p className="text-sm text-muted-foreground">{systemStatus.totalCategories} ta toifada</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.inCategories(systemStatus.totalCategories)}</p>
           </CardContent>
         </Card>
       </div>
