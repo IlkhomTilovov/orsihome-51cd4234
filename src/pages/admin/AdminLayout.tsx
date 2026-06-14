@@ -228,9 +228,10 @@ export default function AdminLayout() {
           <Menu className="h-5 w-5" />
         </Button>
         <Link to="/admin" className="font-serif text-lg font-bold text-primary">
-          Admin Panel
+          {t.layout.adminPanel}
         </Link>
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
