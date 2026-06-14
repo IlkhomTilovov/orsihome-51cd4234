@@ -445,6 +445,20 @@ export default function Index() {
     setCatAnimate(true);
     setCatIndex((p) => p + dir);
   };
+  const onCatTouchStart = (e: React.TouchEvent) => {
+    catTouchStartX.current = e.touches[0].clientX;
+  };
+  const onCatTouchEnd = (e: React.TouchEvent) => {
+    if (catTouchStartX.current === null) return;
+    const diff = catTouchStartX.current - e.changedTouches[0].clientX;
+    const SWIPE_THRESHOLD = 50;
+    if (diff > SWIPE_THRESHOLD) {
+      goCat(1);
+    } else if (diff < -SWIPE_THRESHOLD) {
+      goCat(-1);
+    }
+    catTouchStartX.current = null;
+  };
   // Autoplay: advance by 1 every 5s
   useEffect(() => {
     if (cats.length <= catPerPage) return;
