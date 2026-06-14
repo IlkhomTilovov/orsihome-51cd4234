@@ -293,7 +293,7 @@ export default function AdminLayout() {
         <aside className="w-64 bg-white border-r fixed inset-y-0 left-0 flex flex-col">
           <div className="flex items-center h-16 px-6 border-b">
             <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-              Admin Panel
+              {t.layout.adminPanel}
             </Link>
           </div>
 
