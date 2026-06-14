@@ -798,7 +798,7 @@ export default function ProductsNew() {
                   <TableCell colSpan={7} className="text-center py-12">
                     <div className="flex flex-col items-center gap-2">
                       <Package className="h-8 w-8 text-muted-foreground" />
-                      <p className="text-muted-foreground">Mahsulotlar topilmadi</p>
+                      <p className="text-muted-foreground">{t.products.notFound}</p>
                     </div>
                   </TableCell>
                 </TableRow>
