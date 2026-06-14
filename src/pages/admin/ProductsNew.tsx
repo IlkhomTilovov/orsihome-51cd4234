@@ -623,17 +623,17 @@ export default function ProductsNew() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Mahsulotlar</h1>
-          <p className="text-muted-foreground">Barcha mahsulotlarni boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.products.title}</h1>
+          <p className="text-muted-foreground">{t.products.subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={fetchProducts}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            Yangilash
+            {t.products.refresh}
           </Button>
           <Button onClick={openCreateDialog}>
             <Plus className="mr-2 h-4 w-4" />
-            Yangi mahsulot
+            {t.products.newProduct}
           </Button>
         </div>
       </div>
