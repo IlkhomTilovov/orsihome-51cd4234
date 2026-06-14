@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
+import { useAdminT } from '@/hooks/useAdminT';
 
 interface OrderStats {
   total: number;
@@ -74,6 +75,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { currentTheme } = useTheme();
+  const t = useAdminT();
 
   useEffect(() => {
     fetchAllData();
@@ -171,10 +173,10 @@ export default function Dashboard() {
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string; className?: string }> = {
-      new: { variant: 'default', label: 'Yangi', className: 'bg-blue-500' },
-      in_progress: { variant: 'secondary', label: 'Jarayonda', className: 'bg-yellow-500 text-white' },
-      completed: { variant: 'outline', label: 'Bajarildi', className: 'border-green-500 text-green-600' },
-      cancelled: { variant: 'destructive', label: 'Bekor qilindi' },
+      new: { variant: 'default', label: t.dashboard.statusNew, className: 'bg-blue-500' },
+      in_progress: { variant: 'secondary', label: t.dashboard.statusInProgress, className: 'bg-yellow-500 text-white' },
+      completed: { variant: 'outline', label: t.dashboard.statusCompleted, className: 'border-green-500 text-green-600' },
+      cancelled: { variant: 'destructive', label: t.dashboard.statusCancelled },
     };
     const config = variants[status] || variants.new;
     return <Badge variant={config.variant} className={config.className}>{config.label}</Badge>;
@@ -188,9 +190,9 @@ export default function Dashboard() {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) return `${minutes} daqiqa oldin`;
-    if (hours < 24) return `${hours} soat oldin`;
-    if (days < 7) return `${days} kun oldin`;
+    if (minutes < 60) return t.dashboard.minutesAgo(minutes);
+    if (hours < 24) return t.dashboard.hoursAgo(hours);
+    if (days < 7) return t.dashboard.daysAgo(days);
     
     return date.toLocaleDateString('uz-UZ', {
       day: '2-digit',
@@ -201,7 +203,7 @@ export default function Dashboard() {
 
   const formatPrice = (price: number | null) => {
     if (!price) return '—';
-    return new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
+    return new Intl.NumberFormat('uz-UZ').format(price) + ' ' + t.dashboard.currency;
   };
 
   if (loading) {
@@ -209,7 +211,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground">Ma'lumotlar yuklanmoqda...</p>
+          <p className="text-muted-foreground">{t.common.loading}</p>
         </div>
       </div>
     );
@@ -220,8 +222,8 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Umumiy ko'rinish va statistika</p>
+          <h1 className="text-2xl font-bold">{t.dashboard.title}</h1>
+          <p className="text-muted-foreground">{t.dashboard.subtitle}</p>
         </div>
         <Button 
           variant="outline" 
@@ -230,7 +232,7 @@ export default function Dashboard() {
           disabled={refreshing}
         >
           <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Yangilash
+          {t.common.refresh}
         </Button>
       </div>
 
@@ -243,12 +245,12 @@ export default function Dashboard() {
             </div>
             <div className="flex-1">
               <p className="font-medium text-blue-900">
-                Bugun {stats.todayNew} ta yangi buyurtma bor!
+                {t.dashboard.todayNewAlert(stats.todayNew)}
               </p>
-              <p className="text-sm text-blue-700">Buyurtmalarni ko'rib chiqing</p>
+              <p className="text-sm text-blue-700">{t.dashboard.todayNewAlertSub}</p>
             </div>
             <Button asChild size="sm">
-              <Link to="/admin/orders">Ko'rish</Link>
+              <Link to="/admin/orders">{t.common.view}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -263,12 +265,12 @@ export default function Dashboard() {
             </div>
             <div className="flex-1">
               <p className="font-medium text-yellow-900">
-                Telegram bot ulanmagan
+                {t.dashboard.telegramNotConnected}
               </p>
-              <p className="text-sm text-yellow-700">Buyurtma xabarnomalarini olish uchun sozlang</p>
+              <p className="text-sm text-yellow-700">{t.dashboard.telegramNotConnectedSub}</p>
             </div>
             <Button asChild variant="outline" size="sm">
-              <Link to="/admin/settings">Sozlash</Link>
+              <Link to="/admin/settings">{t.dashboard.setup}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -278,48 +280,48 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Jami buyurtmalar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.totalOrders}</CardTitle>
             <ShoppingCart className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{stats.total}</div>
             <p className="text-sm text-muted-foreground flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />
-              Bugun: +{stats.todayTotal}
+              {t.dashboard.today}: +{stats.todayTotal}
             </p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Yangi buyurtmalar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.newOrders}</CardTitle>
             <Clock className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-blue-600">{stats.new}</div>
-            <p className="text-sm text-muted-foreground">Kutilmoqda</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.pending}</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Bajarilgan</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.completed}</CardTitle>
             <CheckCircle className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-green-600">{stats.completed}</div>
-            <p className="text-sm text-muted-foreground">Muvaffaqiyatli</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.successful}</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Mahsulotlar</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t.dashboard.products}</CardTitle>
             <Package className="h-5 w-5 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{systemStatus.totalProducts}</div>
-            <p className="text-sm text-muted-foreground">{systemStatus.totalCategories} ta toifada</p>
+            <p className="text-sm text-muted-foreground">{t.dashboard.inCategories(systemStatus.totalCategories)}</p>
           </CardContent>
         </Card>
       </div>
@@ -328,32 +330,32 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Tezkor harakatlar</CardTitle>
-            <CardDescription>Tez-tez ishlatiladigan amallar</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.quickActions}</CardTitle>
+            <CardDescription>{t.dashboard.quickActionsSub}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Button asChild>
               <Link to="/admin/orders">
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                Buyurtmalarni ko'rish
+                {t.dashboard.viewOrders}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/products">
                 <Plus className="mr-2 h-4 w-4" />
-                Mahsulot qo'shish
+                {t.dashboard.addProduct}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/settings">
                 <Settings className="mr-2 h-4 w-4" />
-                Telegram sozlamalari
+                {t.dashboard.telegramSettings}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link to="/admin/themes">
                 <Palette className="mr-2 h-4 w-4" />
-                Mavzular
+                {t.dashboard.themes}
               </Link>
             </Button>
           </CardContent>
@@ -361,36 +363,36 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Status bo'yicha</CardTitle>
-            <CardDescription>Buyurtmalar holati</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.byStatus}</CardTitle>
+            <CardDescription>{t.dashboard.byStatusSub}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-blue-500" />
-                  <span className="text-sm">Yangi</span>
+                  <span className="text-sm">{t.dashboard.statusNew}</span>
                 </div>
                 <Badge variant="secondary">{stats.new}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-yellow-500" />
-                  <span className="text-sm">Jarayonda</span>
+                  <span className="text-sm">{t.dashboard.statusInProgress}</span>
                 </div>
                 <Badge variant="secondary">{stats.inProgress}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
-                  <span className="text-sm">Bajarildi</span>
+                  <span className="text-sm">{t.dashboard.statusCompleted}</span>
                 </div>
                 <Badge variant="outline" className="border-green-500 text-green-600">{stats.completed}</Badge>
               </div>
               <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-red-500" />
-                  <span className="text-sm">Bekor qilindi</span>
+                  <span className="text-sm">{t.dashboard.statusCancelled}</span>
                 </div>
                 <Badge variant="destructive">{stats.cancelled}</Badge>
               </div>
@@ -404,28 +406,28 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Tizim holati
+            {t.dashboard.systemStatus}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Bot className={`h-6 w-6 mx-auto mb-2 ${systemStatus.telegramEnabled ? 'text-green-500' : 'text-muted-foreground'}`} />
-              <p className="text-sm font-medium">Telegram Bot</p>
+              <p className="text-sm font-medium">{t.dashboard.telegramBot}</p>
               <Badge variant={systemStatus.telegramEnabled ? 'default' : 'secondary'} className="mt-1">
-                {systemStatus.telegramEnabled ? 'Ulangan' : 'Ulanmagan'}
+                {systemStatus.telegramEnabled ? t.dashboard.connected : t.dashboard.notConnected}
               </Badge>
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Palette className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <p className="text-sm font-medium">Faol mavzu</p>
+              <p className="text-sm font-medium">{t.dashboard.activeTheme}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {systemStatus.activeTheme || 'Tanlanmagan'}
+                {systemStatus.activeTheme || t.dashboard.notSelected}
               </p>
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Globe className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-              <p className="text-sm font-medium">Tillar</p>
+              <p className="text-sm font-medium">{t.dashboard.languages}</p>
               <div className="flex gap-1 justify-center mt-1">
                 {systemStatus.enabledLanguages.map((lang) => (
                   <Badge key={lang} variant="outline" className="text-xs">
@@ -436,9 +438,9 @@ export default function Dashboard() {
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Package className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-              <p className="text-sm font-medium">Katalog</p>
+              <p className="text-sm font-medium">{t.dashboard.catalog}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {systemStatus.totalProducts} mahsulot
+                {t.dashboard.productsCount(systemStatus.totalProducts)}
               </p>
             </div>
           </div>
@@ -449,12 +451,12 @@ export default function Dashboard() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-lg">So'nggi buyurtmalar</CardTitle>
-            <CardDescription>Oxirgi 10 ta buyurtma</CardDescription>
+            <CardTitle className="text-lg">{t.dashboard.recentOrders}</CardTitle>
+            <CardDescription>{t.dashboard.recentOrdersSub}</CardDescription>
           </div>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/admin/orders" className="flex items-center gap-1">
-              Barchasini ko'rish
+              {t.common.viewAll}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -463,9 +465,9 @@ export default function Dashboard() {
           {recentOrders.length === 0 ? (
             <div className="text-center py-12">
               <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Hali buyurtmalar yo'q</p>
+              <p className="text-muted-foreground">{t.dashboard.noOrders}</p>
               <p className="text-sm text-muted-foreground">
-                Yangi buyurtmalar bu yerda ko'rinadi
+                {t.dashboard.noOrdersSub}
               </p>
             </div>
           ) : (

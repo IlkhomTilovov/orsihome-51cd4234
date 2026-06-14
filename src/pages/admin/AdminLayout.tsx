@@ -32,61 +32,63 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { RolePermissions, roleDisplayInfo } from '@/lib/permissions';
 import { Badge } from '@/components/ui/badge';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface NavItem {
-  title: string;
+  titleKey: keyof ReturnType<typeof useAdminT>['layout'];
   url: string;
   icon: LucideIcon;
   module: keyof RolePermissions;
 }
 
 interface NavGroup {
-  title: string;
+  titleKey: keyof ReturnType<typeof useAdminT>['layout'];
   icon: LucideIcon;
   items: NavItem[];
 }
 
 // Standalone (no group) items
 const standaloneItems: NavItem[] = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
+  { titleKey: 'navDashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
 ];
 
 const navGroups: NavGroup[] = [
   {
-    title: 'Sotuv',
+    titleKey: 'groupSales',
     icon: ShoppingBag,
     items: [
-      { title: 'Buyurtmalar', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
-      { title: 'Mijozlar', url: '/admin/customers', icon: Users, module: 'customers' },
-      { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
+      { titleKey: 'navOrders', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
+      { titleKey: 'navCustomers', url: '/admin/customers', icon: Users, module: 'customers' },
+      { titleKey: 'navMessages', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
     ],
   },
   {
-    title: 'Katalog',
+    titleKey: 'groupCatalog',
     icon: Boxes,
     items: [
-      { title: 'Toifalar', url: '/admin/categories', icon: FolderTree, module: 'categories' },
-      { title: 'Mahsulotlar', url: '/admin/products', icon: Package, module: 'products' },
-      { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
-      { title: "Setlar to'plami", url: '/admin/sets', icon: Layers, module: 'siteContent' },
+      { titleKey: 'navCategories', url: '/admin/categories', icon: FolderTree, module: 'categories' },
+      { titleKey: 'navProducts', url: '/admin/products', icon: Package, module: 'products' },
+      { titleKey: 'navPromoTiles', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
+      { titleKey: 'navSets', url: '/admin/sets', icon: Layers, module: 'siteContent' },
     ],
   },
   {
-    title: 'Sayt kontenti',
+    titleKey: 'groupSiteContent',
     icon: PaintBucket,
     items: [
-      { title: 'Sayt kontenti', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
-      { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
-      { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
+      { titleKey: 'navSiteContent', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
+      { titleKey: 'navCheckoutForm', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
+      { titleKey: 'navThemes', url: '/admin/themes', icon: Palette, module: 'themes' },
     ],
   },
   {
-    title: 'Tizim',
+    titleKey: 'groupSystem',
     icon: Cog,
     items: [
-      { title: 'Adminlar', url: '/admin/admins', icon: Shield, module: 'admins' },
-      { title: 'Telegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
-      { title: 'Tizim sozlamalari', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
+      { titleKey: 'navAdmins', url: '/admin/admins', icon: Shield, module: 'admins' },
+      { titleKey: 'navTelegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
+      { titleKey: 'navSystemSettings', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
     ],
   },
 ];
@@ -96,6 +98,8 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { canViewModule, userRole, user, signOut } = useAuth();
+  const t = useAdminT();
+  const { language, setLanguage } = useLanguage();
 
   const isActive = (path: string) => {
     if (path === '/admin') return location.pathname === '/admin';
@@ -110,14 +114,35 @@ export default function AdminLayout() {
   // Open groups that contain the active route by default
   const initialOpen: Record<string, boolean> = {};
   filteredGroups.forEach((g) => {
-    initialOpen[g.title] = g.items.some((i) => isActive(i.url));
+    initialOpen[g.titleKey] = g.items.some((i) => isActive(i.url));
   });
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(initialOpen);
 
-  const toggleGroup = (title: string) =>
-    setOpenGroups((p) => ({ ...p, [title]: !p[title] }));
+  const toggleGroup = (key: string) =>
+    setOpenGroups((p) => ({ ...p, [key]: !p[key] }));
 
   const roleInfo = userRole ? roleDisplayInfo[userRole] : null;
+
+  const LanguageToggle = () => (
+    <div className="flex items-center gap-1 rounded-full border border-border bg-background p-0.5">
+      {(['uz', 'ru'] as const).map((lng) => (
+        <button
+          key={lng}
+          type="button"
+          onClick={() => setLanguage(lng)}
+          className={cn(
+            'px-2.5 py-1 text-xs font-semibold rounded-full transition-colors',
+            language === lng
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+          aria-label={`Switch language to ${lng}`}
+        >
+          {lng.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
 
   const renderNav = (onItemClick?: () => void) => (
     <>
@@ -134,18 +159,18 @@ export default function AdminLayout() {
           )}
         >
           <item.icon className="h-5 w-5" />
-          {item.title}
+          {t.layout[item.titleKey]}
         </Link>
       ))}
 
       {filteredGroups.map((group) => {
-        const open = openGroups[group.title];
+        const open = openGroups[group.titleKey];
         const hasActive = group.items.some((i) => isActive(i.url));
         return (
-          <div key={group.title} className="space-y-1">
+          <div key={group.titleKey} className="space-y-1">
             <button
               type="button"
-              onClick={() => toggleGroup(group.title)}
+              onClick={() => toggleGroup(group.titleKey)}
               className={cn(
                 'w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                 hasActive ? 'text-primary' : 'text-gray-700 hover:bg-gray-100'
@@ -153,7 +178,7 @@ export default function AdminLayout() {
             >
               <span className="flex items-center gap-3">
                 <group.icon className="h-5 w-5" />
-                {group.title}
+                {t.layout[group.titleKey]}
               </span>
               <ChevronDown
                 className={cn(
@@ -177,7 +202,7 @@ export default function AdminLayout() {
                     )}
                   >
                     <item.icon className="h-4 w-4" />
-                    {item.title}
+                    {t.layout[item.titleKey]}
                   </Link>
                 ))}
               </div>
@@ -203,9 +228,10 @@ export default function AdminLayout() {
           <Menu className="h-5 w-5" />
         </Button>
         <Link to="/admin" className="font-serif text-lg font-bold text-primary">
-          Admin Panel
+          {t.layout.adminPanel}
         </Link>
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
@@ -221,7 +247,7 @@ export default function AdminLayout() {
       >
         <div className="flex items-center justify-between h-16 px-6 border-b shrink-0">
           <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-            Admin Panel
+            {t.layout.adminPanel}
           </Link>
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />
@@ -246,7 +272,7 @@ export default function AdminLayout() {
             onClick={() => navigate('/')}
           >
             <LogOut className="h-4 w-4" />
-            Saytga qaytish
+            {t.layout.backToSite}
           </Button>
           <Button
             variant="destructive"
@@ -257,7 +283,7 @@ export default function AdminLayout() {
             }}
           >
             <LogOut className="h-4 w-4" />
-            Admindan chiqish
+            {t.layout.signOut}
           </Button>
         </div>
       </aside>
@@ -267,7 +293,7 @@ export default function AdminLayout() {
         <aside className="w-64 bg-white border-r fixed inset-y-0 left-0 flex flex-col">
           <div className="flex items-center h-16 px-6 border-b">
             <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-              Admin Panel
+              {t.layout.adminPanel}
             </Link>
           </div>
 
@@ -287,7 +313,7 @@ export default function AdminLayout() {
               onClick={() => navigate('/')}
             >
               <LogOut className="h-4 w-4" />
-              Saytga qaytish
+              {t.layout.backToSite}
             </Button>
             <Button
               variant="destructive"
@@ -298,7 +324,7 @@ export default function AdminLayout() {
               }}
             >
               <LogOut className="h-4 w-4" />
-              Admindan chiqish
+              {t.layout.signOut}
             </Button>
           </div>
         </aside>
@@ -308,6 +334,7 @@ export default function AdminLayout() {
         <div className="flex-1 min-w-0">
           <header className="sticky top-0 z-20 h-16 bg-white border-b flex items-center justify-end px-6">
             <div className="flex items-center gap-4">
+              <LanguageToggle />
               <Button variant="ghost" size="icon">
                 <Bell className="h-5 w-5" />
               </Button>
