@@ -374,7 +374,6 @@ export const adminTranslations = {
       currency: "so'm",
     },
   },
-  },
   ru: {
     common: {
       loading: 'Загрузка данных...',
