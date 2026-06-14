@@ -424,6 +424,14 @@ export default function Index() {
   const [catIndex, setCatIndex] = useState(0);
   const [catAnimate, setCatAnimate] = useState(true);
   const catTouchStartX = useRef<number | null>(null);
+  const [catPaused, setCatPaused] = useState(false);
+  const catResumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pauseCatAutoplay = () => {
+    setCatPaused(true);
+    if (catResumeTimer.current) clearTimeout(catResumeTimer.current);
+    catResumeTimer.current = setTimeout(() => setCatPaused(false), 5000);
+  };
+  useEffect(() => () => { if (catResumeTimer.current) clearTimeout(catResumeTimer.current); }, []);
   useEffect(() => {
     const compute = () => {
       if (typeof window === 'undefined') return;
