@@ -423,6 +423,7 @@ export default function Index() {
   const [catPerPage, setCatPerPage] = useState(4);
   const [catIndex, setCatIndex] = useState(0);
   const [catAnimate, setCatAnimate] = useState(true);
+  const catTouchStartX = useRef<number | null>(null);
   useEffect(() => {
     const compute = () => {
       if (typeof window === 'undefined') return;
