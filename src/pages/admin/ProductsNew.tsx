@@ -597,9 +597,9 @@ export default function ProductsNew() {
     const hasTitle = product.meta_title_uz || product.meta_title_ru;
     const hasDescription = product.meta_description_uz || product.meta_description_ru;
     
-    if (hasTitle && hasDescription) return { status: 'complete', label: 'SEO tayyor' };
-    if (hasTitle || hasDescription) return { status: 'partial', label: 'SEO qisman' };
-    return { status: 'missing', label: 'SEO yoq' };
+    if (hasTitle && hasDescription) return { status: 'complete', label: t.products.seoComplete };
+    if (hasTitle || hasDescription) return { status: 'partial', label: t.products.seoPartial };
+    return { status: 'missing', label: t.products.seoMissing };
   };
 
   // Pagination helpers
