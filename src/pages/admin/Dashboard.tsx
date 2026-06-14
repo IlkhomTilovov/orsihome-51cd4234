@@ -222,8 +222,8 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Umumiy ko'rinish va statistika</p>
+          <h1 className="text-2xl font-bold">{t.dashboard.title}</h1>
+          <p className="text-muted-foreground">{t.dashboard.subtitle}</p>
         </div>
         <Button 
           variant="outline" 
@@ -232,7 +232,7 @@ export default function Dashboard() {
           disabled={refreshing}
         >
           <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Yangilash
+          {t.common.refresh}
         </Button>
       </div>
 
