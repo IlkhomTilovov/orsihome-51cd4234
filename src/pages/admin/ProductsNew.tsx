@@ -288,7 +288,7 @@ export default function ProductsNew() {
 
   const formatPrice = (price: number | null) => {
     if (!price) return '—';
-    return new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
+    return new Intl.NumberFormat(language === 'ru' ? 'ru-RU' : 'uz-UZ').format(price) + ' ' + t.products.currency;
   };
 
   const getCategoryName = (categoryId: string | null) => {
