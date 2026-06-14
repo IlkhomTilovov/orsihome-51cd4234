@@ -32,6 +32,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useAdminT } from '@/hooks/useAdminT';
 import { AddMediaModal, MediaItem } from '@/components/admin/AddMediaModal';
 import { MediaGrid } from '@/components/admin/MediaGrid';
 import { useAllPromoTiles } from '@/hooks/usePromoTiles';
@@ -177,6 +178,7 @@ export default function ProductsNew() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { language } = useLanguage();
+  const t = useAdminT();
 
   // Debounce search
   useEffect(() => {
@@ -286,7 +288,7 @@ export default function ProductsNew() {
 
   const formatPrice = (price: number | null) => {
     if (!price) return '—';
-    return new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
+    return new Intl.NumberFormat(language === 'ru' ? 'ru-RU' : 'uz-UZ').format(price) + ' ' + t.products.currency;
   };
 
   const getCategoryName = (categoryId: string | null) => {
@@ -595,9 +597,9 @@ export default function ProductsNew() {
     const hasTitle = product.meta_title_uz || product.meta_title_ru;
     const hasDescription = product.meta_description_uz || product.meta_description_ru;
     
-    if (hasTitle && hasDescription) return { status: 'complete', label: 'SEO tayyor' };
-    if (hasTitle || hasDescription) return { status: 'partial', label: 'SEO qisman' };
-    return { status: 'missing', label: 'SEO yoq' };
+    if (hasTitle && hasDescription) return { status: 'complete', label: t.products.seoComplete };
+    if (hasTitle || hasDescription) return { status: 'partial', label: t.products.seoPartial };
+    return { status: 'missing', label: t.products.seoMissing };
   };
 
   // Pagination helpers
@@ -621,17 +623,17 @@ export default function ProductsNew() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Mahsulotlar</h1>
-          <p className="text-muted-foreground">Barcha mahsulotlarni boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.products.title}</h1>
+          <p className="text-muted-foreground">{t.products.subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={fetchProducts}>
             <RefreshCw className="mr-2 h-4 w-4" />
-            Yangilash
+            {t.products.refresh}
           </Button>
           <Button onClick={openCreateDialog}>
             <Plus className="mr-2 h-4 w-4" />
-            Yangi mahsulot
+            {t.products.newProduct}
           </Button>
         </div>
       </div>
@@ -643,7 +645,7 @@ export default function ProductsNew() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Mahsulot nomi yoki slug bo'yicha qidirish..."
+                placeholder={t.products.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -651,10 +653,10 @@ export default function ProductsNew() {
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Toifa" />
+                <SelectValue placeholder={t.products.category} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barcha toifalar</SelectItem>
+                <SelectItem value="all">{t.products.allCategories}</SelectItem>
                 {categories.map(cat => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {language === 'uz' ? cat.name_uz : cat.name_ru}
@@ -664,14 +666,14 @@ export default function ProductsNew() {
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t.products.status} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Barchasi</SelectItem>
-                <SelectItem value="active">Faol</SelectItem>
-                <SelectItem value="inactive">Nofaol</SelectItem>
-                <SelectItem value="featured">Tanlangan</SelectItem>
-                <SelectItem value="out_of_stock">Tugagan</SelectItem>
+                <SelectItem value="all">{t.products.statusAll}</SelectItem>
+                <SelectItem value="active">{t.products.statusActive}</SelectItem>
+                <SelectItem value="inactive">{t.products.statusInactive}</SelectItem>
+                <SelectItem value="featured">{t.products.statusFeatured}</SelectItem>
+                <SelectItem value="out_of_stock">{t.products.statusOutOfStock}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -682,10 +684,10 @@ export default function ProductsNew() {
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between">
-            <span>Barcha mahsulotlar ({totalCount})</span>
+            <span>{t.products.allProducts(totalCount)}</span>
             <div className="flex gap-2">
-              <Badge variant="outline">{products.filter(p => p.is_active).length} faol</Badge>
-              <Badge variant="secondary">{products.filter(p => p.is_featured).length} tanlangan</Badge>
+              <Badge variant="outline">{t.products.activeCount(products.filter(p => p.is_active).length)}</Badge>
+              <Badge variant="secondary">{t.products.featuredCount(products.filter(p => p.is_featured).length)}</Badge>
             </div>
           </CardTitle>
         </CardHeader>
@@ -693,13 +695,13 @@ export default function ProductsNew() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-16">Rasm</TableHead>
-                <TableHead>Nomi</TableHead>
-                <TableHead>Toifa</TableHead>
-                <TableHead>Narxi</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>SEO</TableHead>
-                <TableHead className="text-right">Amallar</TableHead>
+                <TableHead className="w-16">{t.products.colImage}</TableHead>
+                <TableHead>{t.products.colName}</TableHead>
+                <TableHead>{t.products.colCategory}</TableHead>
+                <TableHead>{t.products.colPrice}</TableHead>
+                <TableHead>{t.products.colStatus}</TableHead>
+                <TableHead>{t.products.colSeo}</TableHead>
+                <TableHead className="text-right">{t.products.colActions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -727,7 +729,7 @@ export default function ProductsNew() {
                     <TableCell>{getCategoryName(product.category_id)}</TableCell>
                     <TableCell>
                       {product.is_negotiable ? (
-                        <Badge variant="outline">Kelishiladi</Badge>
+                        <Badge variant="outline">{t.products.negotiable}</Badge>
                       ) : (
                         <div>
                           <p className="font-medium">{formatPrice(product.price)}</p>
@@ -742,12 +744,12 @@ export default function ProductsNew() {
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
                         <Badge variant={product.is_active ? 'default' : 'secondary'}>
-                          {product.is_active ? 'Faol' : 'Nofaol'}
+                          {product.is_active ? t.products.active : t.products.inactive}
                         </Badge>
                         {product.in_stock ? (
-                          <Badge variant="outline" className="text-green-600 border-green-200">Mavjud</Badge>
+                          <Badge variant="outline" className="text-green-600 border-green-200">{t.products.inStock}</Badge>
                         ) : (
-                          <Badge variant="destructive">Tugagan</Badge>
+                          <Badge variant="destructive">{t.products.outOfStock}</Badge>
                         )}
                       </div>
                     </TableCell>
@@ -765,7 +767,7 @@ export default function ProductsNew() {
                           variant="ghost" 
                           size="icon"
                           onClick={() => toggleFeatured(product)}
-                          title={product.is_featured ? "Tanlanganlardan olib tashlash" : "Tanlanganlarga qo'shish"}
+                          title={product.is_featured ? t.products.removeFromFeatured : t.products.addToFeatured}
                         >
                           <Star className={`h-4 w-4 ${product.is_featured ? 'fill-yellow-400 text-yellow-400' : ''}`} />
                         </Button>
@@ -796,7 +798,7 @@ export default function ProductsNew() {
                   <TableCell colSpan={7} className="text-center py-12">
                     <div className="flex flex-col items-center gap-2">
                       <Package className="h-8 w-8 text-muted-foreground" />
-                      <p className="text-muted-foreground">Mahsulotlar topilmadi</p>
+                      <p className="text-muted-foreground">{t.products.notFound}</p>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -813,7 +815,7 @@ export default function ProductsNew() {
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              Oldingi
+              {t.products.previous}
             </Button>
             <span className="text-sm text-muted-foreground">
               {currentPage} / {totalPages}
@@ -824,7 +826,7 @@ export default function ProductsNew() {
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              Keyingi
+              {t.products.next}
             </Button>
           </div>
         )}
