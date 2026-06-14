@@ -190,9 +190,9 @@ export default function Dashboard() {
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 60) return `${minutes} daqiqa oldin`;
-    if (hours < 24) return `${hours} soat oldin`;
-    if (days < 7) return `${days} kun oldin`;
+    if (minutes < 60) return t.dashboard.minutesAgo(minutes);
+    if (hours < 24) return t.dashboard.hoursAgo(hours);
+    if (days < 7) return t.dashboard.daysAgo(days);
     
     return date.toLocaleDateString('uz-UZ', {
       day: '2-digit',
@@ -203,7 +203,7 @@ export default function Dashboard() {
 
   const formatPrice = (price: number | null) => {
     if (!price) return '—';
-    return new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
+    return new Intl.NumberFormat('uz-UZ').format(price) + ' ' + t.dashboard.currency;
   };
 
   if (loading) {
