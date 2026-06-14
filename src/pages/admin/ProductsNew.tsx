@@ -178,6 +178,7 @@ export default function ProductsNew() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { language } = useLanguage();
+  const t = useAdminT();
 
   // Debounce search
   useEffect(() => {
