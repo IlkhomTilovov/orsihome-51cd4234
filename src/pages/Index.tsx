@@ -424,6 +424,14 @@ export default function Index() {
   const [catIndex, setCatIndex] = useState(0);
   const [catAnimate, setCatAnimate] = useState(true);
   const catTouchStartX = useRef<number | null>(null);
+  const [catPaused, setCatPaused] = useState(false);
+  const catResumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pauseCatAutoplay = () => {
+    setCatPaused(true);
+    if (catResumeTimer.current) clearTimeout(catResumeTimer.current);
+    catResumeTimer.current = setTimeout(() => setCatPaused(false), 5000);
+  };
+  useEffect(() => () => { if (catResumeTimer.current) clearTimeout(catResumeTimer.current); }, []);
   useEffect(() => {
     const compute = () => {
       if (typeof window === 'undefined') return;
@@ -447,6 +455,7 @@ export default function Index() {
   };
   const onCatTouchStart = (e: React.TouchEvent) => {
     catTouchStartX.current = e.touches[0].clientX;
+    pauseCatAutoplay();
   };
   const onCatTouchEnd = (e: React.TouchEvent) => {
     if (catTouchStartX.current === null) return;
@@ -458,16 +467,18 @@ export default function Index() {
       goCat(-1);
     }
     catTouchStartX.current = null;
+    pauseCatAutoplay();
   };
   // Autoplay: advance by 1 every 5s
   useEffect(() => {
     if (cats.length <= catPerPage) return;
+    if (catPaused) return;
     const t = setInterval(() => {
       setCatAnimate(true);
       setCatIndex((p) => p + 1);
     }, 5000);
     return () => clearInterval(t);
-  }, [cats.length, catPerPage]);
+  }, [cats.length, catPerPage, catPaused]);
   // When we cross past the end (into the cloned tail), snap back without animation
   useEffect(() => {
     if (cats.length === 0) return;
