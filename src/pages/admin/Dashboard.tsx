@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
+import { useAdminT } from '@/hooks/useAdminT';
 
 interface OrderStats {
   total: number;
