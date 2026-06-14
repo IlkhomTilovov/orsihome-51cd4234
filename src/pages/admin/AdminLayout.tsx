@@ -36,59 +36,59 @@ import { useAdminT } from '@/hooks/useAdminT';
 import { useLanguage } from '@/hooks/useLanguage';
 
 interface NavItem {
-  title: string;
+  titleKey: keyof ReturnType<typeof useAdminT>['layout'];
   url: string;
   icon: LucideIcon;
   module: keyof RolePermissions;
 }
 
 interface NavGroup {
-  title: string;
+  titleKey: keyof ReturnType<typeof useAdminT>['layout'];
   icon: LucideIcon;
   items: NavItem[];
 }
 
 // Standalone (no group) items
 const standaloneItems: NavItem[] = [
-  { title: 'Dashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
+  { titleKey: 'navDashboard', url: '/admin', icon: LayoutDashboard, module: 'dashboard' },
 ];
 
 const navGroups: NavGroup[] = [
   {
-    title: 'Sotuv',
+    titleKey: 'groupSales',
     icon: ShoppingBag,
     items: [
-      { title: 'Buyurtmalar', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
-      { title: 'Mijozlar', url: '/admin/customers', icon: Users, module: 'customers' },
-      { title: 'Xabarlar', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
+      { titleKey: 'navOrders', url: '/admin/orders', icon: ShoppingCart, module: 'orders' },
+      { titleKey: 'navCustomers', url: '/admin/customers', icon: Users, module: 'customers' },
+      { titleKey: 'navMessages', url: '/admin/messages', icon: MessageSquare, module: 'customers' },
     ],
   },
   {
-    title: 'Katalog',
+    titleKey: 'groupCatalog',
     icon: Boxes,
     items: [
-      { title: 'Toifalar', url: '/admin/categories', icon: FolderTree, module: 'categories' },
-      { title: 'Mahsulotlar', url: '/admin/products', icon: Package, module: 'products' },
-      { title: 'Promo kartochkalar', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
-      { title: "Setlar to'plami", url: '/admin/sets', icon: Layers, module: 'siteContent' },
+      { titleKey: 'navCategories', url: '/admin/categories', icon: FolderTree, module: 'categories' },
+      { titleKey: 'navProducts', url: '/admin/products', icon: Package, module: 'products' },
+      { titleKey: 'navPromoTiles', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },
+      { titleKey: 'navSets', url: '/admin/sets', icon: Layers, module: 'siteContent' },
     ],
   },
   {
-    title: 'Sayt kontenti',
+    titleKey: 'groupSiteContent',
     icon: PaintBucket,
     items: [
-      { title: 'Sayt kontenti', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
-      { title: 'Checkout formasi', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
-      { title: 'Mavzular', url: '/admin/themes', icon: Palette, module: 'themes' },
+      { titleKey: 'navSiteContent', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
+      { titleKey: 'navCheckoutForm', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
+      { titleKey: 'navThemes', url: '/admin/themes', icon: Palette, module: 'themes' },
     ],
   },
   {
-    title: 'Tizim',
+    titleKey: 'groupSystem',
     icon: Cog,
     items: [
-      { title: 'Adminlar', url: '/admin/admins', icon: Shield, module: 'admins' },
-      { title: 'Telegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
-      { title: 'Tizim sozlamalari', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
+      { titleKey: 'navAdmins', url: '/admin/admins', icon: Shield, module: 'admins' },
+      { titleKey: 'navTelegram', url: '/admin/settings', icon: Settings, module: 'telegram' },
+      { titleKey: 'navSystemSettings', url: '/admin/system', icon: Settings2, module: 'systemSettings' },
     ],
   },
 ];
