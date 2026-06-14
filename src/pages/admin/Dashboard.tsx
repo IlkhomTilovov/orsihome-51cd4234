@@ -406,28 +406,28 @@ export default function Dashboard() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Tizim holati
+            {t.dashboard.systemStatus}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Bot className={`h-6 w-6 mx-auto mb-2 ${systemStatus.telegramEnabled ? 'text-green-500' : 'text-muted-foreground'}`} />
-              <p className="text-sm font-medium">Telegram Bot</p>
+              <p className="text-sm font-medium">{t.dashboard.telegramBot}</p>
               <Badge variant={systemStatus.telegramEnabled ? 'default' : 'secondary'} className="mt-1">
-                {systemStatus.telegramEnabled ? 'Ulangan' : 'Ulanmagan'}
+                {systemStatus.telegramEnabled ? t.dashboard.connected : t.dashboard.notConnected}
               </Badge>
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Palette className="h-6 w-6 mx-auto mb-2 text-primary" />
-              <p className="text-sm font-medium">Faol mavzu</p>
+              <p className="text-sm font-medium">{t.dashboard.activeTheme}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {systemStatus.activeTheme || 'Tanlanmagan'}
+                {systemStatus.activeTheme || t.dashboard.notSelected}
               </p>
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Globe className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-              <p className="text-sm font-medium">Tillar</p>
+              <p className="text-sm font-medium">{t.dashboard.languages}</p>
               <div className="flex gap-1 justify-center mt-1">
                 {systemStatus.enabledLanguages.map((lang) => (
                   <Badge key={lang} variant="outline" className="text-xs">
@@ -438,9 +438,9 @@ export default function Dashboard() {
             </div>
             <div className="p-4 bg-muted/50 rounded-lg text-center">
               <Package className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-              <p className="text-sm font-medium">Katalog</p>
+              <p className="text-sm font-medium">{t.dashboard.catalog}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                {systemStatus.totalProducts} mahsulot
+                {t.dashboard.productsCount(systemStatus.totalProducts)}
               </p>
             </div>
           </div>
