@@ -272,10 +272,10 @@ export default function SystemSettings() {
       }
 
       await refreshSettings();
-      toast({ title: 'Muvaffaqiyat', description: 'Sozlamalar saqlandi' });
+      toast({ title: t.successTitle, description: t.settingsSaved });
       fetchSettings();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message });
     } finally {
       setSaving(false);
     }
