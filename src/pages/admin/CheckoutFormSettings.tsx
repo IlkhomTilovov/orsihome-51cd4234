@@ -118,8 +118,8 @@ export default function CheckoutFormSettings() {
     } catch (error) {
       console.error('Error fetching fields:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Ma\'lumotlarni yuklashda xatolik',
+        title: t.error,
+        description: t.loadError,
         variant: 'destructive',
       });
     } finally {
