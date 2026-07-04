@@ -429,22 +429,22 @@ export default function CheckoutFormSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Checkout formasini sozlash</h1>
-          <p className="text-muted-foreground">Buyurtma formasidagi barcha maydonlarni boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={() => openFieldDialog()}>
           <Plus className="mr-2 h-4 w-4" />
-          Yangi maydon
+          {t.newField}
         </Button>
       </div>
 
       {fields.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Hozircha hech qanday maydon yo'q</p>
+            <p className="text-muted-foreground">{t.empty}</p>
             <Button className="mt-4" onClick={() => openFieldDialog()}>
               <Plus className="mr-2 h-4 w-4" />
-              Birinchi maydonni qo'shing
+              {t.addFirst}
             </Button>
           </CardContent>
         </Card>
