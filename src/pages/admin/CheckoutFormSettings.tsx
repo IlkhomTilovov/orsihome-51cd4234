@@ -462,20 +462,20 @@ export default function CheckoutFormSettings() {
                       <GripVertical className="h-5 w-5 text-muted-foreground cursor-move" />
                       <div>
                         <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
-                          {field.label_uz}
+                          {language === 'ru' ? (field.label_ru || field.label_uz) : field.label_uz}
                           <Badge variant="secondary">{getFieldTypeBadge(field.field_type)}</Badge>
                           {field.is_required && (
                             <Badge variant="destructive" className="text-xs">
-                              Majburiy
+                              {t.required}
                             </Badge>
                           )}
                           {!field.is_active && (
                             <Badge variant="outline" className="text-xs">
-                              O'chirilgan
+                              {t.disabled}
                             </Badge>
                           )}
                         </CardTitle>
-                        <CardDescription>{field.label_ru}</CardDescription>
+                        <CardDescription>{language === 'ru' ? field.label_uz : field.label_ru}</CardDescription>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
