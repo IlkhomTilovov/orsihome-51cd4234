@@ -313,37 +313,36 @@ export default function SiteContent() {
                 <Pencil className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle>Vizual tahrirlash</CardTitle>
-                <CardDescription>Kontentni to'g'ridan-to'g'ri shu yerda tahrirlang</CardDescription>
+                <CardTitle>{t.visualEdit}</CardTitle>
+                <CardDescription>{t.visualEditDesc}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Shu sahifadan chiqmasdan sayt kontentini tahrirlashingiz mumkin. 
-              Barcha o'zgarishlar avtomatik saqlanadi va realtime ko'rsatiladi.
+              {t.visualEditLong}
             </p>
             <div className="space-y-2">
-              <h4 className="font-medium text-sm">Xususiyatlar:</h4>
+              <h4 className="font-medium text-sm">{t.features}</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Realtime o'zgarishlar monitoring
+                  {t.feature1}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Desktop, planshet va mobil ko'rinishlar
+                  {t.feature2}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  To'liq ekran rejimi
+                  {t.feature3}
                 </li>
               </ul>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleOpenVisualEditor} className="flex-1">
                 <Pencil className="mr-2 h-4 w-4" />
-                Tahrirlashni boshlash
+                {t.startEditing}
               </Button>
               <Button variant="outline" onClick={handleOpenInNewTab}>
                 <ExternalLink className="h-4 w-4" />
