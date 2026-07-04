@@ -57,6 +57,7 @@ export default function CheckoutFormSettings() {
     { value: 'MessageSquare', label: t.iconMessage },
     { value: 'HelpCircle', label: t.iconHelp },
   ];
+  const [fields, setFields] = useState<CheckoutField[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [expandedFields, setExpandedFields] = useState<Set<string>>(new Set());
