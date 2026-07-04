@@ -444,7 +444,7 @@ export default function SystemSettings() {
                     <div className="w-8 h-8 mx-auto bg-muted rounded flex items-center justify-center mb-2">
                       <span className="text-xs">🌐</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">Favicon yuklanmagan</p>
+                    <p className="text-xs text-muted-foreground">{t.faviconNotUploaded}</p>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
