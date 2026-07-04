@@ -526,10 +526,10 @@ export default function CheckoutFormSettings() {
                     <CardContent className="pt-0">
                       <div className="border rounded-lg p-4 bg-muted/30">
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">Variantlar</h4>
+                          <h4 className="font-medium">{t.options}</h4>
                           <Button size="sm" variant="outline" onClick={() => openOptionDialog(field.id)}>
                             <Plus className="mr-1 h-3 w-3" />
-                            Variant qo'shish
+                            {t.addOption}
                           </Button>
                         </div>
 
