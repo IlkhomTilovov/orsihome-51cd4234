@@ -451,12 +451,12 @@ export default function SystemSettings() {
                   <input ref={faviconInputRef} type="file" accept=".svg,.png,.ico" onChange={handleFaviconUpload} className="hidden" id="favicon-upload" />
                   <Button variant="outline" onClick={() => faviconInputRef.current?.click()} disabled={uploadingFavicon}>
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploadingFavicon ? 'Yuklanmoqda...' : 'Favicon yuklash'}
+                    {uploadingFavicon ? t.uploading : t.uploadFavicon}
                   </Button>
-                  <span className="text-xs text-muted-foreground">SVG, PNG, ICO (max 1MB)</span>
+                  <span className="text-xs text-muted-foreground">{t.faviconFormats}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Favicon brauzer tabida ko'rinadi. 32x32 yoki 64x64 piksel o'lcham tavsiya etiladi.
+                  {t.faviconHint}
                 </p>
               </div>
             </CardContent>
