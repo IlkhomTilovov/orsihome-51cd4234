@@ -236,7 +236,7 @@ export default function CheckoutFormSettings() {
   };
 
   const deleteField = async (fieldId: string) => {
-    if (!confirm('Bu maydonni o\'chirishni xohlaysizmi?')) return;
+    if (!confirm(t.confirmDeleteField)) return;
 
     try {
       const { error } = await supabase
@@ -245,13 +245,13 @@ export default function CheckoutFormSettings() {
         .eq('id', fieldId);
 
       if (error) throw error;
-      toast({ title: 'O\'chirildi' });
+      toast({ title: t.deleted });
       fetchFields();
     } catch (error) {
       console.error('Error deleting field:', error);
       toast({
-        title: 'Xatolik',
-        description: 'O\'chirishda xatolik',
+        title: t.error,
+        description: t.deleteError,
         variant: 'destructive',
       });
     }
