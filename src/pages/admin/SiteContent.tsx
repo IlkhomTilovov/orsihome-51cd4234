@@ -230,7 +230,7 @@ export default function SiteContent() {
             <div className="w-72 border-l bg-card p-4 overflow-y-auto">
               <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                So'nggi o'zgarishlar
+                {t.recentChanges}
               </h3>
               <div className="space-y-2">
                 {recentUpdates.map((update, index) => (
