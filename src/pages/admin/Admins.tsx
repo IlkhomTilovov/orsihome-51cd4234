@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { AccessDenied } from '@/components/admin/AccessDenied';
 import { AppRole, roleDisplayInfo } from '@/lib/permissions';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface UserWithProfile {
   id: string;
@@ -26,6 +28,8 @@ interface UserWithProfile {
 }
 
 export default function Admins() {
+  const t = useAdminT().admins;
+  const { language } = useLanguage();
   const [users, setUsers] = useState<UserWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -45,37 +49,25 @@ export default function Admins() {
   const { user, isAdmin, session } = useAuth();
   const { toast } = useToast();
 
-  const getInvokeErrorMessage = (err: unknown, fallback = 'Xatolik yuz berdi') => {
-    // supabase.functions.invoke returns a FunctionsHttpError for non-2xx responses.
-    // That error's .message is generic, but the real error is usually in context.body.
+  const getInvokeErrorMessage = (err: unknown, fallback = t.genericError) => {
     if (!err || typeof err !== 'object') return fallback;
-
     const anyErr = err as any;
-
-    // Common: new Error(message)
     if (typeof anyErr?.message === 'string' && anyErr.message.trim()) {
       const msg = anyErr.message.trim();
-      // If it's the generic Supabase Functions error, try to extract the JSON body.
       if (msg.toLowerCase().includes('edge function returned') || msg.toLowerCase().includes('non-2xx')) {
         const body = anyErr?.context?.body;
         if (typeof body === 'string' && body) {
           try {
             const parsed = JSON.parse(body);
             if (typeof parsed?.error === 'string' && parsed.error.trim()) return parsed.error.trim();
-          } catch {
-            // ignore
-          }
+          } catch {}
         }
       }
-
       return msg;
     }
-
-    // Sometimes err itself is { error: string }
     if (typeof (anyErr as any)?.error === 'string' && (anyErr as any).error.trim()) {
       return (anyErr as any).error.trim();
     }
-
     return fallback;
   };
 
@@ -87,7 +79,6 @@ export default function Admins() {
 
   const fetchUsers = async () => {
     try {
-      // Fetch profiles with roles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -101,7 +92,6 @@ export default function Admins() {
 
       if (rolesError) throw rolesError;
 
-      // Combine profiles with roles
       const usersWithRoles: UserWithProfile[] = (profiles || []).map(profile => {
         const userRole = roles?.find(r => r.user_id === profile.user_id);
         return {
@@ -118,7 +108,7 @@ export default function Admins() {
       setUsers(usersWithRoles);
     } catch (error) {
       console.error('Error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Foydalanuvchilarni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.loadError });
     } finally {
       setLoading(false);
     }
@@ -126,12 +116,12 @@ export default function Admins() {
 
   const handleCreateUser = async () => {
     if (!formName.trim() || !formEmail.trim() || !formPassword.trim()) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Barcha maydonlarni to\'ldiring' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.fillAll });
       return;
     }
 
     if (formPassword.length < 6) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.passwordMin });
       return;
     }
 
@@ -150,12 +140,12 @@ export default function Admins() {
       if (response.error) throw response.error;
       if (response.data?.error) throw new Error(response.data.error);
 
-      toast({ title: 'Muvaffaqiyat', description: 'Foydalanuvchi yaratildi' });
+      toast({ title: t.successTitle, description: t.userCreated });
       setCreateDialogOpen(false);
       resetForm();
       fetchUsers();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: getInvokeErrorMessage(error) });
+      toast({ variant: 'destructive', title: t.errorTitle, description: getInvokeErrorMessage(error) });
     } finally {
       setSaving(false);
     }
@@ -179,11 +169,11 @@ export default function Admins() {
       if (response.error) throw response.error;
       if (response.data?.error) throw new Error(response.data.error);
 
-      toast({ title: 'Muvaffaqiyat', description: 'Foydalanuvchi yangilandi' });
+      toast({ title: t.successTitle, description: t.userUpdated });
       setEditDialogOpen(false);
       fetchUsers();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: getInvokeErrorMessage(error) });
+      toast({ variant: 'destructive', title: t.errorTitle, description: getInvokeErrorMessage(error) });
     } finally {
       setSaving(false);
     }
@@ -204,11 +194,11 @@ export default function Admins() {
       if (response.error) throw response.error;
       if (response.data?.error) throw new Error(response.data.error);
 
-      toast({ title: 'Muvaffaqiyat', description: 'Foydalanuvchi o\'chirildi' });
+      toast({ title: t.successTitle, description: t.userDeleted });
       setDeleteDialogOpen(false);
       fetchUsers();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: getInvokeErrorMessage(error) });
+      toast({ variant: 'destructive', title: t.errorTitle, description: getInvokeErrorMessage(error) });
     } finally {
       setSaving(false);
     }
@@ -232,16 +222,23 @@ export default function Admins() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('uz-UZ', {
+    return new Date(dateString).toLocaleDateString(language === 'ru' ? 'ru-RU' : 'uz-UZ', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
     });
   };
 
-  const getRoleInfo = (role: string) => {
-    const mappedRole = role === 'editor' ? 'manager' : role;
-    return roleDisplayInfo[mappedRole as AppRole] || roleDisplayInfo.seller;
+  const getRoleLabel = (role: string) => {
+    const mapped = role === 'editor' ? 'manager' : role;
+    if (mapped === 'admin') return t.adminRole;
+    if (mapped === 'manager') return t.managerRole;
+    return t.sellerRole;
+  };
+
+  const getRoleColor = (role: string) => {
+    const mapped = role === 'editor' ? 'manager' : role;
+    return roleDisplayInfo[mapped as AppRole]?.color || roleDisplayInfo.seller.color;
   };
 
   const getRoleIcon = (role: string) => {
@@ -279,12 +276,12 @@ export default function Admins() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Foydalanuvchilar</h1>
-          <p className="text-muted-foreground">Tizim foydalanuvchilarini boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={() => { resetForm(); setCreateDialogOpen(true); }}>
           <Plus className="mr-2 h-4 w-4" />
-          Yangi foydalanuvchi
+          {t.newUser}
         </Button>
       </div>
 
@@ -292,45 +289,45 @@ export default function Admins() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Adminlar</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.admins}</CardTitle>
             <ShieldCheck className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{adminCount}</div>
-            <p className="text-xs text-muted-foreground">To'liq ruxsat</p>
+            <p className="text-xs text-muted-foreground">{t.adminsHint}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Menejerlar</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.managers}</CardTitle>
             <Package className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{managerCount}</div>
-            <p className="text-xs text-muted-foreground">Mahsulotlar</p>
+            <p className="text-xs text-muted-foreground">{t.managersHint}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Sotuvchilar</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.sellers}</CardTitle>
             <ShoppingCart className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{sellerCount}</div>
-            <p className="text-xs text-muted-foreground">Buyurtmalar</p>
+            <p className="text-xs text-muted-foreground">{t.sellersHint}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Faol</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.active}</CardTitle>
             <UserCheck className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeCount}</div>
-            <p className="text-xs text-muted-foreground">Jami {users.length} dan</p>
+            <p className="text-xs text-muted-foreground">{t.activeHint(users.length)}</p>
           </CardContent>
         </Card>
       </div>
@@ -338,33 +335,30 @@ export default function Admins() {
       {/* Users Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Foydalanuvchilar ro'yxati</CardTitle>
-          <CardDescription>
-            Tizimga kirish huquqiga ega barcha foydalanuvchilar
-          </CardDescription>
+          <CardTitle>{t.listTitle}</CardTitle>
+          <CardDescription>{t.listSubtitle}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Ism</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Rol</TableHead>
-                <TableHead>Holat</TableHead>
-                <TableHead>Yaratilgan</TableHead>
-                <TableHead className="text-right">Amallar</TableHead>
+                <TableHead>{t.name}</TableHead>
+                <TableHead>{t.email}</TableHead>
+                <TableHead>{t.role}</TableHead>
+                <TableHead>{t.status}</TableHead>
+                <TableHead>{t.created}</TableHead>
+                <TableHead className="text-right">{t.actions}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((userItem) => {
-                const roleInfo = getRoleInfo(userItem.role);
                 const isCurrentUser = userItem.user_id === user?.id;
                 return (
                   <TableRow key={userItem.id}>
                     <TableCell className="font-medium">
                       {userItem.name}
                       {isCurrentUser && (
-                        <Badge variant="outline" className="ml-2">Siz</Badge>
+                        <Badge variant="outline" className="ml-2">{t.you}</Badge>
                       )}
                     </TableCell>
                     <TableCell>
@@ -374,17 +368,17 @@ export default function Admins() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={roleInfo.color}>
+                      <Badge className={getRoleColor(userItem.role)}>
                         {getRoleIcon(userItem.role)}
-                        {roleInfo.label}
+                        {getRoleLabel(userItem.role)}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <Badge variant={userItem.status === 'active' ? 'default' : 'secondary'}>
                         {userItem.status === 'active' ? (
-                          <><UserCheck className="h-3 w-3 mr-1" /> Faol</>
+                          <><UserCheck className="h-3 w-3 mr-1" /> {t.statusActive}</>
                         ) : (
-                          <><UserX className="h-3 w-3 mr-1" /> O'chirilgan</>
+                          <><UserX className="h-3 w-3 mr-1" /> {t.statusDisabled}</>
                         )}
                       </Badge>
                     </TableCell>
@@ -415,7 +409,7 @@ export default function Admins() {
               {users.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Hali foydalanuvchilar yo'q
+                    {t.noUsers}
                   </TableCell>
                 </TableRow>
               )}
@@ -427,45 +421,38 @@ export default function Admins() {
       {/* Role Descriptions */}
       <Card>
         <CardHeader>
-          <CardTitle>Rollar haqida</CardTitle>
-          <CardDescription>Har bir rol uchun ruxsatlar</CardDescription>
+          <CardTitle>{t.rolesInfoTitle}</CardTitle>
+          <CardDescription>{t.rolesInfoSubtitle}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
             <div className="p-4 rounded-lg border">
               <div className="flex items-center gap-2 mb-2">
                 <ShoppingCart className="h-5 w-5 text-blue-500" />
-                <span className="font-semibold">Sotuvchi</span>
+                <span className="font-semibold">{t.sellerRole}</span>
               </div>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>✓ Buyurtmalarni ko'rish va boshqarish</li>
-                <li>✓ Mijozlarni ko'rish</li>
-                <li>✓ Faqat o'z buyurtmalarini ko'radi</li>
-                <li>✗ Mahsulotlar va toifalar</li>
+                {t.sellerPerms.map((p) => <li key={p}>✓ {p}</li>)}
+                {t.sellerDenied.map((p) => <li key={p}>✗ {p}</li>)}
               </ul>
             </div>
             <div className="p-4 rounded-lg border">
               <div className="flex items-center gap-2 mb-2">
                 <Package className="h-5 w-5 text-green-500" />
-                <span className="font-semibold">Menejer</span>
+                <span className="font-semibold">{t.managerRole}</span>
               </div>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>✓ Toifalar va mahsulotlarni boshqarish</li>
-                <li>✓ Sayt kontentini tahrirlash</li>
-                <li>✓ Telegram sozlamalari</li>
-                <li>✗ Buyurtmalar va foydalanuvchilar</li>
+                {t.managerPerms.map((p) => <li key={p}>✓ {p}</li>)}
+                {t.managerDenied.map((p) => <li key={p}>✗ {p}</li>)}
               </ul>
             </div>
             <div className="p-4 rounded-lg border">
               <div className="flex items-center gap-2 mb-2">
                 <ShieldCheck className="h-5 w-5 text-red-500" />
-                <span className="font-semibold">Admin</span>
+                <span className="font-semibold">{t.adminRole}</span>
               </div>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>✓ Barcha bo'limlarga to'liq kirish</li>
-                <li>✓ Foydalanuvchilarni yaratish</li>
-                <li>✓ Tizim sozlamalari</li>
-                <li>✓ Barcha buyurtmalarni ko'rish</li>
+                {t.adminPerms.map((p) => <li key={p}>✓ {p}</li>)}
               </ul>
             </div>
           </div>
@@ -476,22 +463,20 @@ export default function Admins() {
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Yangi foydalanuvchi</DialogTitle>
-            <DialogDescription>
-              Yangi foydalanuvchi yarating va rolni tanlang
-            </DialogDescription>
+            <DialogTitle>{t.createTitle}</DialogTitle>
+            <DialogDescription>{t.createSubtitle}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Ism *</Label>
+              <Label>{t.name} *</Label>
               <Input
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
-                placeholder="Ism Familiya"
+                placeholder={t.namePlaceholder}
               />
             </div>
             <div className="space-y-2">
-              <Label>Email *</Label>
+              <Label>{t.email} *</Label>
               <Input
                 type="email"
                 value={formEmail}
@@ -500,13 +485,13 @@ export default function Admins() {
               />
             </div>
             <div className="space-y-2">
-              <Label>Parol *</Label>
+              <Label>{t.passwordLabel}</Label>
               <div className="relative">
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   value={formPassword}
                   onChange={(e) => setFormPassword(e.target.value)}
-                  placeholder="Kamida 6 ta belgi"
+                  placeholder={t.passwordPlaceholder}
                 />
                 <Button
                   type="button"
@@ -520,7 +505,7 @@ export default function Admins() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Rol</Label>
+              <Label>{t.role}</Label>
               <Select value={formRole} onValueChange={(v) => setFormRole(v as AppRole)}>
                 <SelectTrigger>
                   <SelectValue />
@@ -529,19 +514,19 @@ export default function Admins() {
                   <SelectItem value="seller">
                     <div className="flex items-center gap-2">
                       <ShoppingCart className="h-4 w-4 text-blue-500" />
-                      Sotuvchi
+                      {t.sellerRole}
                     </div>
                   </SelectItem>
                   <SelectItem value="manager">
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 text-green-500" />
-                      Menejer
+                      {t.managerRole}
                     </div>
                   </SelectItem>
                   <SelectItem value="admin">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-4 w-4 text-red-500" />
-                      Admin
+                      {t.adminRole}
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -550,10 +535,10 @@ export default function Admins() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={handleCreateUser} disabled={saving}>
-              {saving ? 'Yaratilmoqda...' : 'Yaratish'}
+              {saving ? t.creating : t.create}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -563,22 +548,20 @@ export default function Admins() {
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Foydalanuvchini tahrirlash</DialogTitle>
-            <DialogDescription>
-              {selectedUser?.email}
-            </DialogDescription>
+            <DialogTitle>{t.editTitle}</DialogTitle>
+            <DialogDescription>{selectedUser?.email}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Ism</Label>
+              <Label>{t.name}</Label>
               <Input
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
-                placeholder="Ism Familiya"
+                placeholder={t.namePlaceholder}
               />
             </div>
             <div className="space-y-2">
-              <Label>Rol</Label>
+              <Label>{t.role}</Label>
               <Select 
                 value={formRole} 
                 onValueChange={(v) => setFormRole(v as AppRole)}
@@ -591,26 +574,26 @@ export default function Admins() {
                   <SelectItem value="seller">
                     <div className="flex items-center gap-2">
                       <ShoppingCart className="h-4 w-4 text-blue-500" />
-                      Sotuvchi
+                      {t.sellerRole}
                     </div>
                   </SelectItem>
                   <SelectItem value="manager">
                     <div className="flex items-center gap-2">
                       <Package className="h-4 w-4 text-green-500" />
-                      Menejer
+                      {t.managerRole}
                     </div>
                   </SelectItem>
                   <SelectItem value="admin">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="h-4 w-4 text-red-500" />
-                      Admin
+                      {t.adminRole}
                     </div>
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Holat</Label>
+              <Label>{t.status}</Label>
               <Select 
                 value={formStatus} 
                 onValueChange={(v) => setFormStatus(v as 'active' | 'disabled')}
@@ -623,13 +606,13 @@ export default function Admins() {
                   <SelectItem value="active">
                     <div className="flex items-center gap-2">
                       <UserCheck className="h-4 w-4 text-green-500" />
-                      Faol
+                      {t.statusActive}
                     </div>
                   </SelectItem>
                   <SelectItem value="disabled">
                     <div className="flex items-center gap-2">
                       <UserX className="h-4 w-4 text-red-500" />
-                      O'chirilgan
+                      {t.statusDisabled}
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -638,10 +621,10 @@ export default function Admins() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={handleUpdateUser} disabled={saving}>
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -651,20 +634,19 @@ export default function Admins() {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Foydalanuvchini o'chirish</AlertDialogTitle>
+            <AlertDialogTitle>{t.deleteTitle}</AlertDialogTitle>
             <AlertDialogDescription>
-              <strong>{selectedUser?.name}</strong> ({selectedUser?.email}) foydalanuvchisini
-              o'chirmoqchimisiz? Bu amalni qaytarib bo'lmaydi.
+              <strong>{selectedUser?.name}</strong> ({selectedUser?.email}) {t.deleteConfirm}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+            <AlertDialogCancel>{t.cancel}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteUser} 
               className="bg-destructive text-destructive-foreground"
               disabled={saving}
             >
-              {saving ? 'O\'chirilmoqda...' : 'O\'chirish'}
+              {saving ? t.deleting : t.delete}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
