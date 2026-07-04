@@ -908,7 +908,7 @@ const CompactThemeCard = ({
             onClick={onPreview}
           >
             <Eye className="h-3 w-3 mr-1" />
-            Ko'rish
+            {t.previewBtn}
           </Button>
           <Button
             size="sm"
@@ -919,7 +919,7 @@ const CompactThemeCard = ({
             {isActive ? (
               <Check className="h-3 w-3" />
             ) : (
-              "Qo'llash"
+              t.applyBtn
             )}
           </Button>
           <Button
@@ -927,7 +927,7 @@ const CompactThemeCard = ({
             size="icon"
             className="h-7 w-7"
             onClick={onEdit}
-            title="Tahrirlash"
+            title={t.editTip}
           >
             <Pencil className="h-3 w-3" />
           </Button>
@@ -936,7 +936,7 @@ const CompactThemeCard = ({
             size="icon"
             className="h-7 w-7"
             onClick={onClone}
-            title="Nusxalash"
+            title={t.cloneTip}
           >
             <Copy className="h-3 w-3" />
           </Button>
@@ -946,7 +946,7 @@ const CompactThemeCard = ({
               size="icon"
               className="h-7 w-7 text-destructive hover:text-destructive"
               onClick={onDelete}
-              title="O'chirish"
+              title={t.deleteTip}
             >
               <Trash2 className="h-3 w-3" />
             </Button>
