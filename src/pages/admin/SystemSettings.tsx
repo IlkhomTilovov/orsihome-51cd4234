@@ -130,12 +130,12 @@ export default function SystemSettings() {
 
     const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Faqat SVG, PNG, JPG formatlar qo\'llab-quvvatlanadi' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.invalidLogoFormat });
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Fayl hajmi 2MB dan katta bo\'lmasligi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.logoTooBig });
       return;
     }
 
