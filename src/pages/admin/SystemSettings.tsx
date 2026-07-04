@@ -72,6 +72,8 @@ export default function SystemSettings() {
   const faviconInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { refreshSettings } = useSystemSettings();
+  const adminT = useAdminT();
+  const t = adminT.system;
 
   useEffect(() => {
     fetchSettings();
