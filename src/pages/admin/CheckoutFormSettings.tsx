@@ -39,7 +39,24 @@ interface CheckoutField {
 // Field types & icons are localized inside the component via useAdminT()
 
 export default function CheckoutFormSettings() {
-  const [fields, setFields] = useState<CheckoutField[]>([]);
+  const t = useAdminT().checkoutForm;
+  const { language } = useLanguage();
+
+  const FIELD_TYPES = [
+    { value: 'text', label: t.typeText },
+    { value: 'phone', label: t.typePhone },
+    { value: 'textarea', label: t.typeTextarea },
+    { value: 'radio', label: t.typeRadio },
+  ];
+
+  const ICONS = [
+    { value: 'User', label: t.iconUser },
+    { value: 'Phone', label: t.iconPhone },
+    { value: 'Home', label: t.iconHome },
+    { value: 'Clock', label: t.iconClock },
+    { value: 'MessageSquare', label: t.iconMessage },
+    { value: 'HelpCircle', label: t.iconHelp },
+  ];
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [expandedFields, setExpandedFields] = useState<Set<string>>(new Set());
