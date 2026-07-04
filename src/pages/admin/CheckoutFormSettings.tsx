@@ -310,8 +310,8 @@ export default function CheckoutFormSettings() {
   const saveOption = async () => {
     if (!optionForm.label_uz.trim() || !optionForm.label_ru.trim() || !optionForm.value.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'Barcha maydonlarni to\'ldiring',
+        title: t.error,
+        description: t.fillAll,
         variant: 'destructive',
       });
       return;
