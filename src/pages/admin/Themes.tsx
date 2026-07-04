@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useAdminT } from '@/hooks/useAdminT';
 
 const FONT_OPTIONS = [
   { value: "'Inter', system-ui, sans-serif", label: "Inter" },
@@ -134,6 +135,7 @@ const THEME_PRESETS = [
 ] as const;
 
 const Themes = () => {
+  const t = useAdminT().themes;
   const { 
     themes, 
     currentTheme, 
@@ -198,7 +200,7 @@ const Themes = () => {
     if (!theme.id) return;
     await setActiveTheme(theme.id);
     setPreviewingId(null);
-    toast.success(`"${theme.name}" mavzusi qo'llanildi!`);
+    toast.success(t.appliedToast(theme.name));
   };
 
   const handleEdit = (theme: Theme) => {
@@ -221,14 +223,14 @@ const Themes = () => {
 
   const handleDelete = async (theme: Theme) => {
     if (!theme.id || theme.isActive) return;
-    if (!confirm(`"${theme.name}" mavzusini o'chirishni xohlaysizmi?`)) return;
+    if (!confirm(t.deleteConfirm(theme.name))) return;
     try {
       const { error } = await supabase.from('themes').delete().eq('id', theme.id);
       if (error) throw error;
-      toast.success("Mavzu o'chirildi");
+      toast.success(t.deletedToast);
       refreshThemes();
     } catch (error: any) {
-      toast.error(`Xatolik: ${error.message}`);
+      toast.error(`${t.errorPrefix}: ${error.message}`);
     }
   };
 
@@ -236,7 +238,7 @@ const Themes = () => {
     setBuilderMode('clone');
     setEditingTheme(theme);
     setFormData({
-      name: `${theme.name} (nusxa)`,
+      name: `${theme.name} (${t.copySuffix})`,
       isDark: theme.isDark,
       primaryColor: theme.colorPalette.primary,
       secondaryColor: theme.colorPalette.secondary,
@@ -305,7 +307,7 @@ const Themes = () => {
 
   const handleSaveTheme = async () => {
     if (!formData.name.trim()) {
-      toast.error('Mavzu nomini kiriting');
+      toast.error(t.enterName);
       return;
     }
 
@@ -375,17 +377,17 @@ const Themes = () => {
       if (builderMode === 'edit' && editingTheme?.id) {
         const { error } = await supabase.from('themes').update(themeData).eq('id', editingTheme.id);
         if (error) throw error;
-        toast.success('Mavzu muvaffaqiyatli yangilandi!');
+        toast.success(t.updatedToast);
       } else {
         const { error } = await supabase.from('themes').insert([{ ...themeData, is_active: false }]);
         if (error) throw error;
-        toast.success('Mavzu muvaffaqiyatli saqlandi!');
+        toast.success(t.savedToast);
       }
 
       setShowBuilder(false);
       refreshThemes();
     } catch (error: any) {
-      toast.error(`Xatolik: ${error.message}`);
+      toast.error(`${t.errorPrefix}: ${error.message}`);
     }
   };
 
@@ -412,23 +414,23 @@ const Themes = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Mavzular</h1>
-          <p className="text-muted-foreground">Sayt dizaynini bir marta bosish bilan o'zgartiring</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
           {isPreviewMode && (
             <Button variant="outline" size="sm" onClick={() => { resetPreview(); setPreviewingId(null); }}>
               <EyeOff className="h-4 w-4 mr-2" />
-              Bekor qilish
+              {t.cancelPreview}
             </Button>
           )}
           <Button variant="outline" size="sm" onClick={refreshThemes}>
             <RefreshCw className="h-4 w-4 mr-2" />
-            Yangilash
+            {t.refresh}
           </Button>
           <Button size="sm" onClick={handleCreateNew}>
             <Plus className="h-4 w-4 mr-2" />
-            Yangi mavzu
+            {t.newTheme}
           </Button>
         </div>
       </div>
@@ -444,7 +446,7 @@ const Themes = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">Joriy mavzu</h3>
+                    <h3 className="font-semibold">{t.currentTheme}</h3>
                     <span className="text-muted-foreground">•</span>
                     <span className="font-medium">{currentTheme.name}</span>
                   </div>
@@ -463,11 +465,11 @@ const Themes = () => {
               <div className="flex items-center gap-2">
                 <Badge variant="secondary">
                   {currentTheme.isDark ? <Moon className="h-3 w-3 mr-1" /> : <Sun className="h-3 w-3 mr-1" />}
-                  {currentTheme.isDark ? "Qorong'i" : "Yorug'"}
+                  {currentTheme.isDark ? t.dark : t.light}
                 </Badge>
                 <Badge variant="default" className="bg-green-600">
                   <Check className="h-3 w-3 mr-1" />
-                  Faol
+                  {t.active}
                 </Badge>
               </div>
             </div>
@@ -478,14 +480,14 @@ const Themes = () => {
       {/* Filters */}
       <Tabs value={selectedCategory} onValueChange={(v) => setSelectedCategory(v as any)}>
         <TabsList>
-          <TabsTrigger value="all">Barcha ({themes.length})</TabsTrigger>
+          <TabsTrigger value="all">{t.allTab} ({themes.length})</TabsTrigger>
           <TabsTrigger value="light">
             <Sun className="h-3 w-3 mr-1" />
-            Yorug' ({themes.filter(t => !t.isDark).length})
+            {t.light} ({themes.filter(t => !t.isDark).length})
           </TabsTrigger>
           <TabsTrigger value="dark">
             <Moon className="h-3 w-3 mr-1" />
-            Qorong'i ({themes.filter(t => t.isDark).length})
+            {t.dark} ({themes.filter(t => t.isDark).length})
           </TabsTrigger>
         </TabsList>
 
@@ -503,6 +505,7 @@ const Themes = () => {
                 onEdit={() => handleEdit(theme)}
                 onDelete={() => handleDelete(theme)}
                 colorSwatches={getColorSwatches(theme)}
+                t={t}
               />
             ))}
           </div>
@@ -511,7 +514,7 @@ const Themes = () => {
 
       {filteredThemes.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          Bu kategoriyada mavzu topilmadi
+          {t.noThemes}
         </div>
       )}
 
@@ -527,18 +530,18 @@ const Themes = () => {
               </div>
               <div>
                 <DialogTitle className="text-base font-semibold leading-tight">
-                  {builderMode === 'create' ? 'Yangi mavzu yaratish' :
-                   builderMode === 'clone' ? 'Mavzuni nusxalash' : 'Mavzuni tahrirlash'}
+                  {builderMode === 'create' ? t.createTitle :
+                   builderMode === 'clone' ? t.cloneTitle : t.editTitle}
                 </DialogTitle>
                 <DialogDescription className="text-xs mt-0.5">
-                  Brend ranglaringiz va uslubingiz bilan professional mavzu yarating
+                  {t.dialogSubtitle}
                 </DialogDescription>
               </div>
               <Badge variant="secondary" className="ml-2 text-[10px]">
-                {builderMode === 'edit' ? 'Tahrirlash' : 'Yangi'}
+                {builderMode === 'edit' ? t.editBadge : t.newBadge}
               </Badge>
               {formData.isDark && (
-                <Badge variant="outline" className="text-[10px]"><Moon className="h-3 w-3 mr-1" />Qorong'i</Badge>
+                <Badge variant="outline" className="text-[10px]"><Moon className="h-3 w-3 mr-1" />{t.dark}</Badge>
               )}
             </div>
           </div>
@@ -548,7 +551,7 @@ const Themes = () => {
             {/* LEFT — Configuration */}
             <div className="overflow-y-auto p-6 space-y-6 border-r">
               {/* Presets */}
-              <SectionCard title="Tayyor mavzular" subtitle="Bir bosishda qo'llash">
+              <SectionCard title={t.presetsTitle} subtitle={t.presetsSubtitle}>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                   {THEME_PRESETS.map((preset) => (
                     <button
@@ -570,14 +573,14 @@ const Themes = () => {
               </SectionCard>
 
               {/* Theme info */}
-              <SectionCard title="Mavzu ma'lumotlari" subtitle="Nom va asosiy sozlamalar">
+              <SectionCard title={t.infoTitle} subtitle={t.infoSubtitle}>
                 <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium">Mavzu nomi</Label>
+                    <Label className="text-xs font-medium">{t.themeName}</Label>
                     <Input
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Masalan: OrsiHome Premium"
+                      placeholder={t.namePlaceholder}
                       className="h-9"
                     />
                   </div>
@@ -585,8 +588,8 @@ const Themes = () => {
                     <div className="flex items-center gap-2.5">
                       {formData.isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                       <div>
-                        <div className="text-xs font-medium">Qorong'i rejim</div>
-                        <div className="text-[11px] text-muted-foreground">Mavzu turini belgilash</div>
+                        <div className="text-xs font-medium">{t.darkMode}</div>
+                        <div className="text-[11px] text-muted-foreground">{t.darkModeSub}</div>
                       </div>
                     </div>
                     <Switch
@@ -598,24 +601,24 @@ const Themes = () => {
               </SectionCard>
 
               {/* Colors */}
-              <SectionCard title="Ranglar tizimi" subtitle="Brend ranglarini sozlang">
+              <SectionCard title={t.colorsTitle} subtitle={t.colorsSubtitle}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <ColorCard label="Asosiy rang" hint="Tugmalar, linklar" value={formData.primaryColor} onChange={(v) => setFormData({ ...formData, primaryColor: v })} />
-                  <ColorCard label="Ikkinchi darajali" hint="Kartalar, fonlar" value={formData.secondaryColor} onChange={(v) => setFormData({ ...formData, secondaryColor: v })} />
-                  <ColorCard label="Urg'u rang" hint="Aksentlar, badgelar" value={formData.accentColor} onChange={(v) => setFormData({ ...formData, accentColor: v })} />
-                  <ColorCard label="Orqa fon" hint="Sahifa foni" value={formData.backgroundColor} onChange={(v) => setFormData({ ...formData, backgroundColor: v })} />
-                  <ColorCard label="Matn rangi" hint="Asosiy matn" value={formData.foregroundColor} onChange={(v) => setFormData({ ...formData, foregroundColor: v })} />
+                  <ColorCard label={t.primary} hint={t.primaryHint} value={formData.primaryColor} onChange={(v) => setFormData({ ...formData, primaryColor: v })} copyLabel={t.copyHex} copiedLabel={t.copiedToast} />
+                  <ColorCard label={t.secondary} hint={t.secondaryHint} value={formData.secondaryColor} onChange={(v) => setFormData({ ...formData, secondaryColor: v })} copyLabel={t.copyHex} copiedLabel={t.copiedToast} />
+                  <ColorCard label={t.accent} hint={t.accentHint} value={formData.accentColor} onChange={(v) => setFormData({ ...formData, accentColor: v })} copyLabel={t.copyHex} copiedLabel={t.copiedToast} />
+                  <ColorCard label={t.background} hint={t.backgroundHint} value={formData.backgroundColor} onChange={(v) => setFormData({ ...formData, backgroundColor: v })} copyLabel={t.copyHex} copiedLabel={t.copiedToast} />
+                  <ColorCard label={t.textColor} hint={t.textHint} value={formData.foregroundColor} onChange={(v) => setFormData({ ...formData, foregroundColor: v })} copyLabel={t.copyHex} copiedLabel={t.copiedToast} />
                 </div>
               </SectionCard>
 
               {/* Typography */}
-              <SectionCard title="Tipografiya" subtitle="Shrift oilasini tanlang">
+              <SectionCard title={t.typographyTitle} subtitle={t.typographySubtitle}>
                 <div className="space-y-2">
                   <Select
                     value={formData.fontFamily}
                     onValueChange={(v) => setFormData({ ...formData, fontFamily: v })}
                   >
-                    <SelectTrigger className="h-9"><SelectValue placeholder="Shrift tanlang" /></SelectTrigger>
+                    <SelectTrigger className="h-9"><SelectValue placeholder={t.selectFont} /></SelectTrigger>
                     <SelectContent>
                       {FONT_OPTIONS.map((font) => (
                         <SelectItem key={font.value} value={font.value}>
@@ -625,14 +628,14 @@ const Themes = () => {
                     </SelectContent>
                   </Select>
                   <div className="rounded-lg border bg-muted/30 p-3" style={{ fontFamily: formData.fontFamily }}>
-                    <div className="text-lg font-semibold leading-tight">Aa Sarlavha</div>
+                    <div className="text-lg font-semibold leading-tight">{t.sampleHeading}</div>
                     <div className="text-xs text-muted-foreground mt-0.5">The quick brown fox jumps over the lazy dog</div>
                   </div>
                 </div>
               </SectionCard>
 
               {/* Radius */}
-              <SectionCard title="Burchak radiusi" subtitle="Shakl va silliqlik">
+              <SectionCard title={t.radiusTitle} subtitle={t.radiusSubtitle}>
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {RADIUS_OPTIONS.map((opt) => {
                     const active = formData.borderRadius === opt.value;
@@ -657,13 +660,13 @@ const Themes = () => {
               </SectionCard>
 
               {/* Shadows */}
-              <SectionCard title="Soyalar" subtitle="Chuqurlik darajasi">
+              <SectionCard title={t.shadowsTitle} subtitle={t.shadowsSubtitle}>
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { value: 'none', label: "Yo'q" },
-                    { value: 'light', label: 'Engil' },
-                    { value: 'medium', label: "O'rta" },
-                    { value: 'heavy', label: 'Kuchli' },
+                    { value: 'none', label: t.shadowNone },
+                    { value: 'light', label: t.shadowLight },
+                    { value: 'medium', label: t.shadowMedium },
+                    { value: 'heavy', label: t.shadowHeavy },
                   ].map((opt) => {
                     const active = formData.shadowLevel === opt.value;
                     const shadow = getShadowValues(opt.value).md;
@@ -690,7 +693,7 @@ const Themes = () => {
               <div className="sticky top-0 z-10 px-5 py-3 border-b bg-muted/40 backdrop-blur flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-xs font-medium">Jonli ko'rinish</span>
+                  <span className="text-xs font-medium">{t.livePreview}</span>
                 </div>
                 <div className="flex items-center border rounded-md overflow-hidden bg-background">
                   <button
@@ -717,15 +720,15 @@ const Themes = () => {
           {/* Sticky Footer */}
           <div className="flex items-center justify-between px-6 py-3 border-t bg-background">
             <div className="text-[11px] text-muted-foreground">
-              O'zgarishlar avtomatik ko'rinishda yangilanadi
+              {t.footerNote}
             </div>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" onClick={() => setShowBuilder(false)}>
-                Bekor qilish
+                {t.cancel}
               </Button>
               <Button size="sm" onClick={handleSaveTheme} className="gap-2">
                 <Check className="h-4 w-4" />
-                {builderMode === 'edit' ? 'Yangilash' : 'Saqlash'}
+                {builderMode === 'edit' ? t.update : t.save}
               </Button>
             </div>
           </div>
@@ -821,10 +824,11 @@ interface CompactThemeCardProps {
   onEdit: () => void;
   onDelete: () => void;
   colorSwatches: { color: string; label: string }[];
+  t: any;
 }
 
 const CompactThemeCard = ({ 
-  theme, isActive, isPreviewing, onPreview, onApply, onClone, onEdit, onDelete, colorSwatches 
+  theme, isActive, isPreviewing, onPreview, onApply, onClone, onEdit, onDelete, colorSwatches, t
 }: CompactThemeCardProps) => {
   return (
     <Card className={`overflow-hidden transition-all hover:shadow-md ${
@@ -891,8 +895,8 @@ const CompactThemeCard = ({
 
         {/* Info */}
         <div className="text-[10px] text-muted-foreground mb-2 space-y-0.5">
-          <p className="truncate">Font: {theme.typography.fontSans.split(',')[0].replace(/'/g, '')}</p>
-          <p>Border radius: {theme.componentStyles.borderRadius}</p>
+          <p className="truncate">{t.fontLabel}: {theme.typography.fontSans.split(',')[0].replace(/'/g, '')}</p>
+          <p>{t.borderRadiusLabel}: {theme.componentStyles.borderRadius}</p>
         </div>
 
         {/* Actions */}
@@ -1005,10 +1009,10 @@ const hexToHslUtil = (hex: string): string => {
   } catch { return '0 0% 0%'; }
 };
 
-const ColorCard = ({ label, hint, value, onChange }: { label: string; hint?: string; value: string; onChange: (v: string) => void }) => {
+const ColorCard = ({ label, hint, value, onChange, copyLabel, copiedLabel }: { label: string; hint?: string; value: string; onChange: (v: string) => void; copyLabel?: string; copiedLabel?: string }) => {
   const hex = hslToHexUtil(value);
   const handleCopy = async () => {
-    try { await navigator.clipboard.writeText(hex); toast.success('Nusxalandi'); } catch {}
+    try { await navigator.clipboard.writeText(hex); toast.success(copiedLabel || 'Copied'); } catch {}
   };
   return (
     <div className="group rounded-lg border bg-background p-2.5 hover:border-primary/40 transition-colors">
@@ -1021,7 +1025,7 @@ const ColorCard = ({ label, hint, value, onChange }: { label: string; hint?: str
           type="button"
           onClick={handleCopy}
           className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground"
-          title="HEX nusxalash"
+          title={copyLabel || 'Copy HEX'}
         >
           <Copy className="h-3 w-3" />
         </button>
