@@ -391,7 +391,7 @@ export default function SystemSettings() {
 
               {/* Logo Upload */}
               <div className="space-y-3">
-                <Label>Sayt logosi</Label>
+                <Label>{t.siteLogo}</Label>
                 {logoPreview ? (
                   <div className="relative inline-block">
                     <div className="border rounded-lg p-4 bg-muted/50 inline-flex items-center justify-center min-w-[200px] min-h-[80px]">
