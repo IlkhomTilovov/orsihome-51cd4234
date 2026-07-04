@@ -19,6 +19,7 @@ interface ContentUpdate {
 }
 
 export default function SiteContent() {
+  const t = useAdminT().siteContent;
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [deviceSize, setDeviceSize] = useState<DeviceSize>('desktop');
