@@ -284,7 +284,7 @@ export default function SystemSettings() {
   const toggleLanguage = (lang: string) => {
     const enabled = formData.languages_enabled.includes(lang);
     if (enabled && formData.languages_enabled.length === 1) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Kamida bitta til faol bo\'lishi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.atLeastOneLang });
       return;
     }
     setFormData({
