@@ -178,12 +178,12 @@ export default function SystemSettings() {
 
     const validTypes = ['image/svg+xml', 'image/png', 'image/x-icon', 'image/vnd.microsoft.icon'];
     if (!validTypes.includes(file.type)) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Faqat SVG, PNG, ICO formatlar qo\'llab-quvvatlanadi' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.invalidFaviconFormat });
       return;
     }
 
     if (file.size > 1024 * 1024) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Fayl hajmi 1MB dan katta bo\'lmasligi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.faviconTooBig });
       return;
     }
 
