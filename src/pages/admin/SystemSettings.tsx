@@ -409,7 +409,7 @@ export default function SystemSettings() {
                 ) : (
                   <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/20">
                     <Image className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                    <p className="text-sm text-muted-foreground mb-3">Logo yuklanmagan</p>
+                    <p className="text-sm text-muted-foreground mb-3">{t.logoNotUploaded}</p>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
