@@ -220,14 +220,14 @@ export default function CheckoutFormSettings() {
         if (error) throw error;
       }
 
-      toast({ title: 'Saqlandi' });
+      toast({ title: t.saved });
       setFieldDialogOpen(false);
       fetchFields();
     } catch (error) {
       console.error('Error saving field:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Saqlashda xatolik',
+        title: t.error,
+        description: t.saveError,
         variant: 'destructive',
       });
     } finally {
