@@ -161,7 +161,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'mobile' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Mobil"
+                title={t.mobile}
               >
                 <Smartphone className="h-4 w-4" />
               </button>
@@ -171,7 +171,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'tablet' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Planshet"
+                title={t.tablet}
               >
                 <Tablet className="h-4 w-4" />
               </button>
@@ -181,7 +181,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'desktop' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Desktop"
+                title={t.desktop}
               >
                 <Monitor className="h-4 w-4" />
               </button>
@@ -189,7 +189,7 @@ export default function SiteContent() {
 
             <div className="h-6 w-px bg-border" />
 
-            <Button variant="ghost" size="icon" onClick={refreshIframe} title="Yangilash">
+            <Button variant="ghost" size="icon" onClick={refreshIframe} title={t.refresh}>
               <RefreshCw className="h-4 w-4" />
             </Button>
             
@@ -197,12 +197,12 @@ export default function SiteContent() {
               variant="ghost" 
               size="icon" 
               onClick={() => setIsFullscreen(!isFullscreen)}
-              title={isFullscreen ? "Kichiklashtirish" : "To'liq ekran"}
+              title={isFullscreen ? t.minimize : t.fullscreen}
             >
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
 
-            <Button variant="ghost" size="icon" onClick={handleOpenInNewTab} title="Yangi oynada ochish">
+            <Button variant="ghost" size="icon" onClick={handleOpenInNewTab} title={t.openNewTab}>
               <ExternalLink className="h-4 w-4" />
             </Button>
           </div>
