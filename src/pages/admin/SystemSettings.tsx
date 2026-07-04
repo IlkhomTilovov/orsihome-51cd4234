@@ -210,10 +210,10 @@ export default function SystemSettings() {
       const newFaviconUrl = urlData.publicUrl;
       setFormData({ ...formData, favicon_url: newFaviconUrl });
       setFaviconPreview(newFaviconUrl);
-      toast({ title: 'Muvaffaqiyat', description: 'Favicon yuklandi' });
+      toast({ title: t.successTitle, description: t.faviconUploaded });
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message || 'Faviconni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message || t.faviconUploadError });
     } finally {
       setUploadingFavicon(false);
     }
