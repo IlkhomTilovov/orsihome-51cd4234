@@ -350,14 +350,14 @@ export default function CheckoutFormSettings() {
         if (error) throw error;
       }
 
-      toast({ title: 'Saqlandi' });
+      toast({ title: t.saved });
       setOptionDialogOpen(false);
       fetchFields();
     } catch (error) {
       console.error('Error saving option:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Saqlashda xatolik',
+        title: t.error,
+        description: t.saveError,
         variant: 'destructive',
       });
     } finally {
@@ -366,7 +366,7 @@ export default function CheckoutFormSettings() {
   };
 
   const deleteOption = async (optionId: string) => {
-    if (!confirm('Bu variantni o\'chirishni xohlaysizmi?')) return;
+    if (!confirm(t.confirmDeleteOption)) return;
 
     try {
       const { error } = await supabase
@@ -375,13 +375,13 @@ export default function CheckoutFormSettings() {
         .eq('id', optionId);
 
       if (error) throw error;
-      toast({ title: 'O\'chirildi' });
+      toast({ title: t.deleted });
       fetchFields();
     } catch (error) {
       console.error('Error deleting option:', error);
       toast({
-        title: 'Xatolik',
-        description: 'O\'chirishda xatolik',
+        title: t.error,
+        description: t.deleteError,
         variant: 'destructive',
       });
     }
