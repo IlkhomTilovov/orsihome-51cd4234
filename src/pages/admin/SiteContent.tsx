@@ -268,11 +268,11 @@ export default function SiteContent() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              Tahrirlash rejimi yoqilgan
+              {t.editModeOn}
             </div>
             {recentUpdates.length > 0 && (
               <span className="text-green-600">
-                {recentUpdates.length} ta o'zgarish saqlandi
+                {t.changesSaved(recentUpdates.length)}
               </span>
             )}
           </div>
