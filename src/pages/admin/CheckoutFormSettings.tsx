@@ -171,16 +171,16 @@ export default function CheckoutFormSettings() {
   const saveField = async () => {
     if (!fieldForm.label_uz.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'O\'zbekcha nomini kiriting',
+        title: t.error,
+        description: t.enterUzName,
         variant: 'destructive',
       });
       return;
     }
     if (!fieldForm.label_ru.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'Ruscha nomini kiriting',
+        title: t.error,
+        description: t.enterRuName,
         variant: 'destructive',
       });
       return;
