@@ -163,10 +163,10 @@ export default function SystemSettings() {
       const newLogoUrl = urlData.publicUrl;
       setFormData({ ...formData, logo_url: newLogoUrl });
       setLogoPreview(newLogoUrl);
-      toast({ title: 'Muvaffaqiyat', description: 'Logo yuklandi' });
+      toast({ title: t.successTitle, description: t.logoUploaded });
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message || 'Logoni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message || t.logoUploadError });
     } finally {
       setUploadingLogo(false);
     }
