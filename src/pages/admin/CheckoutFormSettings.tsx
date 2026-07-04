@@ -696,36 +696,36 @@ export default function CheckoutFormSettings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingOption ? 'Variantni tahrirlash' : 'Yangi variant'}
+              {editingOption ? t.editOption : t.newOption}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Nomi (O'zbekcha)</Label>
+              <Label>{t.nameUz}</Label>
               <Input
                 value={optionForm.label_uz}
                 onChange={(e) => setOptionForm({ ...optionForm, label_uz: e.target.value })}
-                placeholder="Masalan: Uy tayyor"
+                placeholder={t.placeholderOptionUz}
               />
             </div>
             <div className="space-y-2">
-              <Label>Nomi (Ruscha)</Label>
+              <Label>{t.nameRu}</Label>
               <Input
                 value={optionForm.label_ru}
                 onChange={(e) => setOptionForm({ ...optionForm, label_ru: e.target.value })}
-                placeholder="Masalan: Дом готов"
+                placeholder={t.placeholderOptionRu}
               />
             </div>
             <div className="space-y-2">
-              <Label>Qiymat (value)</Label>
+              <Label>{t.value}</Label>
               <Input
                 value={optionForm.value}
                 onChange={(e) => setOptionForm({ ...optionForm, value: e.target.value })}
-                placeholder="Masalan: ready"
+                placeholder={t.placeholderValue}
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Faol</Label>
+              <Label>{t.active}</Label>
               <Switch
                 checked={optionForm.is_active}
                 onCheckedChange={(checked) => setOptionForm({ ...optionForm, is_active: checked })}
@@ -734,10 +734,10 @@ export default function CheckoutFormSettings() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOptionDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={saveOption} disabled={saving}>
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
           </DialogFooter>
         </DialogContent>
