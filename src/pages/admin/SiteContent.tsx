@@ -391,7 +391,7 @@ export default function SiteContent() {
       {/* Instructions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Vizual tahrirlash qo'llanmasi</CardTitle>
+          <CardTitle className="text-lg">{t.guideTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
@@ -399,27 +399,27 @@ export default function SiteContent() {
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">1️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Tahrirlashni boshlang</h4>
+              <h4 className="font-medium mb-1">{t.step1Title}</h4>
               <p className="text-sm text-muted-foreground">
-                "Vizual tahrirlashni boshlash" tugmasini bosing
+                {t.step1Desc}
               </p>
             </div>
             <div className="text-center p-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">2️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Sahifani tanlang</h4>
+              <h4 className="font-medium mb-1">{t.step2Title}</h4>
               <p className="text-sm text-muted-foreground">
-                Yuqoridagi menyudan kerakli sahifani tanlang
+                {t.step2Desc}
               </p>
             </div>
             <div className="text-center p-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">3️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Matnlarni o'zgartiring</h4>
+              <h4 className="font-medium mb-1">{t.step3Title}</h4>
               <p className="text-sm text-muted-foreground">
-                ✏️ ikonasini bosib matnni tahrirlang - o'ng panelda ko'ring
+                {t.step3Desc}
               </p>
             </div>
           </div>
