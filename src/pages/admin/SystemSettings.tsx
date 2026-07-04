@@ -659,34 +659,34 @@ export default function SystemSettings() {
         <TabsContent value="seo" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>SEO sozlamalari</CardTitle>
-              <CardDescription>Qidiruv tizimlari uchun optimallashtirish</CardDescription>
+              <CardTitle>{t.seoTitle}</CardTitle>
+              <CardDescription>{t.seoDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>SEO sarlavha (Title)</Label>
+                <Label>{t.seoTitleLabel}</Label>
                 <Input
                   value={formData.seo_title || ''}
                   onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
                   placeholder="Mebel Store - Eng yaxshi mebellar"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Bu brauzer sarlavhasida ko'rinadi</span>
+                  <span>{t.seoTitleHint}</span>
                   <span className={formData.seo_title && formData.seo_title.length > 60 ? 'text-destructive' : ''}>
                     {formData.seo_title?.length || 0}/60
                   </span>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>SEO tavsif (Meta Description)</Label>
+                <Label>{t.seoDescLabel}</Label>
                 <Textarea
                   value={formData.seo_description || ''}
                   onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
                   rows={3}
-                  placeholder="Saytingiz haqida qisqacha tavsif..."
+                  placeholder={t.seoDescPlaceholder}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Qidiruv natijalarida ko'rinadi</span>
+                  <span>{t.seoDescHint}</span>
                   <span className={formData.seo_description && formData.seo_description.length > 160 ? 'text-destructive' : ''}>
                     {formData.seo_description?.length || 0}/160
                   </span>
@@ -695,10 +695,10 @@ export default function SystemSettings() {
 
               {/* SEO Preview */}
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Qidiruv natijasi ko'rinishi</h4>
+                <h4 className="font-medium text-sm">{t.searchPreview}</h4>
                 <div className="bg-background p-3 rounded border">
                   <p className="text-primary text-sm font-medium truncate">
-                    {formData.seo_title || formData.site_name || 'Sayt nomi'}
+                    {formData.seo_title || formData.site_name || t.siteNamePlaceholder}
                   </p>
                   {formData.primary_domain && (
                     <p className="text-xs text-green-600 truncate">
@@ -707,7 +707,7 @@ export default function SystemSettings() {
                   )}
 
                   <p className="text-xs text-muted-foreground line-clamp-2">
-                    {formData.seo_description || 'Sayt tavsifi bu yerda ko\'rinadi...'}
+                    {formData.seo_description || t.siteDescPreview}
                   </p>
                 </div>
               </div>
