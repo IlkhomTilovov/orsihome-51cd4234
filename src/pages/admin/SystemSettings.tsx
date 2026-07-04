@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
+import { useAdminT } from '@/hooks/useAdminT';
 
 interface SystemSettingsData {
   id: string;
@@ -71,6 +72,8 @@ export default function SystemSettings() {
   const faviconInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { refreshSettings } = useSystemSettings();
+  const adminT = useAdminT();
+  const t = adminT.system;
 
   useEffect(() => {
     fetchSettings();
@@ -115,7 +118,7 @@ export default function SystemSettings() {
       }
     } catch (error) {
       console.error('Error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Sozlamalarni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.loadError });
     } finally {
       setLoading(false);
     }
@@ -127,12 +130,12 @@ export default function SystemSettings() {
 
     const validTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Faqat SVG, PNG, JPG formatlar qo\'llab-quvvatlanadi' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.invalidLogoFormat });
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Fayl hajmi 2MB dan katta bo\'lmasligi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.logoTooBig });
       return;
     }
 
@@ -160,10 +163,10 @@ export default function SystemSettings() {
       const newLogoUrl = urlData.publicUrl;
       setFormData({ ...formData, logo_url: newLogoUrl });
       setLogoPreview(newLogoUrl);
-      toast({ title: 'Muvaffaqiyat', description: 'Logo yuklandi' });
+      toast({ title: t.successTitle, description: t.logoUploaded });
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message || 'Logoni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message || t.logoUploadError });
     } finally {
       setUploadingLogo(false);
     }
@@ -175,12 +178,12 @@ export default function SystemSettings() {
 
     const validTypes = ['image/svg+xml', 'image/png', 'image/x-icon', 'image/vnd.microsoft.icon'];
     if (!validTypes.includes(file.type)) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Faqat SVG, PNG, ICO formatlar qo\'llab-quvvatlanadi' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.invalidFaviconFormat });
       return;
     }
 
     if (file.size > 1024 * 1024) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Fayl hajmi 1MB dan katta bo\'lmasligi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.faviconTooBig });
       return;
     }
 
@@ -207,10 +210,10 @@ export default function SystemSettings() {
       const newFaviconUrl = urlData.publicUrl;
       setFormData({ ...formData, favicon_url: newFaviconUrl });
       setFaviconPreview(newFaviconUrl);
-      toast({ title: 'Muvaffaqiyat', description: 'Favicon yuklandi' });
+      toast({ title: t.successTitle, description: t.faviconUploaded });
     } catch (error: any) {
       console.error('Upload error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message || 'Faviconni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message || t.faviconUploadError });
     } finally {
       setUploadingFavicon(false);
     }
@@ -269,10 +272,10 @@ export default function SystemSettings() {
       }
 
       await refreshSettings();
-      toast({ title: 'Muvaffaqiyat', description: 'Sozlamalar saqlandi' });
+      toast({ title: t.successTitle, description: t.settingsSaved });
       fetchSettings();
     } catch (error: any) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+      toast({ variant: 'destructive', title: t.errorTitle, description: error.message });
     } finally {
       setSaving(false);
     }
@@ -281,7 +284,7 @@ export default function SystemSettings() {
   const toggleLanguage = (lang: string) => {
     const enabled = formData.languages_enabled.includes(lang);
     if (enabled && formData.languages_enabled.length === 1) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Kamida bitta til faol bo\'lishi kerak' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.atLeastOneLang });
       return;
     }
     setFormData({
@@ -304,12 +307,12 @@ export default function SystemSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tizim sozlamalari</h1>
-          <p className="text-muted-foreground">Saytning asosiy sozlamalari</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={saveSettings} disabled={saving}>
           <Save className="mr-2 h-4 w-4" />
-          {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+          {saving ? t.saving : t.save}
         </Button>
       </div>
 
@@ -317,76 +320,78 @@ export default function SystemSettings() {
         <TabsList className="flex flex-wrap h-auto gap-1">
           <TabsTrigger value="general" className="gap-2">
             <Settings2 className="h-4 w-4" />
-            Umumiy
+            {t.tabGeneral}
           </TabsTrigger>
           <TabsTrigger value="contact" className="gap-2">
             <Phone className="h-4 w-4" />
-            Aloqa
+            {t.tabContact}
           </TabsTrigger>
           <TabsTrigger value="social" className="gap-2">
             <Share2 className="h-4 w-4" />
-            Ijtimoiy
+            {t.tabSocial}
           </TabsTrigger>
           <TabsTrigger value="language" className="gap-2">
             <Globe className="h-4 w-4" />
-            Tillar
+            {t.tabLanguage}
           </TabsTrigger>
           <TabsTrigger value="domain" className="gap-2">
             <LinkIcon className="h-4 w-4" />
-            Domen
+            {t.tabDomain}
           </TabsTrigger>
           <TabsTrigger value="seo" className="gap-2">
             <Search className="h-4 w-4" />
-            SEO
+            {t.tabSeo}
           </TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="general" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Umumiy sozlamalar</CardTitle>
-              <CardDescription>Saytning asosiy ma'lumotlari</CardDescription>
+              <CardTitle>{t.generalTitle}</CardTitle>
+              <CardDescription>{t.generalDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Site Name */}
               <div className="space-y-2">
-                <Label>Sayt nomi</Label>
+                <Label>{t.siteName}</Label>
                 <Input
                   value={formData.site_name}
                   onChange={(e) => setFormData({ ...formData, site_name: e.target.value })}
                   placeholder="Mebel Store"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Bu nom header, footer, SEO va brauzer sarlavhasida ishlatiladi
+                  {t.siteNameHint}
                 </p>
               </div>
 
               {/* Short Description */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (UZ)</Label>
+                  <Label>{t.shortDescUz}</Label>
                   <Textarea
                     value={formData.short_description_uz || ''}
                     onChange={(e) => setFormData({ ...formData, short_description_uz: e.target.value })}
-                    placeholder="Kompaniya haqida qisqacha..."
+                    placeholder={t.shortDescUzPlaceholder}
                     rows={2}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (RU)</Label>
+                  <Label>{t.shortDescRu}</Label>
                   <Textarea
                     value={formData.short_description_ru || ''}
                     onChange={(e) => setFormData({ ...formData, short_description_ru: e.target.value })}
-                    placeholder="Краткое описание компании..."
+                    placeholder={t.shortDescRuPlaceholder}
                     rows={2}
                   />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">Bu tavsif footerda ko'rinadi</p>
+              <p className="text-xs text-muted-foreground">{t.shortDescHint}</p>
+
 
               {/* Logo Upload */}
               <div className="space-y-3">
-                <Label>Sayt logosi</Label>
+                <Label>{t.siteLogo}</Label>
                 {logoPreview ? (
                   <div className="relative inline-block">
                     <div className="border rounded-lg p-4 bg-muted/50 inline-flex items-center justify-center min-w-[200px] min-h-[80px]">
@@ -404,22 +409,22 @@ export default function SystemSettings() {
                 ) : (
                   <div className="border-2 border-dashed rounded-lg p-8 text-center bg-muted/20">
                     <Image className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                    <p className="text-sm text-muted-foreground mb-3">Logo yuklanmagan</p>
+                    <p className="text-sm text-muted-foreground mb-3">{t.logoNotUploaded}</p>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
                   <input ref={logoInputRef} type="file" accept=".svg,.png,.jpg,.jpeg" onChange={handleLogoUpload} className="hidden" id="logo-upload" />
                   <Button variant="outline" onClick={() => logoInputRef.current?.click()} disabled={uploadingLogo}>
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploadingLogo ? 'Yuklanmoqda...' : 'Logo yuklash'}
+                    {uploadingLogo ? t.uploading : t.uploadLogo}
                   </Button>
-                  <span className="text-xs text-muted-foreground">SVG, PNG, JPG (max 2MB)</span>
+                  <span className="text-xs text-muted-foreground">{t.logoFormats}</span>
                 </div>
               </div>
 
               {/* Favicon Upload */}
               <div className="space-y-3">
-                <Label>Favicon (brauzer ikonkasi)</Label>
+                <Label>{t.favicon}</Label>
                 {faviconPreview ? (
                   <div className="relative inline-block">
                     <div className="border rounded-lg p-4 bg-muted/50 inline-flex items-center justify-center min-w-[80px] min-h-[80px]">
@@ -439,19 +444,19 @@ export default function SystemSettings() {
                     <div className="w-8 h-8 mx-auto bg-muted rounded flex items-center justify-center mb-2">
                       <span className="text-xs">🌐</span>
                     </div>
-                    <p className="text-xs text-muted-foreground">Favicon yuklanmagan</p>
+                    <p className="text-xs text-muted-foreground">{t.faviconNotUploaded}</p>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
                   <input ref={faviconInputRef} type="file" accept=".svg,.png,.ico" onChange={handleFaviconUpload} className="hidden" id="favicon-upload" />
                   <Button variant="outline" onClick={() => faviconInputRef.current?.click()} disabled={uploadingFavicon}>
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploadingFavicon ? 'Yuklanmoqda...' : 'Favicon yuklash'}
+                    {uploadingFavicon ? t.uploading : t.uploadFavicon}
                   </Button>
-                  <span className="text-xs text-muted-foreground">SVG, PNG, ICO (max 1MB)</span>
+                  <span className="text-xs text-muted-foreground">{t.faviconFormats}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Favicon brauzer tabida ko'rinadi. 32x32 yoki 64x64 piksel o'lcham tavsiya etiladi.
+                  {t.faviconHint}
                 </p>
               </div>
             </CardContent>
@@ -461,13 +466,13 @@ export default function SystemSettings() {
         <TabsContent value="contact" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Aloqa ma'lumotlari</CardTitle>
-              <CardDescription>Telefon, manzil va ish vaqti</CardDescription>
+              <CardTitle>{t.contactTitle}</CardTitle>
+              <CardDescription>{t.contactDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Telefon raqam</Label>
+                  <Label>{t.phone}</Label>
                   <Input
                     value={formData.contact_phone || ''}
                     onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
@@ -475,7 +480,7 @@ export default function SystemSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>WhatsApp raqam</Label>
+                  <Label>{t.whatsapp}</Label>
                   <Input
                     value={formData.whatsapp_number || ''}
                     onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
@@ -486,26 +491,26 @@ export default function SystemSettings() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Ish vaqti (UZ)</Label>
+                  <Label>{t.workingHoursUz}</Label>
                   <Input
                     value={formData.working_hours_uz || ''}
                     onChange={(e) => setFormData({ ...formData, working_hours_uz: e.target.value })}
-                    placeholder="Du-Ju: 9:00 - 18:00"
+                    placeholder={t.workingHoursUzPlaceholder}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Ish vaqti (RU)</Label>
+                  <Label>{t.workingHoursRu}</Label>
                   <Input
                     value={formData.working_hours_ru || ''}
                     onChange={(e) => setFormData({ ...formData, working_hours_ru: e.target.value })}
-                    placeholder="Пн-Пт: 9:00 - 18:00"
+                    placeholder={t.workingHoursRuPlaceholder}
                   />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Manzil (UZ)</Label>
+                  <Label>{t.addressUz}</Label>
                   <Textarea
                     value={formData.address_uz || ''}
                     onChange={(e) => setFormData({ ...formData, address_uz: e.target.value })}
@@ -513,7 +518,7 @@ export default function SystemSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Manzil (RU)</Label>
+                  <Label>{t.addressRu}</Label>
                   <Textarea
                     value={formData.address_ru || ''}
                     onChange={(e) => setFormData({ ...formData, address_ru: e.target.value })}
@@ -528,8 +533,8 @@ export default function SystemSettings() {
         <TabsContent value="social" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Ijtimoiy tarmoqlar</CardTitle>
-              <CardDescription>Footerda ko'rinadigan ijtimoiy tarmoq havolalari</CardDescription>
+              <CardTitle>{t.socialTitle}</CardTitle>
+              <CardDescription>{t.socialDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -557,7 +562,7 @@ export default function SystemSettings() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Bo'sh qoldirilsa, footer da bu ijtimoiy tarmoq ko'rinmaydi
+                {t.socialHint}
               </p>
             </CardContent>
           </Card>
@@ -566,12 +571,12 @@ export default function SystemSettings() {
         <TabsContent value="language" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Til sozlamalari</CardTitle>
-              <CardDescription>Saytda faol tillarni boshqaring</CardDescription>
+              <CardTitle>{t.languageTitle}</CardTitle>
+              <CardDescription>{t.languageDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Asosiy til</Label>
+                <Label>{t.defaultLanguage}</Label>
                 <Select
                   value={formData.default_language}
                   onValueChange={(value) => setFormData({ ...formData, default_language: value })}
@@ -587,17 +592,17 @@ export default function SystemSettings() {
               </div>
 
               <div className="space-y-4">
-                <Label>Faol tillar</Label>
+                <Label>{t.activeLanguages}</Label>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span>O'zbekcha (UZ)</span>
+                    <span>{t.uzbek}</span>
                     <Switch
                       checked={formData.languages_enabled.includes('uz')}
                       onCheckedChange={() => toggleLanguage('uz')}
                     />
                   </div>
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span>Русский (RU)</span>
+                    <span>{t.russian}</span>
                     <Switch
                       checked={formData.languages_enabled.includes('ru')}
                       onCheckedChange={() => toggleLanguage('ru')}
@@ -612,26 +617,26 @@ export default function SystemSettings() {
         <TabsContent value="domain" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Domen sozlamalari</CardTitle>
-              <CardDescription>Asosiy domen va sitemap sozlamalari</CardDescription>
+              <CardTitle>{t.domainTitle}</CardTitle>
+              <CardDescription>{t.domainDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Asosiy domen</Label>
+                <Label>{t.primaryDomain}</Label>
                 <Input
                   value={formData.primary_domain || ''}
                   onChange={(e) => setFormData({ ...formData, primary_domain: e.target.value })}
                   placeholder="https://example.com"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Bu domen sitemap.xml va canonical URL lar uchun ishlatiladi
+                  {t.primaryDomainHint}
                 </p>
               </div>
 
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Sitemap</h4>
+                <h4 className="font-medium text-sm">{t.sitemap}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Sitemap avtomatik ravishda yaratiladi va quyidagi manzilda mavjud:
+                  {t.sitemapHint}
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
                   {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/sitemap.xml
@@ -639,9 +644,9 @@ export default function SystemSettings() {
               </div>
 
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Robots.txt</h4>
+                <h4 className="font-medium text-sm">{t.robots}</h4>
                 <p className="text-xs text-muted-foreground">
-                  robots.txt fayli quyidagi manzilda mavjud:
+                  {t.robotsHint}
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
                   {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/robots.txt
@@ -654,34 +659,34 @@ export default function SystemSettings() {
         <TabsContent value="seo" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>SEO sozlamalari</CardTitle>
-              <CardDescription>Qidiruv tizimlari uchun optimallashtirish</CardDescription>
+              <CardTitle>{t.seoTitle}</CardTitle>
+              <CardDescription>{t.seoDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>SEO sarlavha (Title)</Label>
+                <Label>{t.seoTitleLabel}</Label>
                 <Input
                   value={formData.seo_title || ''}
                   onChange={(e) => setFormData({ ...formData, seo_title: e.target.value })}
                   placeholder="Mebel Store - Eng yaxshi mebellar"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Bu brauzer sarlavhasida ko'rinadi</span>
+                  <span>{t.seoTitleHint}</span>
                   <span className={formData.seo_title && formData.seo_title.length > 60 ? 'text-destructive' : ''}>
                     {formData.seo_title?.length || 0}/60
                   </span>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>SEO tavsif (Meta Description)</Label>
+                <Label>{t.seoDescLabel}</Label>
                 <Textarea
                   value={formData.seo_description || ''}
                   onChange={(e) => setFormData({ ...formData, seo_description: e.target.value })}
                   rows={3}
-                  placeholder="Saytingiz haqida qisqacha tavsif..."
+                  placeholder={t.seoDescPlaceholder}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Qidiruv natijalarida ko'rinadi</span>
+                  <span>{t.seoDescHint}</span>
                   <span className={formData.seo_description && formData.seo_description.length > 160 ? 'text-destructive' : ''}>
                     {formData.seo_description?.length || 0}/160
                   </span>
@@ -690,10 +695,10 @@ export default function SystemSettings() {
 
               {/* SEO Preview */}
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Qidiruv natijasi ko'rinishi</h4>
+                <h4 className="font-medium text-sm">{t.searchPreview}</h4>
                 <div className="bg-background p-3 rounded border">
                   <p className="text-primary text-sm font-medium truncate">
-                    {formData.seo_title || formData.site_name || 'Sayt nomi'}
+                    {formData.seo_title || formData.site_name || t.siteNamePlaceholder}
                   </p>
                   {formData.primary_domain && (
                     <p className="text-xs text-green-600 truncate">
@@ -702,7 +707,7 @@ export default function SystemSettings() {
                   )}
 
                   <p className="text-xs text-muted-foreground line-clamp-2">
-                    {formData.seo_description || 'Sayt tavsifi bu yerda ko\'rinadi...'}
+                    {formData.seo_description || t.siteDescPreview}
                   </p>
                 </div>
               </div>
