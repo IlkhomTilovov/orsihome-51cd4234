@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import '@/styles/admin-fonts.css';
+
 import {
   LayoutDashboard,
   Package,
@@ -214,7 +216,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="admin-panel min-h-screen bg-gray-50">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
