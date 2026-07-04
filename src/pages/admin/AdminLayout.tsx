@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import '@/styles/admin-fonts.css';
+
 import {
   LayoutDashboard,
   Package,
