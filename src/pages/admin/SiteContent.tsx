@@ -287,21 +287,20 @@ export default function SiteContent() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Sayt kontenti</h1>
-          <p className="text-muted-foreground">Saytdagi barcha matnlarni vizual tahrirlang</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={handleOpenVisualEditor} size="lg" className="gap-2">
           <Play className="h-5 w-5" />
-          Vizual tahrirlashni boshlash
+          {t.startVisualEdit}
         </Button>
       </div>
 
       <Alert>
         <Info className="h-4 w-4" />
-        <AlertTitle>Yangi vizual tahrirlash tizimi</AlertTitle>
+        <AlertTitle>{t.newSystemTitle}</AlertTitle>
         <AlertDescription>
-          Endi sayt kontentini to'g'ridan-to'g'ri shu yerda tahrirlashingiz mumkin. 
-          Barcha o'zgarishlar realtime ko'rsatiladi.
+          {t.newSystemDesc}
         </AlertDescription>
       </Alert>
 
