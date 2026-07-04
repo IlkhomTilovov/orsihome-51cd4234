@@ -533,8 +533,8 @@ export default function SystemSettings() {
         <TabsContent value="social" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Ijtimoiy tarmoqlar</CardTitle>
-              <CardDescription>Footerda ko'rinadigan ijtimoiy tarmoq havolalari</CardDescription>
+              <CardTitle>{t.socialTitle}</CardTitle>
+              <CardDescription>{t.socialDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -562,7 +562,7 @@ export default function SystemSettings() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Bo'sh qoldirilsa, footer da bu ijtimoiy tarmoq ko'rinmaydi
+                {t.socialHint}
               </p>
             </CardContent>
           </Card>
