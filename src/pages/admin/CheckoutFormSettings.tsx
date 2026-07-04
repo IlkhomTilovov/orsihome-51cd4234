@@ -545,8 +545,8 @@ export default function CheckoutFormSettings() {
                                 <div className="flex items-center gap-3">
                                   <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
                                   <div>
-                                    <p className="font-medium">{option.label_uz}</p>
-                                    <p className="text-sm text-muted-foreground">{option.label_ru}</p>
+                                    <p className="font-medium">{language === 'ru' ? (option.label_ru || option.label_uz) : option.label_uz}</p>
+                                    <p className="text-sm text-muted-foreground">{language === 'ru' ? option.label_uz : option.label_ru}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1">
