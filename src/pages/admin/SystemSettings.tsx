@@ -424,7 +424,7 @@ export default function SystemSettings() {
 
               {/* Favicon Upload */}
               <div className="space-y-3">
-                <Label>Favicon (brauzer ikonkasi)</Label>
+                <Label>{t.favicon}</Label>
                 {faviconPreview ? (
                   <div className="relative inline-block">
                     <div className="border rounded-lg p-4 bg-muted/50 inline-flex items-center justify-center min-w-[80px] min-h-[80px]">
