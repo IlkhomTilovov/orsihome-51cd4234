@@ -571,12 +571,12 @@ export default function SystemSettings() {
         <TabsContent value="language" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Til sozlamalari</CardTitle>
-              <CardDescription>Saytda faol tillarni boshqaring</CardDescription>
+              <CardTitle>{t.languageTitle}</CardTitle>
+              <CardDescription>{t.languageDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Asosiy til</Label>
+                <Label>{t.defaultLanguage}</Label>
                 <Select
                   value={formData.default_language}
                   onValueChange={(value) => setFormData({ ...formData, default_language: value })}
@@ -592,17 +592,17 @@ export default function SystemSettings() {
               </div>
 
               <div className="space-y-4">
-                <Label>Faol tillar</Label>
+                <Label>{t.activeLanguages}</Label>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span>O'zbekcha (UZ)</span>
+                    <span>{t.uzbek}</span>
                     <Switch
                       checked={formData.languages_enabled.includes('uz')}
                       onCheckedChange={() => toggleLanguage('uz')}
                     />
                   </div>
                   <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                    <span>Русский (RU)</span>
+                    <span>{t.russian}</span>
                     <Switch
                       checked={formData.languages_enabled.includes('ru')}
                       onCheckedChange={() => toggleLanguage('ru')}
