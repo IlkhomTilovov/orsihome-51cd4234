@@ -115,10 +115,10 @@ export default function SiteContent() {
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Orqaga
+              {t.back}
             </Button>
             <div className="h-6 w-px bg-border" />
-            <span className="text-sm font-medium text-muted-foreground">Vizual tahrirlash</span>
+            <span className="text-sm font-medium text-muted-foreground">{t.visualEdit}</span>
             
             {/* Connection Status */}
             <div className={cn(
@@ -129,7 +129,7 @@ export default function SiteContent() {
                 "h-2 w-2 rounded-full",
                 isConnected ? "bg-green-500 animate-pulse" : "bg-muted-foreground"
               )} />
-              {isConnected ? "Ulangan" : "Kutilmoqda..."}
+              {isConnected ? t.connected : t.waiting}
             </div>
           </div>
 
