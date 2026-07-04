@@ -36,21 +36,7 @@ interface CheckoutField {
   options?: CheckoutFieldOption[];
 }
 
-const FIELD_TYPES = [
-  { value: 'text', label: 'Matn (Text)' },
-  { value: 'phone', label: 'Telefon raqam' },
-  { value: 'textarea', label: 'Ko\'p qatorli matn' },
-  { value: 'radio', label: 'Tanlov (Radio)' },
-];
-
-const ICONS = [
-  { value: 'User', label: 'Foydalanuvchi' },
-  { value: 'Phone', label: 'Telefon' },
-  { value: 'Home', label: 'Uy' },
-  { value: 'Clock', label: 'Soat' },
-  { value: 'MessageSquare', label: 'Izoh' },
-  { value: 'HelpCircle', label: 'Savol' },
-];
+// Field types & icons are localized inside the component via useAdminT()
 
 export default function CheckoutFormSettings() {
   const [fields, setFields] = useState<CheckoutField[]>([]);
