@@ -608,28 +608,28 @@ export default function CheckoutFormSettings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingField ? 'Maydonni tahrirlash' : 'Yangi maydon'}
+              {editingField ? t.editField : t.newField}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Nomi (O'zbekcha)</Label>
+              <Label>{t.nameUz}</Label>
               <Input
                 value={fieldForm.label_uz}
                 onChange={(e) => setFieldForm({ ...fieldForm, label_uz: e.target.value })}
-                placeholder="Masalan: To'liq ism"
+                placeholder={t.placeholderNameUz}
               />
             </div>
             <div className="space-y-2">
-              <Label>Nomi (Ruscha)</Label>
+              <Label>{t.nameRu}</Label>
               <Input
                 value={fieldForm.label_ru}
                 onChange={(e) => setFieldForm({ ...fieldForm, label_ru: e.target.value })}
-                placeholder="Masalan: Полное имя"
+                placeholder={t.placeholderNameRu}
               />
             </div>
             <div className="space-y-2">
-              <Label>Maydon turi</Label>
+              <Label>{t.fieldType}</Label>
               <Select
                 value={fieldForm.field_type}
                 onValueChange={(value) => setFieldForm({ ...fieldForm, field_type: value })}
@@ -647,16 +647,16 @@ export default function CheckoutFormSettings() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Ikonka</Label>
+              <Label>{t.icon}</Label>
               <Select
                 value={fieldForm.icon || undefined}
                 onValueChange={(value) => setFieldForm({ ...fieldForm, icon: value === '_none' ? '' : value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Ikonka tanlang" />
+                  <SelectValue placeholder={t.iconPlaceholder} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="_none">Ikonkasiz</SelectItem>
+                  <SelectItem value="_none">{t.noIcon}</SelectItem>
                   {ICONS.map((icon) => (
                     <SelectItem key={icon.value} value={icon.value}>
                       {icon.label}
@@ -666,14 +666,14 @@ export default function CheckoutFormSettings() {
               </Select>
             </div>
             <div className="flex items-center justify-between">
-              <Label>Majburiy maydon</Label>
+              <Label>{t.requiredField}</Label>
               <Switch
                 checked={fieldForm.is_required}
                 onCheckedChange={(checked) => setFieldForm({ ...fieldForm, is_required: checked })}
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Faol</Label>
+              <Label>{t.active}</Label>
               <Switch
                 checked={fieldForm.is_active}
                 onCheckedChange={(checked) => setFieldForm({ ...fieldForm, is_active: checked })}
@@ -682,10 +682,10 @@ export default function CheckoutFormSettings() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setFieldDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={saveField} disabled={saving}>
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
           </DialogFooter>
         </DialogContent>
