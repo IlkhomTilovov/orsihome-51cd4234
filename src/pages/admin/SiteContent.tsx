@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { notifyIframeRefresh } from '@/hooks/useSiteContent';
+import { useAdminT } from '@/hooks/useAdminT';
 
 type ViewMode = 'cards' | 'editor';
 type DeviceSize = 'desktop' | 'tablet' | 'mobile';
@@ -18,6 +19,7 @@ interface ContentUpdate {
 }
 
 export default function SiteContent() {
+  const t = useAdminT().siteContent;
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [deviceSize, setDeviceSize] = useState<DeviceSize>('desktop');
@@ -83,17 +85,17 @@ export default function SiteContent() {
 
   const formatTime = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    if (seconds < 5) return 'Hozir';
-    if (seconds < 60) return `${seconds} soniya oldin`;
-    return `${Math.floor(seconds / 60)} daqiqa oldin`;
+    if (seconds < 5) return t.timeNow;
+    if (seconds < 60) return t.timeSecondsAgo(seconds);
+    return t.timeMinutesAgo(Math.floor(seconds / 60));
   };
 
   const pages = [
-    { path: '/', label: 'Bosh sahifa' },
-    { path: '/catalog', label: 'Katalog' },
-    { path: '/about', label: 'Biz haqimizda' },
-    { path: '/contact', label: 'Aloqa' },
-    { path: '/faq', label: 'FAQ' },
+    { path: '/', label: t.pageHome },
+    { path: '/catalog', label: t.pageCatalog },
+    { path: '/about', label: t.pageAbout },
+    { path: '/contact', label: t.pageContact },
+    { path: '/faq', label: t.pageFaq },
   ];
 
   // Editor view with iframe
@@ -113,10 +115,10 @@ export default function SiteContent() {
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Orqaga
+              {t.back}
             </Button>
             <div className="h-6 w-px bg-border" />
-            <span className="text-sm font-medium text-muted-foreground">Vizual tahrirlash</span>
+            <span className="text-sm font-medium text-muted-foreground">{t.visualEdit}</span>
             
             {/* Connection Status */}
             <div className={cn(
@@ -127,7 +129,7 @@ export default function SiteContent() {
                 "h-2 w-2 rounded-full",
                 isConnected ? "bg-green-500 animate-pulse" : "bg-muted-foreground"
               )} />
-              {isConnected ? "Ulangan" : "Kutilmoqda..."}
+              {isConnected ? t.connected : t.waiting}
             </div>
           </div>
 
@@ -159,7 +161,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'mobile' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Mobil"
+                title={t.mobile}
               >
                 <Smartphone className="h-4 w-4" />
               </button>
@@ -169,7 +171,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'tablet' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Planshet"
+                title={t.tablet}
               >
                 <Tablet className="h-4 w-4" />
               </button>
@@ -179,7 +181,7 @@ export default function SiteContent() {
                   "p-1.5 rounded-md transition-all",
                   deviceSize === 'desktop' ? "bg-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                 )}
-                title="Desktop"
+                title={t.desktop}
               >
                 <Monitor className="h-4 w-4" />
               </button>
@@ -187,7 +189,7 @@ export default function SiteContent() {
 
             <div className="h-6 w-px bg-border" />
 
-            <Button variant="ghost" size="icon" onClick={refreshIframe} title="Yangilash">
+            <Button variant="ghost" size="icon" onClick={refreshIframe} title={t.refresh}>
               <RefreshCw className="h-4 w-4" />
             </Button>
             
@@ -195,12 +197,12 @@ export default function SiteContent() {
               variant="ghost" 
               size="icon" 
               onClick={() => setIsFullscreen(!isFullscreen)}
-              title={isFullscreen ? "Kichiklashtirish" : "To'liq ekran"}
+              title={isFullscreen ? t.minimize : t.fullscreen}
             >
               {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
 
-            <Button variant="ghost" size="icon" onClick={handleOpenInNewTab} title="Yangi oynada ochish">
+            <Button variant="ghost" size="icon" onClick={handleOpenInNewTab} title={t.openNewTab}>
               <ExternalLink className="h-4 w-4" />
             </Button>
           </div>
@@ -228,7 +230,7 @@ export default function SiteContent() {
             <div className="w-72 border-l bg-card p-4 overflow-y-auto">
               <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                So'nggi o'zgarishlar
+                {t.recentChanges}
               </h3>
               <div className="space-y-2">
                 {recentUpdates.map((update, index) => (
@@ -266,11 +268,11 @@ export default function SiteContent() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              Tahrirlash rejimi yoqilgan
+              {t.editModeOn}
             </div>
             {recentUpdates.length > 0 && (
               <span className="text-green-600">
-                {recentUpdates.length} ta o'zgarish saqlandi
+                {t.changesSaved(recentUpdates.length)}
               </span>
             )}
           </div>
@@ -285,21 +287,20 @@ export default function SiteContent() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Sayt kontenti</h1>
-          <p className="text-muted-foreground">Saytdagi barcha matnlarni vizual tahrirlang</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={handleOpenVisualEditor} size="lg" className="gap-2">
           <Play className="h-5 w-5" />
-          Vizual tahrirlashni boshlash
+          {t.startVisualEdit}
         </Button>
       </div>
 
       <Alert>
         <Info className="h-4 w-4" />
-        <AlertTitle>Yangi vizual tahrirlash tizimi</AlertTitle>
+        <AlertTitle>{t.newSystemTitle}</AlertTitle>
         <AlertDescription>
-          Endi sayt kontentini to'g'ridan-to'g'ri shu yerda tahrirlashingiz mumkin. 
-          Barcha o'zgarishlar realtime ko'rsatiladi.
+          {t.newSystemDesc}
         </AlertDescription>
       </Alert>
 
@@ -312,37 +313,36 @@ export default function SiteContent() {
                 <Pencil className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle>Vizual tahrirlash</CardTitle>
-                <CardDescription>Kontentni to'g'ridan-to'g'ri shu yerda tahrirlang</CardDescription>
+                <CardTitle>{t.visualEdit}</CardTitle>
+                <CardDescription>{t.visualEditDesc}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Shu sahifadan chiqmasdan sayt kontentini tahrirlashingiz mumkin. 
-              Barcha o'zgarishlar avtomatik saqlanadi va realtime ko'rsatiladi.
+              {t.visualEditLong}
             </p>
             <div className="space-y-2">
-              <h4 className="font-medium text-sm">Xususiyatlar:</h4>
+              <h4 className="font-medium text-sm">{t.features}</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Realtime o'zgarishlar monitoring
+                  {t.feature1}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  Desktop, planshet va mobil ko'rinishlar
+                  {t.feature2}
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  To'liq ekran rejimi
+                  {t.feature3}
                 </li>
               </ul>
             </div>
             <div className="flex gap-2">
               <Button onClick={handleOpenVisualEditor} className="flex-1">
                 <Pencil className="mr-2 h-4 w-4" />
-                Tahrirlashni boshlash
+                {t.startEditing}
               </Button>
               <Button variant="outline" onClick={handleOpenInNewTab}>
                 <ExternalLink className="h-4 w-4" />
@@ -359,30 +359,29 @@ export default function SiteContent() {
                 <Eye className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <CardTitle>Ko'rish rejimi</CardTitle>
-                <CardDescription>Saytni mehmonlar ko'rinishida ko'ring</CardDescription>
+                <CardTitle>{t.viewMode}</CardTitle>
+                <CardDescription>{t.viewModeDesc}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              "Ko'rish rejimi"ga o'tib, sayt mehmonlar uchun qanday ko'rinishda ekanligini 
-              tekshiring. Bu rejimda tahrirlash imkoniyati yo'q.
+              {t.viewModeLong}
             </p>
             <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium text-sm mb-2">Tahrirlanadigan sahifalar:</h4>
+              <h4 className="font-medium text-sm mb-2">{t.editablePages}</h4>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-background rounded text-xs">Bosh sahifa</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Katalog</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Biz haqimizda</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Aloqa</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">FAQ</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageHome}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageCatalog}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageAbout}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageContact}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageFaq}</span>
               </div>
             </div>
             <Button variant="outline" asChild className="w-full">
               <Link to="/">
                 <Eye className="mr-2 h-4 w-4" />
-                Saytni ko'rish
+                {t.viewSite}
               </Link>
             </Button>
           </CardContent>
@@ -392,7 +391,7 @@ export default function SiteContent() {
       {/* Instructions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Vizual tahrirlash qo'llanmasi</CardTitle>
+          <CardTitle className="text-lg">{t.guideTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
@@ -400,27 +399,27 @@ export default function SiteContent() {
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">1️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Tahrirlashni boshlang</h4>
+              <h4 className="font-medium mb-1">{t.step1Title}</h4>
               <p className="text-sm text-muted-foreground">
-                "Vizual tahrirlashni boshlash" tugmasini bosing
+                {t.step1Desc}
               </p>
             </div>
             <div className="text-center p-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">2️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Sahifani tanlang</h4>
+              <h4 className="font-medium mb-1">{t.step2Title}</h4>
               <p className="text-sm text-muted-foreground">
-                Yuqoridagi menyudan kerakli sahifani tanlang
+                {t.step2Desc}
               </p>
             </div>
             <div className="text-center p-4">
               <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                 <span className="text-2xl">3️⃣</span>
               </div>
-              <h4 className="font-medium mb-1">Matnlarni o'zgartiring</h4>
+              <h4 className="font-medium mb-1">{t.step3Title}</h4>
               <p className="text-sm text-muted-foreground">
-                ✏️ ikonasini bosib matnni tahrirlang - o'ng panelda ko'ring
+                {t.step3Desc}
               </p>
             </div>
           </div>
