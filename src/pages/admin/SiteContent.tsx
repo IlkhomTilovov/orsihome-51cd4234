@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { notifyIframeRefresh } from '@/hooks/useSiteContent';
+import { useAdminT } from '@/hooks/useAdminT';
 
 type ViewMode = 'cards' | 'editor';
 type DeviceSize = 'desktop' | 'tablet' | 'mobile';
