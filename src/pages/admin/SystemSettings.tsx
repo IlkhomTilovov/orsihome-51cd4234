@@ -307,12 +307,12 @@ export default function SystemSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tizim sozlamalari</h1>
-          <p className="text-muted-foreground">Saytning asosiy sozlamalari</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={saveSettings} disabled={saving}>
           <Save className="mr-2 h-4 w-4" />
-          {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+          {saving ? t.saving : t.save}
         </Button>
       </div>
 
@@ -320,29 +320,30 @@ export default function SystemSettings() {
         <TabsList className="flex flex-wrap h-auto gap-1">
           <TabsTrigger value="general" className="gap-2">
             <Settings2 className="h-4 w-4" />
-            Umumiy
+            {t.tabGeneral}
           </TabsTrigger>
           <TabsTrigger value="contact" className="gap-2">
             <Phone className="h-4 w-4" />
-            Aloqa
+            {t.tabContact}
           </TabsTrigger>
           <TabsTrigger value="social" className="gap-2">
             <Share2 className="h-4 w-4" />
-            Ijtimoiy
+            {t.tabSocial}
           </TabsTrigger>
           <TabsTrigger value="language" className="gap-2">
             <Globe className="h-4 w-4" />
-            Tillar
+            {t.tabLanguage}
           </TabsTrigger>
           <TabsTrigger value="domain" className="gap-2">
             <LinkIcon className="h-4 w-4" />
-            Domen
+            {t.tabDomain}
           </TabsTrigger>
           <TabsTrigger value="seo" className="gap-2">
             <Search className="h-4 w-4" />
-            SEO
+            {t.tabSeo}
           </TabsTrigger>
         </TabsList>
+
 
         <TabsContent value="general" className="space-y-4 mt-4">
           <Card>
