@@ -617,26 +617,26 @@ export default function SystemSettings() {
         <TabsContent value="domain" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Domen sozlamalari</CardTitle>
-              <CardDescription>Asosiy domen va sitemap sozlamalari</CardDescription>
+              <CardTitle>{t.domainTitle}</CardTitle>
+              <CardDescription>{t.domainDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Asosiy domen</Label>
+                <Label>{t.primaryDomain}</Label>
                 <Input
                   value={formData.primary_domain || ''}
                   onChange={(e) => setFormData({ ...formData, primary_domain: e.target.value })}
                   placeholder="https://example.com"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Bu domen sitemap.xml va canonical URL lar uchun ishlatiladi
+                  {t.primaryDomainHint}
                 </p>
               </div>
 
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Sitemap</h4>
+                <h4 className="font-medium text-sm">{t.sitemap}</h4>
                 <p className="text-xs text-muted-foreground">
-                  Sitemap avtomatik ravishda yaratiladi va quyidagi manzilda mavjud:
+                  {t.sitemapHint}
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
                   {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/sitemap.xml
@@ -644,9 +644,9 @@ export default function SystemSettings() {
               </div>
 
               <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm">Robots.txt</h4>
+                <h4 className="font-medium text-sm">{t.robots}</h4>
                 <p className="text-xs text-muted-foreground">
-                  robots.txt fayli quyidagi manzilda mavjud:
+                  {t.robotsHint}
                 </p>
                 <code className="text-xs bg-background px-2 py-1 rounded block">
                   {(formData.primary_domain || 'https://example.com').replace(/\/+$/, '')}/robots.txt
