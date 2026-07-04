@@ -118,7 +118,7 @@ export default function SystemSettings() {
       }
     } catch (error) {
       console.error('Error:', error);
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Sozlamalarni yuklashda xatolik' });
+      toast({ variant: 'destructive', title: t.errorTitle, description: t.loadError });
     } finally {
       setLoading(false);
     }
