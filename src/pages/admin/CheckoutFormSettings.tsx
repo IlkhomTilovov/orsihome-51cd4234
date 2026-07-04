@@ -590,7 +590,7 @@ export default function CheckoutFormSettings() {
                           </div>
                         ) : (
                           <p className="text-sm text-muted-foreground text-center py-4">
-                            Hozircha variantlar yo'q
+                            {t.noOptions}
                           </p>
                         )}
                       </div>
