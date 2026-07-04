@@ -11,6 +11,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminT } from '@/hooks/useAdminT';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface CheckoutFieldOption {
   id: string;
@@ -34,23 +36,27 @@ interface CheckoutField {
   options?: CheckoutFieldOption[];
 }
 
-const FIELD_TYPES = [
-  { value: 'text', label: 'Matn (Text)' },
-  { value: 'phone', label: 'Telefon raqam' },
-  { value: 'textarea', label: 'Ko\'p qatorli matn' },
-  { value: 'radio', label: 'Tanlov (Radio)' },
-];
-
-const ICONS = [
-  { value: 'User', label: 'Foydalanuvchi' },
-  { value: 'Phone', label: 'Telefon' },
-  { value: 'Home', label: 'Uy' },
-  { value: 'Clock', label: 'Soat' },
-  { value: 'MessageSquare', label: 'Izoh' },
-  { value: 'HelpCircle', label: 'Savol' },
-];
+// Field types & icons are localized inside the component via useAdminT()
 
 export default function CheckoutFormSettings() {
+  const t = useAdminT().checkoutForm;
+  const { language } = useLanguage();
+
+  const FIELD_TYPES = [
+    { value: 'text', label: t.typeText },
+    { value: 'phone', label: t.typePhone },
+    { value: 'textarea', label: t.typeTextarea },
+    { value: 'radio', label: t.typeRadio },
+  ];
+
+  const ICONS = [
+    { value: 'User', label: t.iconUser },
+    { value: 'Phone', label: t.iconPhone },
+    { value: 'Home', label: t.iconHome },
+    { value: 'Clock', label: t.iconClock },
+    { value: 'MessageSquare', label: t.iconMessage },
+    { value: 'HelpCircle', label: t.iconHelp },
+  ];
   const [fields, setFields] = useState<CheckoutField[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -112,8 +118,8 @@ export default function CheckoutFormSettings() {
     } catch (error) {
       console.error('Error fetching fields:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Ma\'lumotlarni yuklashda xatolik',
+        title: t.error,
+        description: t.loadError,
         variant: 'destructive',
       });
     } finally {
@@ -165,16 +171,16 @@ export default function CheckoutFormSettings() {
   const saveField = async () => {
     if (!fieldForm.label_uz.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'O\'zbekcha nomini kiriting',
+        title: t.error,
+        description: t.enterUzName,
         variant: 'destructive',
       });
       return;
     }
     if (!fieldForm.label_ru.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'Ruscha nomini kiriting',
+        title: t.error,
+        description: t.enterRuName,
         variant: 'destructive',
       });
       return;
@@ -214,14 +220,14 @@ export default function CheckoutFormSettings() {
         if (error) throw error;
       }
 
-      toast({ title: 'Saqlandi' });
+      toast({ title: t.saved });
       setFieldDialogOpen(false);
       fetchFields();
     } catch (error) {
       console.error('Error saving field:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Saqlashda xatolik',
+        title: t.error,
+        description: t.saveError,
         variant: 'destructive',
       });
     } finally {
@@ -230,7 +236,7 @@ export default function CheckoutFormSettings() {
   };
 
   const deleteField = async (fieldId: string) => {
-    if (!confirm('Bu maydonni o\'chirishni xohlaysizmi?')) return;
+    if (!confirm(t.confirmDeleteField)) return;
 
     try {
       const { error } = await supabase
@@ -239,13 +245,13 @@ export default function CheckoutFormSettings() {
         .eq('id', fieldId);
 
       if (error) throw error;
-      toast({ title: 'O\'chirildi' });
+      toast({ title: t.deleted });
       fetchFields();
     } catch (error) {
       console.error('Error deleting field:', error);
       toast({
-        title: 'Xatolik',
-        description: 'O\'chirishda xatolik',
+        title: t.error,
+        description: t.deleteError,
         variant: 'destructive',
       });
     }
@@ -304,8 +310,8 @@ export default function CheckoutFormSettings() {
   const saveOption = async () => {
     if (!optionForm.label_uz.trim() || !optionForm.label_ru.trim() || !optionForm.value.trim()) {
       toast({
-        title: 'Xatolik',
-        description: 'Barcha maydonlarni to\'ldiring',
+        title: t.error,
+        description: t.fillAll,
         variant: 'destructive',
       });
       return;
@@ -344,14 +350,14 @@ export default function CheckoutFormSettings() {
         if (error) throw error;
       }
 
-      toast({ title: 'Saqlandi' });
+      toast({ title: t.saved });
       setOptionDialogOpen(false);
       fetchFields();
     } catch (error) {
       console.error('Error saving option:', error);
       toast({
-        title: 'Xatolik',
-        description: 'Saqlashda xatolik',
+        title: t.error,
+        description: t.saveError,
         variant: 'destructive',
       });
     } finally {
@@ -360,7 +366,7 @@ export default function CheckoutFormSettings() {
   };
 
   const deleteOption = async (optionId: string) => {
-    if (!confirm('Bu variantni o\'chirishni xohlaysizmi?')) return;
+    if (!confirm(t.confirmDeleteOption)) return;
 
     try {
       const { error } = await supabase
@@ -369,13 +375,13 @@ export default function CheckoutFormSettings() {
         .eq('id', optionId);
 
       if (error) throw error;
-      toast({ title: 'O\'chirildi' });
+      toast({ title: t.deleted });
       fetchFields();
     } catch (error) {
       console.error('Error deleting option:', error);
       toast({
-        title: 'Xatolik',
-        description: 'O\'chirishda xatolik',
+        title: t.error,
+        description: t.deleteError,
         variant: 'destructive',
       });
     }
@@ -423,22 +429,22 @@ export default function CheckoutFormSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Checkout formasini sozlash</h1>
-          <p className="text-muted-foreground">Buyurtma formasidagi barcha maydonlarni boshqaring</p>
+          <h1 className="text-2xl font-bold">{t.title}</h1>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
         <Button onClick={() => openFieldDialog()}>
           <Plus className="mr-2 h-4 w-4" />
-          Yangi maydon
+          {t.newField}
         </Button>
       </div>
 
       {fields.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">Hozircha hech qanday maydon yo'q</p>
+            <p className="text-muted-foreground">{t.empty}</p>
             <Button className="mt-4" onClick={() => openFieldDialog()}>
               <Plus className="mr-2 h-4 w-4" />
-              Birinchi maydonni qo'shing
+              {t.addFirst}
             </Button>
           </CardContent>
         </Card>
@@ -456,20 +462,20 @@ export default function CheckoutFormSettings() {
                       <GripVertical className="h-5 w-5 text-muted-foreground cursor-move" />
                       <div>
                         <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
-                          {field.label_uz}
+                          {language === 'ru' ? (field.label_ru || field.label_uz) : field.label_uz}
                           <Badge variant="secondary">{getFieldTypeBadge(field.field_type)}</Badge>
                           {field.is_required && (
                             <Badge variant="destructive" className="text-xs">
-                              Majburiy
+                              {t.required}
                             </Badge>
                           )}
                           {!field.is_active && (
                             <Badge variant="outline" className="text-xs">
-                              O'chirilgan
+                              {t.disabled}
                             </Badge>
                           )}
                         </CardTitle>
-                        <CardDescription>{field.label_ru}</CardDescription>
+                        <CardDescription>{language === 'ru' ? field.label_uz : field.label_ru}</CardDescription>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -520,10 +526,10 @@ export default function CheckoutFormSettings() {
                     <CardContent className="pt-0">
                       <div className="border rounded-lg p-4 bg-muted/30">
                         <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-medium">Variantlar</h4>
+                          <h4 className="font-medium">{t.options}</h4>
                           <Button size="sm" variant="outline" onClick={() => openOptionDialog(field.id)}>
                             <Plus className="mr-1 h-3 w-3" />
-                            Variant qo'shish
+                            {t.addOption}
                           </Button>
                         </div>
 
@@ -539,8 +545,8 @@ export default function CheckoutFormSettings() {
                                 <div className="flex items-center gap-3">
                                   <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
                                   <div>
-                                    <p className="font-medium">{option.label_uz}</p>
-                                    <p className="text-sm text-muted-foreground">{option.label_ru}</p>
+                                    <p className="font-medium">{language === 'ru' ? (option.label_ru || option.label_uz) : option.label_uz}</p>
+                                    <p className="text-sm text-muted-foreground">{language === 'ru' ? option.label_uz : option.label_ru}</p>
                                   </div>
                                 </div>
                                 <div className="flex items-center gap-1">
@@ -584,7 +590,7 @@ export default function CheckoutFormSettings() {
                           </div>
                         ) : (
                           <p className="text-sm text-muted-foreground text-center py-4">
-                            Hozircha variantlar yo'q
+                            {t.noOptions}
                           </p>
                         )}
                       </div>
@@ -602,28 +608,28 @@ export default function CheckoutFormSettings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingField ? 'Maydonni tahrirlash' : 'Yangi maydon'}
+              {editingField ? t.editField : t.newField}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Nomi (O'zbekcha)</Label>
+              <Label>{t.nameUz}</Label>
               <Input
                 value={fieldForm.label_uz}
                 onChange={(e) => setFieldForm({ ...fieldForm, label_uz: e.target.value })}
-                placeholder="Masalan: To'liq ism"
+                placeholder={t.placeholderNameUz}
               />
             </div>
             <div className="space-y-2">
-              <Label>Nomi (Ruscha)</Label>
+              <Label>{t.nameRu}</Label>
               <Input
                 value={fieldForm.label_ru}
                 onChange={(e) => setFieldForm({ ...fieldForm, label_ru: e.target.value })}
-                placeholder="Masalan: Полное имя"
+                placeholder={t.placeholderNameRu}
               />
             </div>
             <div className="space-y-2">
-              <Label>Maydon turi</Label>
+              <Label>{t.fieldType}</Label>
               <Select
                 value={fieldForm.field_type}
                 onValueChange={(value) => setFieldForm({ ...fieldForm, field_type: value })}
@@ -641,16 +647,16 @@ export default function CheckoutFormSettings() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Ikonka</Label>
+              <Label>{t.icon}</Label>
               <Select
                 value={fieldForm.icon || undefined}
                 onValueChange={(value) => setFieldForm({ ...fieldForm, icon: value === '_none' ? '' : value })}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Ikonka tanlang" />
+                  <SelectValue placeholder={t.iconPlaceholder} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="_none">Ikonkasiz</SelectItem>
+                  <SelectItem value="_none">{t.noIcon}</SelectItem>
                   {ICONS.map((icon) => (
                     <SelectItem key={icon.value} value={icon.value}>
                       {icon.label}
@@ -660,14 +666,14 @@ export default function CheckoutFormSettings() {
               </Select>
             </div>
             <div className="flex items-center justify-between">
-              <Label>Majburiy maydon</Label>
+              <Label>{t.requiredField}</Label>
               <Switch
                 checked={fieldForm.is_required}
                 onCheckedChange={(checked) => setFieldForm({ ...fieldForm, is_required: checked })}
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Faol</Label>
+              <Label>{t.active}</Label>
               <Switch
                 checked={fieldForm.is_active}
                 onCheckedChange={(checked) => setFieldForm({ ...fieldForm, is_active: checked })}
@@ -676,10 +682,10 @@ export default function CheckoutFormSettings() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setFieldDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={saveField} disabled={saving}>
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -690,36 +696,36 @@ export default function CheckoutFormSettings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingOption ? 'Variantni tahrirlash' : 'Yangi variant'}
+              {editingOption ? t.editOption : t.newOption}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Nomi (O'zbekcha)</Label>
+              <Label>{t.nameUz}</Label>
               <Input
                 value={optionForm.label_uz}
                 onChange={(e) => setOptionForm({ ...optionForm, label_uz: e.target.value })}
-                placeholder="Masalan: Uy tayyor"
+                placeholder={t.placeholderOptionUz}
               />
             </div>
             <div className="space-y-2">
-              <Label>Nomi (Ruscha)</Label>
+              <Label>{t.nameRu}</Label>
               <Input
                 value={optionForm.label_ru}
                 onChange={(e) => setOptionForm({ ...optionForm, label_ru: e.target.value })}
-                placeholder="Masalan: Дом готов"
+                placeholder={t.placeholderOptionRu}
               />
             </div>
             <div className="space-y-2">
-              <Label>Qiymat (value)</Label>
+              <Label>{t.value}</Label>
               <Input
                 value={optionForm.value}
                 onChange={(e) => setOptionForm({ ...optionForm, value: e.target.value })}
-                placeholder="Masalan: ready"
+                placeholder={t.placeholderValue}
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Faol</Label>
+              <Label>{t.active}</Label>
               <Switch
                 checked={optionForm.is_active}
                 onCheckedChange={(checked) => setOptionForm({ ...optionForm, is_active: checked })}
@@ -728,10 +734,10 @@ export default function CheckoutFormSettings() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOptionDialogOpen(false)}>
-              Bekor qilish
+              {t.cancel}
             </Button>
             <Button onClick={saveOption} disabled={saving}>
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
           </DialogFooter>
         </DialogContent>
