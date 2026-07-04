@@ -85,17 +85,17 @@ export default function SiteContent() {
 
   const formatTime = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    if (seconds < 5) return 'Hozir';
-    if (seconds < 60) return `${seconds} soniya oldin`;
-    return `${Math.floor(seconds / 60)} daqiqa oldin`;
+    if (seconds < 5) return t.timeNow;
+    if (seconds < 60) return t.timeSecondsAgo(seconds);
+    return t.timeMinutesAgo(Math.floor(seconds / 60));
   };
 
   const pages = [
-    { path: '/', label: 'Bosh sahifa' },
-    { path: '/catalog', label: 'Katalog' },
-    { path: '/about', label: 'Biz haqimizda' },
-    { path: '/contact', label: 'Aloqa' },
-    { path: '/faq', label: 'FAQ' },
+    { path: '/', label: t.pageHome },
+    { path: '/catalog', label: t.pageCatalog },
+    { path: '/about', label: t.pageAbout },
+    { path: '/contact', label: t.pageContact },
+    { path: '/faq', label: t.pageFaq },
   ];
 
   // Editor view with iframe
