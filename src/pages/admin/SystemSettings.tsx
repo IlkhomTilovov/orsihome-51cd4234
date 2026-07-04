@@ -466,13 +466,13 @@ export default function SystemSettings() {
         <TabsContent value="contact" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Aloqa ma'lumotlari</CardTitle>
-              <CardDescription>Telefon, manzil va ish vaqti</CardDescription>
+              <CardTitle>{t.contactTitle}</CardTitle>
+              <CardDescription>{t.contactDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Telefon raqam</Label>
+                  <Label>{t.phone}</Label>
                   <Input
                     value={formData.contact_phone || ''}
                     onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
@@ -480,7 +480,7 @@ export default function SystemSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>WhatsApp raqam</Label>
+                  <Label>{t.whatsapp}</Label>
                   <Input
                     value={formData.whatsapp_number || ''}
                     onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
@@ -491,26 +491,26 @@ export default function SystemSettings() {
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Ish vaqti (UZ)</Label>
+                  <Label>{t.workingHoursUz}</Label>
                   <Input
                     value={formData.working_hours_uz || ''}
                     onChange={(e) => setFormData({ ...formData, working_hours_uz: e.target.value })}
-                    placeholder="Du-Ju: 9:00 - 18:00"
+                    placeholder={t.workingHoursUzPlaceholder}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Ish vaqti (RU)</Label>
+                  <Label>{t.workingHoursRu}</Label>
                   <Input
                     value={formData.working_hours_ru || ''}
                     onChange={(e) => setFormData({ ...formData, working_hours_ru: e.target.value })}
-                    placeholder="Пн-Пт: 9:00 - 18:00"
+                    placeholder={t.workingHoursRuPlaceholder}
                   />
                 </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Manzil (UZ)</Label>
+                  <Label>{t.addressUz}</Label>
                   <Textarea
                     value={formData.address_uz || ''}
                     onChange={(e) => setFormData({ ...formData, address_uz: e.target.value })}
@@ -518,7 +518,7 @@ export default function SystemSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Manzil (RU)</Label>
+                  <Label>{t.addressRu}</Label>
                   <Textarea
                     value={formData.address_ru || ''}
                     onChange={(e) => setFormData({ ...formData, address_ru: e.target.value })}
