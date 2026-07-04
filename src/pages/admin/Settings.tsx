@@ -8,17 +8,19 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminT } from '@/hooks/useAdminT';
 
 function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; defaultButton: string }) {
+  const t = useAdminT().settings;
   const { toast } = useToast();
-  const [text, setText] = useState("🛍 Bizning do'kon katalogi quyidagi tugma orqali ochiladi:");
-  const [buttonText, setButtonText] = useState(defaultButton || 'Katalog');
+  const [text, setText] = useState<string>(t.defaultChannelMessage);
+  const [buttonText, setButtonText] = useState<string>(defaultButton || t.catalog);
   const [pin, setPin] = useState(true);
   const [sending, setSending] = useState(false);
 
   const send = async () => {
     if (!webappUrl || !/^https:\/\/.+/i.test(webappUrl)) {
-      toast({ title: 'Xatolik', description: 'Avval Web App URL ni saqlang', variant: 'destructive' });
+      toast({ title: t.errorTitle, description: t.saveUrlFirst, variant: 'destructive' });
       return;
     }
     setSending(true);
@@ -33,15 +35,15 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
         },
       });
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Yuborishda xatolik');
+      if (!data?.success) throw new Error(data?.error || t.sendError);
       toast({
-        title: 'Yuborildi',
+        title: t.sent,
         description: pin
-          ? (data.pinned ? 'Xabar kanalga yuborildi va pin qilindi' : 'Xabar yuborildi, lekin pin qilib bo\'lmadi (bot admin huquqlarini tekshiring)')
-          : 'Xabar kanalga yuborildi',
+          ? (data.pinned ? t.sentAndPinned : t.sentNotPinned)
+          : t.sentToChannel,
       });
     } catch (err: any) {
-      toast({ title: 'Xatolik', description: err.message || 'Yuborishda xatolik', variant: 'destructive' });
+      toast({ title: t.errorTitle, description: err.message || t.sendError, variant: 'destructive' });
     } finally {
       setSending(false);
     }
@@ -50,24 +52,21 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Pin className="h-5 w-5" /> Kanalga "Katalog" tugmali xabar</CardTitle>
-        <CardDescription>
-          Kanal yoki guruhga ichida bosiladigan "Katalog" tugmasi bilan xabar yuboring va avtomatik pin qiling.
-          Bot kanalda admin bo'lishi va "Post messages" + "Pin messages" huquqlariga ega bo'lishi kerak.
-        </CardDescription>
+        <CardTitle className="flex items-center gap-2"><Pin className="h-5 w-5" /> {t.channelPostTitle}</CardTitle>
+        <CardDescription>{t.channelPostDesc}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Xabar matni</Label>
+          <Label>{t.messageText}</Label>
           <Textarea rows={3} value={text} onChange={(e) => setText(e.target.value)} />
         </div>
         <div className="grid sm:grid-cols-2 gap-3">
           <div className="space-y-2">
-            <Label>Tugma matni</Label>
+            <Label>{t.buttonText}</Label>
             <Input maxLength={32} value={buttonText} onChange={(e) => setButtonText(e.target.value)} />
           </div>
           <div className="flex items-center justify-between rounded-md border border-border px-3">
-            <Label htmlFor="pin-switch">Avtomatik pin qilish</Label>
+            <Label htmlFor="pin-switch">{t.autoPin}</Label>
             <Switch id="pin-switch" checked={pin} onCheckedChange={setPin} />
           </div>
         </div>
@@ -77,7 +76,7 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
           ) : (
             <Send className="mr-2 h-4 w-4" />
           )}
-          Kanalga yuborish
+          {t.sendToChannel}
         </Button>
       </CardContent>
     </Card>
@@ -97,6 +96,7 @@ interface WebAppSettings {
 }
 
 export default function Settings() {
+  const t = useAdminT().settings;
   const [telegram, setTelegram] = useState<TelegramSettings>({
     bot_token: '',
     chat_id: '',
@@ -104,7 +104,7 @@ export default function Settings() {
   });
   const [webapp, setWebapp] = useState<WebAppSettings>({
     url: typeof window !== 'undefined' ? window.location.origin : '',
-    button_text: "Do'konni ochish",
+    button_text: t.openShopBtn,
   });
   const [savingWebapp, setSavingWebapp] = useState(false);
   const [connectingBot, setConnectingBot] = useState(false);
@@ -151,23 +151,13 @@ export default function Settings() {
   };
 
   const saveTelegramSettings = async () => {
-    // Validate bot token format
     if (telegram.bot_token && !/^\d+:[A-Za-z0-9_-]+$/.test(telegram.bot_token)) {
-      toast({
-        title: 'Xatolik',
-        description: 'Bot token formati noto\'g\'ri. Format: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: t.invalidToken, variant: 'destructive' });
       return;
     }
 
-    // Validate chat ID format
     if (telegram.chat_id && !/^-?\d+$/.test(telegram.chat_id)) {
-      toast({
-        title: 'Xatolik',
-        description: 'Chat ID faqat raqamlardan iborat bo\'lishi kerak',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: t.invalidChatId, variant: 'destructive' });
       return;
     }
 
@@ -180,7 +170,6 @@ export default function Settings() {
       ];
 
       for (const update of updates) {
-        // Try to update first
         const { data: existing } = await supabase
           .from('settings')
           .select('id')
@@ -188,14 +177,12 @@ export default function Settings() {
           .single();
 
         if (existing) {
-          // Update existing
           const { error } = await supabase
             .from('settings')
             .update({ value: update.value, updated_at: new Date().toISOString() })
             .eq('key', update.key);
           if (error) throw error;
         } else {
-          // Insert new
           const { error } = await supabase
             .from('settings')
             .insert({ key: update.key, value: update.value });
@@ -203,17 +190,10 @@ export default function Settings() {
         }
       }
 
-      toast({
-        title: 'Muvaffaqiyat',
-        description: 'Telegram sozlamalari saqlandi',
-      });
+      toast({ title: t.successTitle, description: t.settingsSaved });
     } catch (error) {
       console.error('Error saving settings:', error);
-      toast({
-        title: 'Xatolik',
-        description: 'Sozlamalarni saqlashda xatolik',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: t.settingsSaveError, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -221,31 +201,21 @@ export default function Settings() {
 
   const testTelegramConnection = async () => {
     if (!telegram.bot_token || !telegram.chat_id) {
-      toast({
-        title: 'Xatolik',
-        description: 'Bot token va Chat ID kiriting',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: t.enterTokenAndChat, variant: 'destructive' });
       return;
     }
 
     if (!telegram.enabled) {
-      toast({
-        title: 'Xatolik',
-        description: 'Avval "Telegram xabarlarini yoqish" tugmasini yoqing',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: t.enableFirst, variant: 'destructive' });
       return;
     }
 
-    // First save settings to make sure they're in the database
     await saveTelegramSettings();
 
     setTesting(true);
     setTestResult(null);
 
     try {
-      // Call server-side edge function (keeps bot token secure)
       const { data, error } = await supabase.functions.invoke('send-telegram', {
         body: { type: 'test' },
       });
@@ -254,20 +224,13 @@ export default function Settings() {
 
       if (data?.success) {
         setTestResult('success');
-        toast({
-          title: 'Muvaffaqiyat',
-          description: 'Telegram ulanishi muvaffaqiyatli!',
-        });
+        toast({ title: t.successTitle, description: t.testSuccess });
       } else {
-        throw new Error(data?.error || 'Telegram xabar yuborishda xatolik');
+        throw new Error(data?.error || t.testError);
       }
     } catch (error: any) {
       setTestResult('error');
-      toast({
-        title: 'Xatolik',
-        description: error.message || 'Telegram ulanishida xatolik',
-        variant: 'destructive',
-      });
+      toast({ title: t.errorTitle, description: error.message || t.testError, variant: 'destructive' });
     } finally {
       setTesting(false);
     }
@@ -293,20 +256,19 @@ export default function Settings() {
 
   const saveAndConnectWebApp = async () => {
     if (!telegram.bot_token) {
-      toast({ title: 'Xatolik', description: 'Avval Bot Token kiriting va saqlang', variant: 'destructive' });
+      toast({ title: t.errorTitle, description: t.saveTokenFirst, variant: 'destructive' });
       return;
     }
     const url = webapp.url.trim();
     if (!/^https:\/\/.+/i.test(url)) {
-      toast({ title: 'Xatolik', description: 'Web App URL HTTPS bilan boshlanishi kerak', variant: 'destructive' });
+      toast({ title: t.errorTitle, description: t.urlMustBeHttps, variant: 'destructive' });
       return;
     }
     setSavingWebapp(true);
     setConnectingBot(true);
     try {
       await upsertSetting('telegram_webapp_url', url);
-      await upsertSetting('telegram_webapp_button', webapp.button_text || "Do'konni ochish");
-      // Make sure bot token is in DB
+      await upsertSetting('telegram_webapp_button', webapp.button_text || t.openShopBtn);
       await upsertSetting('telegram_bot_token', telegram.bot_token);
 
       const { data, error } = await supabase.functions.invoke('send-telegram', {
@@ -317,15 +279,12 @@ export default function Settings() {
         },
       });
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || 'Botga ulashda xatolik');
+      if (!data?.success) throw new Error(data?.error || t.connectError);
 
       setBotInfo({ username: data.bot?.username });
-      toast({
-        title: 'Muvaffaqiyat',
-        description: `Web App botga ulandi: @${data.bot?.username || 'bot'}`,
-      });
+      toast({ title: t.successTitle, description: t.webappConnected(data.bot?.username || 'bot') });
     } catch (err: any) {
-      toast({ title: 'Xatolik', description: err.message || 'Ulanishda xatolik', variant: 'destructive' });
+      toast({ title: t.errorTitle, description: err.message || t.connectError, variant: 'destructive' });
     } finally {
       setSavingWebapp(false);
       setConnectingBot(false);
@@ -344,8 +303,8 @@ export default function Settings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Sozlamalar</h1>
-        <p className="text-muted-foreground">Tizim sozlamalarini boshqaring</p>
+        <h1 className="text-2xl font-bold">{t.title}</h1>
+        <p className="text-muted-foreground">{t.subtitle}</p>
       </div>
 
       {/* Telegram Settings */}
@@ -355,15 +314,13 @@ export default function Settings() {
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
             </svg>
-            Telegram Bot
+            {t.telegramBot}
           </CardTitle>
-          <CardDescription>
-            Yangi buyurtmalar haqida Telegram orqali xabar olish uchun botni sozlang
-          </CardDescription>
+          <CardDescription>{t.telegramBotDesc}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label htmlFor="telegram-enabled">Telegram xabarlarini yoqish</Label>
+            <Label htmlFor="telegram-enabled">{t.enableTelegram}</Label>
             <Switch
               id="telegram-enabled"
               checked={telegram.enabled}
@@ -372,7 +329,7 @@ export default function Settings() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bot-token">Bot Token</Label>
+            <Label htmlFor="bot-token">{t.botToken}</Label>
             <Input
               id="bot-token"
               type="password"
@@ -380,28 +337,24 @@ export default function Settings() {
               value={telegram.bot_token}
               onChange={(e) => setTelegram(prev => ({ ...prev, bot_token: e.target.value }))}
             />
-            <p className="text-xs text-muted-foreground">
-              @BotFather dan olingan bot token
-            </p>
+            <p className="text-xs text-muted-foreground">{t.botTokenHint}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="chat-id">Chat ID</Label>
+            <Label htmlFor="chat-id">{t.chatId}</Label>
             <Input
               id="chat-id"
               placeholder="-1001234567890"
               value={telegram.chat_id}
               onChange={(e) => setTelegram(prev => ({ ...prev, chat_id: e.target.value }))}
             />
-            <p className="text-xs text-muted-foreground">
-              Guruh yoki kanal ID (minus bilan boshlanadi)
-            </p>
+            <p className="text-xs text-muted-foreground">{t.chatIdHint}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button onClick={saveTelegramSettings} disabled={saving}>
               <Save className="mr-2 h-4 w-4" />
-              {saving ? 'Saqlanmoqda...' : 'Saqlash'}
+              {saving ? t.saving : t.save}
             </Button>
             <Button 
               variant="outline" 
@@ -417,7 +370,7 @@ export default function Settings() {
               ) : (
                 <Send className="mr-2 h-4 w-4" />
               )}
-              Test xabar yuborish
+              {t.testMessage}
             </Button>
           </div>
         </CardContent>
@@ -426,14 +379,12 @@ export default function Settings() {
       {/* Telegram Web App */}
       <Card>
         <CardHeader>
-          <CardTitle>Telegram Web App</CardTitle>
-          <CardDescription>
-            Saytni botga Web App sifatida ulang. Foydalanuvchilar bot menyusidagi tugma orqali do'koningizni ochadi.
-          </CardDescription>
+          <CardTitle>{t.webAppTitle}</CardTitle>
+          <CardDescription>{t.webAppDesc}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="webapp-url">Web App URL (HTTPS)</Label>
+            <Label htmlFor="webapp-url">{t.webAppUrl}</Label>
             <Input
               id="webapp-url"
               placeholder="https://sizning-saytingiz.uz"
@@ -441,15 +392,15 @@ export default function Settings() {
               onChange={(e) => setWebapp((p) => ({ ...p, url: e.target.value }))}
             />
             <p className="text-xs text-muted-foreground">
-              Tavsiya: {typeof window !== 'undefined' ? window.location.origin : ''}
+              {t.webAppUrlHint}: {typeof window !== 'undefined' ? window.location.origin : ''}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="webapp-button">Tugma matni</Label>
+            <Label htmlFor="webapp-button">{t.buttonText}</Label>
             <Input
               id="webapp-button"
-              placeholder="Do'konni ochish"
+              placeholder={t.openShopBtn}
               maxLength={32}
               value={webapp.button_text}
               onChange={(e) => setWebapp((p) => ({ ...p, button_text: e.target.value }))}
@@ -458,7 +409,7 @@ export default function Settings() {
 
           {botInfo?.username && (
             <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
-              ✅ Bot: <a className="font-medium underline" href={`https://t.me/${botInfo.username}`} target="_blank" rel="noreferrer">@{botInfo.username}</a> — menyu tugmasi sozlandi
+              ✅ Bot: <a className="font-medium underline" href={`https://t.me/${botInfo.username}`} target="_blank" rel="noreferrer">@{botInfo.username}</a> — {t.botConnected}
             </div>
           )}
 
@@ -469,8 +420,7 @@ export default function Settings() {
               ) : (
                 <Send className="mr-2 h-4 w-4" />
               )}
-              Saqlash va botga ulash
-              Saqlash va botga ulash
+              {t.saveAndConnect}
             </Button>
           </div>
         </CardContent>
@@ -479,33 +429,27 @@ export default function Settings() {
       {/* Post Catalog button to channel */}
       <ChannelCatalogPost
         webappUrl={webapp.url}
-        defaultButton={webapp.button_text || 'Katalog'}
+        defaultButton={webapp.button_text || t.catalog}
       />
 
 
       {/* How to Setup Guide */}
       <Card>
         <CardHeader>
-          <CardTitle>Telegram Bot sozlash yo'riqnomasi</CardTitle>
+          <CardTitle>{t.guideTitle}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <h4 className="font-medium">1. Bot yaratish</h4>
-            <p className="text-sm text-muted-foreground">
-              Telegram da @BotFather ga yozing va /newbot buyrug'ini yuboring. Bot nomini va username kiriting.
-            </p>
+            <h4 className="font-medium">1. {t.step1}</h4>
+            <p className="text-sm text-muted-foreground">{t.step1Desc}</p>
           </div>
           <div className="space-y-2">
-            <h4 className="font-medium">2. Token olish</h4>
-            <p className="text-sm text-muted-foreground">
-              BotFather sizga HTTP API token beradi. Uni yuqoridagi "Bot Token" maydoniga kiriting.
-            </p>
+            <h4 className="font-medium">2. {t.step2}</h4>
+            <p className="text-sm text-muted-foreground">{t.step2Desc}</p>
           </div>
           <div className="space-y-2">
-            <h4 className="font-medium">3. Chat ID olish</h4>
-            <p className="text-sm text-muted-foreground">
-              Botni guruhga qo'shing va @getidsbot yoki @userinfobot dan guruh ID sini oling.
-            </p>
+            <h4 className="font-medium">3. {t.step3}</h4>
+            <p className="text-sm text-muted-foreground">{t.step3Desc}</p>
           </div>
         </CardContent>
       </Card>
