@@ -348,45 +348,46 @@ export default function SystemSettings() {
         <TabsContent value="general" className="space-y-4 mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Umumiy sozlamalar</CardTitle>
-              <CardDescription>Saytning asosiy ma'lumotlari</CardDescription>
+              <CardTitle>{t.generalTitle}</CardTitle>
+              <CardDescription>{t.generalDesc}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Site Name */}
               <div className="space-y-2">
-                <Label>Sayt nomi</Label>
+                <Label>{t.siteName}</Label>
                 <Input
                   value={formData.site_name}
                   onChange={(e) => setFormData({ ...formData, site_name: e.target.value })}
                   placeholder="Mebel Store"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Bu nom header, footer, SEO va brauzer sarlavhasida ishlatiladi
+                  {t.siteNameHint}
                 </p>
               </div>
 
               {/* Short Description */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (UZ)</Label>
+                  <Label>{t.shortDescUz}</Label>
                   <Textarea
                     value={formData.short_description_uz || ''}
                     onChange={(e) => setFormData({ ...formData, short_description_uz: e.target.value })}
-                    placeholder="Kompaniya haqida qisqacha..."
+                    placeholder={t.shortDescUzPlaceholder}
                     rows={2}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (RU)</Label>
+                  <Label>{t.shortDescRu}</Label>
                   <Textarea
                     value={formData.short_description_ru || ''}
                     onChange={(e) => setFormData({ ...formData, short_description_ru: e.target.value })}
-                    placeholder="Краткое описание компании..."
+                    placeholder={t.shortDescRuPlaceholder}
                     rows={2}
                   />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">Bu tavsif footerda ko'rinadi</p>
+              <p className="text-xs text-muted-foreground">{t.shortDescHint}</p>
+
 
               {/* Logo Upload */}
               <div className="space-y-3">
