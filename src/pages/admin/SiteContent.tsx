@@ -359,30 +359,29 @@ export default function SiteContent() {
                 <Eye className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <CardTitle>Ko'rish rejimi</CardTitle>
-                <CardDescription>Saytni mehmonlar ko'rinishida ko'ring</CardDescription>
+                <CardTitle>{t.viewMode}</CardTitle>
+                <CardDescription>{t.viewModeDesc}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              "Ko'rish rejimi"ga o'tib, sayt mehmonlar uchun qanday ko'rinishda ekanligini 
-              tekshiring. Bu rejimda tahrirlash imkoniyati yo'q.
+              {t.viewModeLong}
             </p>
             <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-medium text-sm mb-2">Tahrirlanadigan sahifalar:</h4>
+              <h4 className="font-medium text-sm mb-2">{t.editablePages}</h4>
               <div className="flex flex-wrap gap-2">
-                <span className="px-2 py-1 bg-background rounded text-xs">Bosh sahifa</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Katalog</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Biz haqimizda</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">Aloqa</span>
-                <span className="px-2 py-1 bg-background rounded text-xs">FAQ</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageHome}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageCatalog}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageAbout}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageContact}</span>
+                <span className="px-2 py-1 bg-background rounded text-xs">{t.pageFaq}</span>
               </div>
             </div>
             <Button variant="outline" asChild className="w-full">
               <Link to="/">
                 <Eye className="mr-2 h-4 w-4" />
-                Saytni ko'rish
+                {t.viewSite}
               </Link>
             </Button>
           </CardContent>
