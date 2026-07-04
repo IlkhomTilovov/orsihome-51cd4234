@@ -416,9 +416,9 @@ export default function SystemSettings() {
                   <input ref={logoInputRef} type="file" accept=".svg,.png,.jpg,.jpeg" onChange={handleLogoUpload} className="hidden" id="logo-upload" />
                   <Button variant="outline" onClick={() => logoInputRef.current?.click()} disabled={uploadingLogo}>
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploadingLogo ? 'Yuklanmoqda...' : 'Logo yuklash'}
+                    {uploadingLogo ? t.uploading : t.uploadLogo}
                   </Button>
-                  <span className="text-xs text-muted-foreground">SVG, PNG, JPG (max 2MB)</span>
+                  <span className="text-xs text-muted-foreground">{t.logoFormats}</span>
                 </div>
               </div>
 
