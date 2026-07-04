@@ -13,8 +13,8 @@ import { useAdminT } from '@/hooks/useAdminT';
 function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; defaultButton: string }) {
   const t = useAdminT().settings;
   const { toast } = useToast();
-  const [text, setText] = useState(t.defaultChannelMessage);
-  const [buttonText, setButtonText] = useState(defaultButton || t.catalog);
+  const [text, setText] = useState<string>(t.defaultChannelMessage);
+  const [buttonText, setButtonText] = useState<string>(defaultButton || t.catalog);
   const [pin, setPin] = useState(true);
   const [sending, setSending] = useState(false);
 
