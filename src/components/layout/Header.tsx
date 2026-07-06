@@ -9,7 +9,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useCategories, useProducts } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
 import { LazyImage } from '@/components/LazyImage';
-import logoAsset from '@/assets/orsi-logo.png.asset.json';
+import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
