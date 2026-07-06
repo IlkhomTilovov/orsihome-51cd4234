@@ -6,6 +6,7 @@ import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import logoAsset from '@/assets/orsi-logo.png.asset.json';
 
 export function Footer() {
   const { language } = useLanguage();
@@ -43,9 +44,11 @@ export function Footer() {
             <div className="md:col-span-5 flex flex-col space-y-6">
               <div className="space-y-3">
                 <Link to="/" className="inline-block">
-                  <h2 className="font-serif text-3xl tracking-tight text-foreground uppercase">
-                    ORSI<span className="text-primary"> HOME</span>
-                  </h2>
+                  <img
+                    src={logoAsset.url}
+                    alt="ORSI HOME"
+                    className="h-10 md:h-12 w-auto object-contain"
+                  />
                 </Link>
                 <EditableText
                   contentKey="footer_description"
