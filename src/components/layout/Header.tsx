@@ -9,6 +9,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useCategories, useProducts } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
 import { LazyImage } from '@/components/LazyImage';
+import logoAsset from '@/assets/orsi-logo.png.asset.json';
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,9 +78,11 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider text-foreground">
-              ORSI<span className="text-primary"> HOME</span>
-            </span>
+            <img
+              src={logoAsset.url}
+              alt="ORSI HOME"
+              className="h-8 md:h-10 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav */}
