@@ -6,7 +6,7 @@ export const translations = {
     nav: {
       home: "Bosh sahifa",
       catalog: "Katalog",
-      about: "Biz haqimizda",
+      about: "Biz xaqimizda",
       contact: "Aloqa",
       faq: "FAQ",
       cart: "Savat",
@@ -103,7 +103,7 @@ export const translations = {
     },
     // About
     about: {
-      title: "Biz haqimizda",
+      title: "Biz xaqimizda",
       story: "Bizning tarix",
       storyText: "Sifatli va mustahkam kiyim quritish sushilkalari savdosi bilan shug'ullanamiz. Mijozlarimizga qulay va ishonchli mahsulotlarni taklif qilamiz.",
       mission: "Missiyamiz",

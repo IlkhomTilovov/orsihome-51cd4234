@@ -30,7 +30,7 @@ export function Footer() {
   const navLinks = [
     { to: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
     { to: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
-    { to: '/about', label: language === 'ru' ? 'Портфолио' : 'Portfolio' },
+    { to: '/about', label: language === 'ru' ? 'Портфолио' : 'Biz xaqimizda' },
     { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
