@@ -6,7 +6,7 @@ import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import logoAsset from '@/assets/orsi-logo.png.asset.json';
+import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
 export function Footer() {
   const { language } = useLanguage();
