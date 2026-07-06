@@ -9,7 +9,7 @@ const items = [
   { to: '/catalog', icon: Search, label: 'Katalog' },
   { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
   { to: '/contact', icon: Heart, label: 'Aloqa' },
-  { to: '/about', icon: User, label: 'Biz haqimizda' },
+  { to: '/about', icon: User, label: 'Biz xaqimizda' },
 ];
 
 export function TelegramBottomNav() {
