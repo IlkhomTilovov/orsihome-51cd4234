@@ -207,27 +207,15 @@ Deno.serve(async (req) => {
       const buttonText = (body.webapp_button_text || 'Katalog').trim().slice(0, 32) || 'Katalog';
       const text = (body.post_text || '🛍 Bizning do\'kon katalogi quyidagi tugma orqali ochiladi:').trim();
 
-      // Channels don't support `web_app` inline buttons. To open the Mini App
-      // INSIDE Telegram (not browser), we route through the bot's t.me deep link.
-      // Requires the bot to have a Direct Link Mini App configured in BotFather
-      // (BotFather → /myapps → New App, short name e.g. "shop").
-      const me = await tgApi(settings.bot_token, 'getMe', {});
-      const botUsername = me.result?.username;
-      if (!botUsername) {
-        return new Response(
-          JSON.stringify({ success: false, error: 'Bot username topilmadi' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      const appShortName = (Deno.env.get('TELEGRAM_APP_SHORT_NAME') || 'catalog').trim();
-      const deepLink = `https://t.me/${botUsername}/${appShortName}`;
-
+      // Channels don't support `web_app` inline buttons directly.
+      // Use a plain URL button pointing to the site. When opened inside Telegram,
+      // the bot's configured menu button (setup_webapp) will offer to open as Mini App.
       const sent = await tgApi(settings.bot_token, 'sendMessage', {
         chat_id: settings.chat_id,
         text,
         link_preview_options: { is_disabled: true },
         reply_markup: {
-          inline_keyboard: [[{ text: buttonText, url: deepLink }]],
+          inline_keyboard: [[{ text: buttonText, url }]],
         },
       });
 
