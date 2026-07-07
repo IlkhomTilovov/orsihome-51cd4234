@@ -189,12 +189,6 @@ Deno.serve(async (req) => {
 
       const me = await tgApi(settings.bot_token, 'getMe', {});
 
-      if (shortName) {
-        await supabase
-          .from('settings')
-          .upsert({ key: 'telegram_webapp_short_name', value: shortName }, { onConflict: 'key' });
-      }
-
       return new Response(
         JSON.stringify({ success: true, bot: me.result, webapp_url: url, webapp_short_name: shortName }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -229,9 +223,13 @@ Deno.serve(async (req) => {
 
       const me = await tgApi(settings.bot_token, 'getMe', {});
       const shortName = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
-      const buttonUrl = shortName && me.result?.username
-        ? `https://t.me/${me.result.username}/${shortName}`
-        : url;
+      if (!shortName) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const buttonUrl = `https://t.me/${me.result.username}/${shortName}`;
 
       // Channels don't support `web_app` inline buttons directly. To open the Mini App
       // from a channel button, Telegram requires a BotFather Direct Link short name.

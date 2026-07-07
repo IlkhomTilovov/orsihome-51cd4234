@@ -23,6 +23,10 @@ function ChannelCatalogPost({ webappUrl, defaultButton, shortName }: { webappUrl
       toast({ title: t.errorTitle, description: t.saveUrlFirst, variant: 'destructive' });
       return;
     }
+    if (!shortName.trim()) {
+      toast({ title: t.errorTitle, description: t.saveShortNameFirst, variant: 'destructive' });
+      return;
+    }
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-telegram', {
