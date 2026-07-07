@@ -111,8 +111,9 @@ export default function Settings() {
   const [webapp, setWebapp] = useState<WebAppSettings>({
     url: typeof window !== 'undefined' ? window.location.origin : '',
     button_text: t.openShopBtn,
-    short_name: '',
+    short_name: 't.me/orsihomebot/katalog',
   });
+
   const [savingWebapp, setSavingWebapp] = useState(false);
   const [connectingBot, setConnectingBot] = useState(false);
   const [botInfo, setBotInfo] = useState<{ username?: string } | null>(null);
