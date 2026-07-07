@@ -10,7 +10,7 @@ export default function ThankYou() {
   const { settings } = useSystemSettings();
   const orderNumber = location.state?.orderNumber;
 
-  const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
+  const contactPhone = settings?.contact_phone || '';
 
   return (
     <div id="hero" className="min-h-screen flex items-center justify-center py-12 px-4">

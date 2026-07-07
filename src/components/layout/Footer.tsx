@@ -24,7 +24,7 @@ export function Footer() {
     },
   });
 
-  const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
+  const contactPhone = settings?.contact_phone || '';
   const address = getAddress(language);
   const workingHours = getWorkingHours(language);
 
