@@ -9,6 +9,7 @@ interface TelegramRequest {
   type: 'test' | 'order' | 'setup_webapp' | 'post_channel_button';
   webapp_url?: string;
   webapp_button_text?: string;
+  webapp_short_name?: string;
   post_text?: string;
   pin?: boolean;
   order_data?: {
@@ -44,7 +45,7 @@ async function getTelegramSettings(supabase: any) {
   const { data, error } = await supabase
     .from('settings')
     .select('key, value')
-    .in('key', ['telegram_bot_token', 'telegram_chat_id', 'telegram_enabled']);
+    .in('key', ['telegram_bot_token', 'telegram_chat_id', 'telegram_enabled', 'telegram_webapp_short_name']);
 
   if (error) {
     console.error('Error fetching telegram settings:', error);
@@ -60,7 +61,19 @@ async function getTelegramSettings(supabase: any) {
     bot_token: settings['telegram_bot_token'] || '',
     chat_id: settings['telegram_chat_id'] || '',
     enabled: settings['telegram_enabled'] === 'true',
+    webapp_short_name: settings['telegram_webapp_short_name'] || '',
   };
+}
+
+function normalizeShortName(value?: string) {
+  return (value || '')
+    .trim()
+    .replace(/^@?https?:\/\/t\.me\/[^/]+\//i, '')
+    .replace(/^@?t\.me\/[^/]+\//i, '')
+    .replace(/^\/+|\/+$/g, '')
+    .split(/[?#]/)[0]
+    .replace(/[^A-Za-z0-9_]/g, '')
+    .slice(0, 64);
 }
 
 
@@ -145,6 +158,7 @@ Deno.serve(async (req) => {
         );
       }
       const buttonText = body.webapp_button_text?.trim() || 'Do\'konni ochish';
+      const shortName = normalizeShortName(body.webapp_short_name);
 
       // Step 1: Reset old menu button (removes any previously linked Web App)
       try {
@@ -176,7 +190,7 @@ Deno.serve(async (req) => {
       const me = await tgApi(settings.bot_token, 'getMe', {});
 
       return new Response(
-        JSON.stringify({ success: true, bot: me.result, webapp_url: url }),
+        JSON.stringify({ success: true, bot: me.result, webapp_url: url, webapp_short_name: shortName }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -207,15 +221,24 @@ Deno.serve(async (req) => {
       const buttonText = (body.webapp_button_text || 'Katalog').trim().slice(0, 32) || 'Katalog';
       const text = (body.post_text || '🛍 Bizning do\'kon katalogi quyidagi tugma orqali ochiladi:').trim();
 
-      // Channels don't support `web_app` inline buttons directly.
-      // Use a plain URL button pointing to the site. When opened inside Telegram,
-      // the bot's configured menu button (setup_webapp) will offer to open as Mini App.
+      const me = await tgApi(settings.bot_token, 'getMe', {});
+      const shortName = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
+      if (!shortName) {
+        return new Response(
+          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting.' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      const buttonUrl = `https://t.me/${me.result.username}/${shortName}`;
+
+      // Channels don't support `web_app` inline buttons directly. To open the Mini App
+      // from a channel button, Telegram requires a BotFather Direct Link short name.
       const sent = await tgApi(settings.bot_token, 'sendMessage', {
         chat_id: settings.chat_id,
         text,
         link_preview_options: { is_disabled: true },
         reply_markup: {
-          inline_keyboard: [[{ text: buttonText, url }]],
+          inline_keyboard: [[{ text: buttonText, url: buttonUrl }]],
         },
       });
 

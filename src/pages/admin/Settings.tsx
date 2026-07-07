@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAdminT } from '@/hooks/useAdminT';
 
-function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; defaultButton: string }) {
+function ChannelCatalogPost({ webappUrl, defaultButton, shortName }: { webappUrl: string; defaultButton: string; shortName: string }) {
   const t = useAdminT().settings;
   const { toast } = useToast();
   const [text, setText] = useState<string>(t.defaultChannelMessage);
@@ -23,6 +23,10 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
       toast({ title: t.errorTitle, description: t.saveUrlFirst, variant: 'destructive' });
       return;
     }
+    if (!shortName.trim()) {
+      toast({ title: t.errorTitle, description: t.saveShortNameFirst, variant: 'destructive' });
+      return;
+    }
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke('send-telegram', {
@@ -30,6 +34,7 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
           type: 'post_channel_button',
           webapp_url: webappUrl,
           webapp_button_text: buttonText,
+          webapp_short_name: shortName,
           post_text: text,
           pin,
         },
@@ -93,6 +98,7 @@ interface TelegramSettings {
 interface WebAppSettings {
   url: string;
   button_text: string;
+  short_name: string;
 }
 
 export default function Settings() {
@@ -105,6 +111,7 @@ export default function Settings() {
   const [webapp, setWebapp] = useState<WebAppSettings>({
     url: typeof window !== 'undefined' ? window.location.origin : '',
     button_text: t.openShopBtn,
+    short_name: '',
   });
   const [savingWebapp, setSavingWebapp] = useState(false);
   const [connectingBot, setConnectingBot] = useState(false);
@@ -141,6 +148,7 @@ export default function Settings() {
       setWebapp((prev) => ({
         url: settings['telegram_webapp_url'] || prev.url,
         button_text: settings['telegram_webapp_button'] || prev.button_text,
+        short_name: settings['telegram_webapp_short_name'] || prev.short_name,
       }));
 
     } catch (error) {
@@ -269,6 +277,7 @@ export default function Settings() {
     try {
       await upsertSetting('telegram_webapp_url', url);
       await upsertSetting('telegram_webapp_button', webapp.button_text || t.openShopBtn);
+      await upsertSetting('telegram_webapp_short_name', webapp.short_name.trim());
       await upsertSetting('telegram_bot_token', telegram.bot_token);
 
       const { data, error } = await supabase.functions.invoke('send-telegram', {
@@ -276,6 +285,7 @@ export default function Settings() {
           type: 'setup_webapp',
           webapp_url: url,
           webapp_button_text: webapp.button_text,
+          webapp_short_name: webapp.short_name,
         },
       });
       if (error) throw error;
@@ -407,6 +417,17 @@ export default function Settings() {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="webapp-short-name">{t.webAppShortName}</Label>
+            <Input
+              id="webapp-short-name"
+              placeholder="catalog"
+              value={webapp.short_name}
+              onChange={(e) => setWebapp((p) => ({ ...p, short_name: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">{t.webAppShortNameHint}</p>
+          </div>
+
           {botInfo?.username && (
             <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
               ✅ Bot: <a className="font-medium underline" href={`https://t.me/${botInfo.username}`} target="_blank" rel="noreferrer">@{botInfo.username}</a> — {t.botConnected}
@@ -430,6 +451,7 @@ export default function Settings() {
       <ChannelCatalogPost
         webappUrl={webapp.url}
         defaultButton={webapp.button_text || t.catalog}
+        shortName={webapp.short_name}
       />
 
 
