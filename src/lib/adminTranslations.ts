@@ -676,7 +676,9 @@ export const adminTranslations = {
       webAppUrlHint: 'Tavsiya',
       buttonText: 'Tugma matni',
       webAppShortName: 'Direct Link short name',
+      webAppShortNamePlaceholder: "catalog yoki t.me/orsihomebot/katalog",
       webAppShortNameHint: "BotFather → /myapps orqali yaratilgan Mini App short name. Masalan: catalog. Yoki to'liq link: t.me/orsihomebot/katalog. Shu bo'lmasa kanal tugmasi Mini App emas, oddiy sayt linki bo'lib ochiladi.",
+
 
       openShopBtn: "Do'konni ochish",
       botConnected: 'menyu tugmasi sozlandi',
