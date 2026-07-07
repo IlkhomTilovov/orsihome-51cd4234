@@ -1470,7 +1470,8 @@ export const adminTranslations = {
       webAppUrlHint: 'Рекомендуется',
       buttonText: 'Текст кнопки',
       webAppShortName: 'Direct Link short name',
-      webAppShortNameHint: 'Short name Mini App из BotFather → /myapps. Например: catalog. Без него кнопка в канале откроется как обычная ссылка, не как Mini App.',
+      webAppShortNameHint: 'Short name Mini App из BotFather → /myapps. Например: catalog. Или полная ссылка: t.me/orsihomebot/katalog. Без него кнопка в канале откроется как обычная ссылка, не как Mini App.',
+
       openShopBtn: 'Открыть магазин',
       botConnected: 'кнопка меню настроена',
       saveAndConnect: 'Сохранить и подключить к боту',
