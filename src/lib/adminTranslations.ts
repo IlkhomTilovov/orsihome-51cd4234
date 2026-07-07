@@ -676,7 +676,10 @@ export const adminTranslations = {
       webAppUrlHint: 'Tavsiya',
       buttonText: 'Tugma matni',
       webAppShortName: 'Direct Link short name',
-      webAppShortNameHint: 'BotFather → /myapps orqali yaratilgan Mini App short name. Masalan: catalog. Shu bo‘lmasa kanal tugmasi Mini App emas, oddiy sayt linki bo‘lib ochiladi.',
+      webAppShortNamePlaceholder: "catalog yoki t.me/orsihomebot/katalog",
+      webAppShortNameHint: "BotFather → /myapps orqali yaratilgan Mini App short name. Masalan: catalog. Yoki to'liq link: t.me/orsihomebot/katalog. Shu bo'lmasa kanal tugmasi Mini App emas, oddiy sayt linki bo'lib ochiladi.",
+
+
       openShopBtn: "Do'konni ochish",
       botConnected: 'menyu tugmasi sozlandi',
       saveAndConnect: 'Saqlash va botga ulash',
@@ -1469,7 +1472,10 @@ export const adminTranslations = {
       webAppUrlHint: 'Рекомендуется',
       buttonText: 'Текст кнопки',
       webAppShortName: 'Direct Link short name',
-      webAppShortNameHint: 'Short name Mini App из BotFather → /myapps. Например: catalog. Без него кнопка в канале откроется как обычная ссылка, не как Mini App.',
+      webAppShortNamePlaceholder: 'catalog или t.me/orsihomebot/katalog',
+      webAppShortNameHint: 'Short name Mini App из BotFather → /myapps. Например: catalog. Или полная ссылка: t.me/orsihomebot/katalog. Без него кнопка в канале откроется как обычная ссылка, не как Mini App.',
+
+
       openShopBtn: 'Открыть магазин',
       botConnected: 'кнопка меню настроена',
       saveAndConnect: 'Сохранить и подключить к боту',

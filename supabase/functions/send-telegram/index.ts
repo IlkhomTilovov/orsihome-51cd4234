@@ -66,8 +66,18 @@ async function getTelegramSettings(supabase: any) {
 }
 
 function normalizeShortName(value?: string) {
-  return (value || '')
-    .trim()
+  const v = (value || '').trim();
+  if (!v) return '';
+
+  // Full Direct Link like t.me/orsihomebot/katalog or https://t.me/orsihomebot/katalog
+  const fullMatch = v.match(/^https?:\/\/t\.me\/([A-Za-z0-9_]+)\/([A-Za-z0-9_]+)\/?$/i)
+                 || v.match(/^t\.me\/([A-Za-z0-9_]+)\/([A-Za-z0-9_]+)\/?$/i);
+  if (fullMatch) {
+    return `https://t.me/${fullMatch[1]}/${fullMatch[2]}`;
+  }
+
+  // Plain short name only: clean up accidental prefixes
+  return v
     .replace(/^@?https?:\/\/t\.me\/[^/]+\//i, '')
     .replace(/^@?t\.me\/[^/]+\//i, '')
     .replace(/^\/+|\/+$/g, '')
@@ -75,6 +85,7 @@ function normalizeShortName(value?: string) {
     .replace(/[^A-Za-z0-9_]/g, '')
     .slice(0, 64);
 }
+
 
 
 
@@ -222,14 +233,17 @@ Deno.serve(async (req) => {
       const text = (body.post_text || '🛍 Bizning do\'kon katalogi quyidagi tugma orqali ochiladi:').trim();
 
       const me = await tgApi(settings.bot_token, 'getMe', {});
-      const shortName = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
-      if (!shortName) {
+      const shortNameOrUrl = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
+      if (!shortNameOrUrl) {
         return new Response(
-          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting.' }),
+          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting (yoki to\'liq link: t.me/orsihomebot/katalog).' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      const buttonUrl = `https://t.me/${me.result.username}/${shortName}`;
+      const buttonUrl = shortNameOrUrl.startsWith('https://t.me/')
+        ? shortNameOrUrl
+        : `https://t.me/${me.result.username}/${shortNameOrUrl}`;
+
 
       // Channels don't support `web_app` inline buttons directly. To open the Mini App
       // from a channel button, Telegram requires a BotFather Direct Link short name.

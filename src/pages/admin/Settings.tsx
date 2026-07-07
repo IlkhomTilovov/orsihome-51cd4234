@@ -111,8 +111,9 @@ export default function Settings() {
   const [webapp, setWebapp] = useState<WebAppSettings>({
     url: typeof window !== 'undefined' ? window.location.origin : '',
     button_text: t.openShopBtn,
-    short_name: '',
+    short_name: 't.me/orsihomebot/katalog',
   });
+
   const [savingWebapp, setSavingWebapp] = useState(false);
   const [connectingBot, setConnectingBot] = useState(false);
   const [botInfo, setBotInfo] = useState<{ username?: string } | null>(null);
@@ -421,12 +422,13 @@ export default function Settings() {
             <Label htmlFor="webapp-short-name">{t.webAppShortName}</Label>
             <Input
               id="webapp-short-name"
-              placeholder="catalog"
+              placeholder={t.webAppShortNamePlaceholder}
               value={webapp.short_name}
               onChange={(e) => setWebapp((p) => ({ ...p, short_name: e.target.value }))}
             />
             <p className="text-xs text-muted-foreground">{t.webAppShortNameHint}</p>
           </div>
+
 
           {botInfo?.username && (
             <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
