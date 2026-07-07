@@ -233,14 +233,17 @@ Deno.serve(async (req) => {
       const text = (body.post_text || '🛍 Bizning do\'kon katalogi quyidagi tugma orqali ochiladi:').trim();
 
       const me = await tgApi(settings.bot_token, 'getMe', {});
-      const shortName = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
-      if (!shortName) {
+      const shortNameOrUrl = normalizeShortName(body.webapp_short_name || settings.webapp_short_name);
+      if (!shortNameOrUrl) {
         return new Response(
-          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting.' }),
+          JSON.stringify({ success: false, error: 'Direct Link short name topilmadi. BotFather → /myapps orqali Mini App short name yarating va sozlamaga kiriting (yoki to\'liq link: t.me/orsihomebot/katalog).' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      const buttonUrl = `https://t.me/${me.result.username}/${shortName}`;
+      const buttonUrl = shortNameOrUrl.startsWith('https://t.me/')
+        ? shortNameOrUrl
+        : `https://t.me/${me.result.username}/${shortNameOrUrl}`;
+
 
       // Channels don't support `web_app` inline buttons directly. To open the Mini App
       // from a channel button, Telegram requires a BotFather Direct Link short name.
