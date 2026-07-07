@@ -2,11 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Theme-driven Design System — NO defaults. All values injected by active theme. */
+/* Theme-driven Design System — Manrope as the global typeface. */
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/__l5e/assets-v1/7a790fdc-26a1-4403-9d63-ea3d4a2b4695/Manrope-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  :root {
+    --font-sans: 'Manrope', system-ui, sans-serif;
+    --font-serif: 'Manrope', system-ui, sans-serif;
+    --font-heading: 'Manrope', system-ui, sans-serif;
   }
 
   body {
