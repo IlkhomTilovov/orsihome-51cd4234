@@ -37,10 +37,6 @@
     
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Fonts: Cormorant Garamond (headings) + Inter (body) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <meta property="og:title" content="OrisHome — Premium Mebel va Interyer">
   <meta name="twitter:title" content="OrisHome — Premium Mebel va Interyer">
   <meta property="og:description" content="OrisHome — premium mebel va interyer yechimlari. Divanlar, stollar, kreslolar va to&#39;liq xona dizayni. Zamonaviy, minimalist, sifatli.">
@@ -64,9 +60,9 @@
               });
             }
             if (theme.typography) {
-              if (theme.typography.fontSans) root.style.setProperty('--font-sans', theme.typography.fontSans);
-              if (theme.typography.fontSerif) root.style.setProperty('--font-serif', theme.typography.fontSerif);
-              if (theme.typography.fontHeading) root.style.setProperty('--font-heading', theme.typography.fontHeading);
+              root.style.setProperty('--font-sans', "Manrope, system-ui, sans-serif");
+              root.style.setProperty('--font-serif', "Manrope, system-ui, sans-serif");
+              root.style.setProperty('--font-heading', "Manrope, system-ui, sans-serif");
             }
             if (theme.componentStyles) {
               if (theme.componentStyles.borderRadius) root.style.setProperty('--radius', theme.componentStyles.borderRadius);

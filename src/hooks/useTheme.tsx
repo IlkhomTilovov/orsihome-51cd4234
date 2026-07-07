@@ -56,9 +56,9 @@ export const applyThemeToDocument = (theme: Theme) => {
     root.style.setProperty(`--${cssVar}`, value);
   });
 
-  root.style.setProperty('--font-sans', theme.typography.fontSans);
-  root.style.setProperty('--font-serif', theme.typography.fontSerif);
-  root.style.setProperty('--font-heading', theme.typography.fontHeading);
+  root.style.setProperty('--font-sans', 'Manrope, system-ui, sans-serif');
+  root.style.setProperty('--font-serif', 'Manrope, system-ui, sans-serif');
+  root.style.setProperty('--font-heading', 'Manrope, system-ui, sans-serif');
 
   root.style.setProperty('--radius', theme.componentStyles.borderRadius);
   root.style.setProperty('--button-radius', theme.componentStyles.buttonRadius);
