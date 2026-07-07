@@ -10,7 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAdminT } from '@/hooks/useAdminT';
 
-function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; defaultButton: string }) {
+function ChannelCatalogPost({ webappUrl, defaultButton, shortName }: { webappUrl: string; defaultButton: string; shortName: string }) {
   const t = useAdminT().settings;
   const { toast } = useToast();
   const [text, setText] = useState<string>(t.defaultChannelMessage);
@@ -30,6 +30,7 @@ function ChannelCatalogPost({ webappUrl, defaultButton }: { webappUrl: string; d
           type: 'post_channel_button',
           webapp_url: webappUrl,
           webapp_button_text: buttonText,
+          webapp_short_name: shortName,
           post_text: text,
           pin,
         },
@@ -446,6 +447,7 @@ export default function Settings() {
       <ChannelCatalogPost
         webappUrl={webapp.url}
         defaultButton={webapp.button_text || t.catalog}
+        shortName={webapp.short_name}
       />
 
 
