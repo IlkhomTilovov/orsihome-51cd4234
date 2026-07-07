@@ -66,8 +66,18 @@ async function getTelegramSettings(supabase: any) {
 }
 
 function normalizeShortName(value?: string) {
-  return (value || '')
-    .trim()
+  const v = (value || '').trim();
+  if (!v) return '';
+
+  // Full Direct Link like t.me/orsihomebot/katalog or https://t.me/orsihomebot/katalog
+  const fullMatch = v.match(/^https?:\/\/t\.me\/([A-Za-z0-9_]+)\/([A-Za-z0-9_]+)\/?$/i)
+                 || v.match(/^t\.me\/([A-Za-z0-9_]+)\/([A-Za-z0-9_]+)\/?$/i);
+  if (fullMatch) {
+    return `https://t.me/${fullMatch[1]}/${fullMatch[2]}`;
+  }
+
+  // Plain short name only: clean up accidental prefixes
+  return v
     .replace(/^@?https?:\/\/t\.me\/[^/]+\//i, '')
     .replace(/^@?t\.me\/[^/]+\//i, '')
     .replace(/^\/+|\/+$/g, '')
@@ -75,6 +85,7 @@ function normalizeShortName(value?: string) {
     .replace(/[^A-Za-z0-9_]/g, '')
     .slice(0, 64);
 }
+
 
 
 
