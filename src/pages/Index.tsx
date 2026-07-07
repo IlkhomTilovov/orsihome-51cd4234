@@ -402,7 +402,7 @@ export default function Index() {
   const { categories } = useCategories();
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const { sets, productsBySet, loading: setsLoading } = useActiveSets();
-  const contactPhone = settings?.contact_phone || '+998 90 123 45 67';
+  const contactPhone = settings?.contact_phone || '';
 
   const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
 
