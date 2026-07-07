@@ -421,12 +421,13 @@ export default function Settings() {
             <Label htmlFor="webapp-short-name">{t.webAppShortName}</Label>
             <Input
               id="webapp-short-name"
-              placeholder="catalog"
+              placeholder={t.webAppShortNamePlaceholder}
               value={webapp.short_name}
               onChange={(e) => setWebapp((p) => ({ ...p, short_name: e.target.value }))}
             />
             <p className="text-xs text-muted-foreground">{t.webAppShortNameHint}</p>
           </div>
+
 
           {botInfo?.username && (
             <div className="rounded-md border border-border bg-muted/50 p-3 text-sm">
