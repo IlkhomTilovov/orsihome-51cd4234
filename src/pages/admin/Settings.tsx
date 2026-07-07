@@ -93,6 +93,7 @@ interface TelegramSettings {
 interface WebAppSettings {
   url: string;
   button_text: string;
+  short_name: string;
 }
 
 export default function Settings() {
@@ -105,6 +106,7 @@ export default function Settings() {
   const [webapp, setWebapp] = useState<WebAppSettings>({
     url: typeof window !== 'undefined' ? window.location.origin : '',
     button_text: t.openShopBtn,
+    short_name: '',
   });
   const [savingWebapp, setSavingWebapp] = useState(false);
   const [connectingBot, setConnectingBot] = useState(false);
@@ -141,6 +143,7 @@ export default function Settings() {
       setWebapp((prev) => ({
         url: settings['telegram_webapp_url'] || prev.url,
         button_text: settings['telegram_webapp_button'] || prev.button_text,
+        short_name: settings['telegram_webapp_short_name'] || prev.short_name,
       }));
 
     } catch (error) {
@@ -269,6 +272,7 @@ export default function Settings() {
     try {
       await upsertSetting('telegram_webapp_url', url);
       await upsertSetting('telegram_webapp_button', webapp.button_text || t.openShopBtn);
+      await upsertSetting('telegram_webapp_short_name', webapp.short_name.trim());
       await upsertSetting('telegram_bot_token', telegram.bot_token);
 
       const { data, error } = await supabase.functions.invoke('send-telegram', {
@@ -276,6 +280,7 @@ export default function Settings() {
           type: 'setup_webapp',
           webapp_url: url,
           webapp_button_text: webapp.button_text,
+          webapp_short_name: webapp.short_name,
         },
       });
       if (error) throw error;
@@ -405,6 +410,17 @@ export default function Settings() {
               value={webapp.button_text}
               onChange={(e) => setWebapp((p) => ({ ...p, button_text: e.target.value }))}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="webapp-short-name">{t.webAppShortName}</Label>
+            <Input
+              id="webapp-short-name"
+              placeholder="catalog"
+              value={webapp.short_name}
+              onChange={(e) => setWebapp((p) => ({ ...p, short_name: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">{t.webAppShortNameHint}</p>
           </div>
 
           {botInfo?.username && (
