@@ -43,6 +43,7 @@ interface Category {
   id: string;
   name_uz: string;
   name_ru: string;
+  parent_id?: string | null;
 }
 
 interface Product {
