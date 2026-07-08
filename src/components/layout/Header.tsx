@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, Sofa, Armchair, Package, Box, Lamp, Layers } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -329,153 +329,146 @@ export function Header() {
         )}
       </div>
 
-      {/* Full-width Catalog Mega Menu */}
-      {catalogOpen && (
-        <>
-          <div className="absolute left-0 right-0 top-full h-screen z-40 bg-black/40 backdrop-blur-sm animate-fade-in" onClick={() => setCatalogOpen(false)} />
-          <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
-            <div className="container mx-auto px-4 lg:px-8 py-6">
-              <div className="bg-background rounded-3xl shadow-soft-lg border border-border/40 overflow-hidden">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-                  {/* Left: sections list -> categories */}
-                  <div className="lg:col-span-8 p-8 lg:p-10">
-                    <h3 className="text-2xl font-bold text-foreground mb-6">
-                      {language === 'ru' ? 'Товары' : 'Tovarlar'}
-                    </h3>
-                    {(visibleSections.length > 0 || parentsBySection.noSection.length > 0) ? (
-                      <div className="grid grid-cols-12 gap-8">
-                        {/* Sections column */}
-                        <div className="col-span-12 sm:col-span-4 border-r border-border/40 pr-4">
-                          <ul className="space-y-1">
-                            {visibleSections.map((section) => {
-                              const active = activeSectionId === section.id;
-                              return (
-                                <li key={section.id}>
-                                  <button
-                                    type="button"
-                                    onClick={() => setActiveSectionId(section.id)}
-                                    className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                      active
-                                        ? 'bg-primary/10 text-primary'
-                                        : 'text-foreground hover:bg-muted hover:text-primary'
-                                    }`}
-                                  >
-                                    {language === 'ru' ? section.name_ru : section.name_uz}
-                                  </button>
-                                </li>
-                              );
-                            })}
-                            {parentsBySection.noSection.length > 0 && (
-                              <li>
-                                <button
-                                  type="button"
-                                  onClick={() => setActiveSectionId('__none__')}
-                                  className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                    activeSectionId === '__none__'
-                                      ? 'bg-primary/10 text-primary'
-                                      : 'text-foreground hover:bg-muted hover:text-primary'
-                                  }`}
+      {/* Catalog Mega Menu — Linear style, white */}
+      {catalogOpen && (() => {
+        const sectionIcons = [Sofa, Armchair, Lamp, Package, Box, Layers];
+        const allSectionEntries = [
+          ...visibleSections.map((s, i) => ({
+            id: s.id,
+            name: language === 'ru' ? s.name_ru : s.name_uz,
+            Icon: sectionIcons[i % sectionIcons.length],
+            count: (parentsBySection.grouped[s.id] || []).length,
+          })),
+          ...(parentsBySection.noSection.length > 0
+            ? [{
+                id: '__none__',
+                name: language === 'ru' ? 'Другое' : 'Boshqa',
+                Icon: Package,
+                count: parentsBySection.noSection.length,
+              }]
+            : []),
+        ];
+        const promo1 = discountedProducts[0];
+        const promo2 = previewProducts.find((p) => p.id !== promo1?.id) || previewProducts[0];
+        return (
+          <>
+            <div
+              className="fixed left-0 right-0 top-0 bottom-0 z-40 bg-black/30 backdrop-blur-sm animate-fade-in"
+              onClick={() => setCatalogOpen(false)}
+            />
+            <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
+              <div className="container mx-auto px-4 lg:px-8 py-4">
+                <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow-2xl border border-black/5 overflow-hidden">
+                  <div className="grid grid-cols-1 lg:grid-cols-12">
+                    {/* Left: sections list */}
+                    <div className="lg:col-span-5 p-5">
+                      <ul className="space-y-1">
+                        {allSectionEntries.map(({ id, name, Icon, count }) => {
+                          const active = activeSectionId === id;
+                          return (
+                            <li key={id}>
+                              <button
+                                type="button"
+                                onMouseEnter={() => setActiveSectionId(id)}
+                                onClick={() => setActiveSectionId(id)}
+                                className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
+                                  active ? 'bg-neutral-100' : 'hover:bg-neutral-50'
+                                }`}
+                              >
+                                <Icon className="w-5 h-5 mt-0.5 text-neutral-700 shrink-0" strokeWidth={1.5} />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-semibold text-neutral-900 leading-tight">{name}</p>
+                                  <p className="text-xs text-neutral-500 mt-0.5">
+                                    {count} {language === 'ru' ? 'категорий' : 'kategoriya'}
+                                  </p>
+                                </div>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    {/* Right: categories or promo cards */}
+                    <div className="lg:col-span-7 bg-neutral-50/70 p-5 border-l border-black/5">
+                      {activeSectionId && activeSectionParents.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-4 h-full">
+                          {activeSectionParents.map((parent) => {
+                            const subs = categories.filter((c) => c.parent_id === parent.id);
+                            return (
+                              <div key={parent.id} className="space-y-1">
+                                <Link
+                                  to={`/catalog?category=${parent.slug}`}
+                                  onClick={() => setCatalogOpen(false)}
+                                  className="block text-sm font-semibold text-neutral-900 hover:text-primary transition-colors"
                                 >
-                                  {language === 'ru' ? 'Другое' : 'Boshqa'}
-                                </button>
-                              </li>
-                            )}
-                          </ul>
-                        </div>
-
-                        {/* Categories column */}
-                        <div className="col-span-12 sm:col-span-8">
-                          {activeSectionParents.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                              {activeSectionParents.map((parent) => {
-                                const subs = categories.filter((c) => c.parent_id === parent.id);
-                                return (
-                                  <div key={parent.id} className="space-y-1">
-                                    <Link
-                                      to={`/catalog?category=${parent.slug}`}
-                                      onClick={() => setCatalogOpen(false)}
-                                      className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                                    >
-                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                    </Link>
-                                    {subs.length > 0 && (
-                                      <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
-                                        {subs.map((sub) => (
-                                          <Link
-                                            key={sub.id}
-                                            to={`/catalog?category=${sub.slug}`}
-                                            onClick={() => setCatalogOpen(false)}
-                                            className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
-                                          >
-                                            {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                          </Link>
-                                        ))}
-                                      </div>
-                                    )}
+                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                </Link>
+                                {subs.length > 0 && (
+                                  <div className="flex flex-col gap-0.5">
+                                    {subs.map((sub) => (
+                                      <Link
+                                        key={sub.id}
+                                        to={`/catalog?category=${sub.slug}`}
+                                        onClick={() => setCatalogOpen(false)}
+                                        className="text-xs text-neutral-500 hover:text-primary transition-colors"
+                                      >
+                                        {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                      </Link>
+                                    ))}
                                   </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p className="text-sm text-muted-foreground">
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 gap-3 h-full">
+                          {[promo1, promo2].filter(Boolean).map((p, i) => {
+                            const img = p!.images?.[0];
+                            const name = language === 'ru' ? p!.name_ru : p!.name_uz;
+                            return (
+                              <Link
+                                key={p!.id + i}
+                                to={`/product/${p!.slug || p!.id}`}
+                                onClick={() => setCatalogOpen(false)}
+                                className="relative rounded-xl overflow-hidden border border-black/5 bg-white group min-h-[110px]"
+                              >
+                                {img && (
+                                  <LazyImage
+                                    src={img}
+                                    alt={name}
+                                    wrapperClassName="absolute inset-0 w-full h-full"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                                <div className="absolute bottom-0 left-0 right-0 p-3">
+                                  <p className="text-sm font-semibold text-white leading-snug line-clamp-1">
+                                    {name}
+                                  </p>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                          {!promo1 && (
+                            <p className="text-sm text-neutral-500 self-center text-center">
                               {language === 'ru'
-                                ? 'Выберите раздел, чтобы увидеть категории'
-                                : "Kategoriyalarni ko'rish uchun bo'limni tanlang"}
+                                ? 'Выберите раздел'
+                                : "Bo'limni tanlang"}
                             </p>
                           )}
                         </div>
-                      </div>
-                    ) : (
-                      <Link
-                        to="/catalog"
-                        onClick={() => setCatalogOpen(false)}
-                        className="text-sm text-muted-foreground hover:text-primary"
-                      >
-                        {language === 'ru' ? 'Перейти в каталог' : "Katalogga o'tish"}
-                      </Link>
-                    )}
+                      )}
+                    </div>
                   </div>
-
-
-                  {/* Right: promo card */}
-                  {discountedProducts.length > 0 && (() => {
-                    const promo = discountedProducts[0];
-                    const img = promo.images?.[0];
-                    const name = language === 'ru' ? promo.name_ru : promo.name_uz;
-                    return (
-                      <Link
-                        to={`/product/${promo.slug || promo.id}`}
-                        onClick={() => setCatalogOpen(false)}
-                        className="lg:col-span-4 relative bg-[hsl(var(--accent))] m-4 lg:my-6 lg:mr-6 rounded-2xl overflow-hidden group hover:shadow-soft-md transition-shadow min-h-[200px]"
-                      >
-                        {img && (
-                          <LazyImage
-                            src={img}
-                            alt={name}
-                            wrapperClassName="absolute inset-0 w-full h-full"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                        <div className="absolute bottom-0 left-0 right-0 z-10 p-5">
-                          <p className="text-sm font-semibold text-white leading-snug">
-                            {name}
-                          </p>
-                          {promo.price != null && (
-                            <p className="text-xs text-white/85 mt-1">
-                              {Number(promo.price).toLocaleString('ru-RU')} {language === 'ru' ? 'сум' : "so'm"}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
-                    );
-                  })()}
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        );
+      })()}
+
 
 
 
