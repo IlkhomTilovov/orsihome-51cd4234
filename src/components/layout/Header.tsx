@@ -380,7 +380,7 @@ export function Header() {
           return (
             <>
               <div
-                className="fixed inset-0 bg-neutral-950/50 backdrop-blur-md z-[60] animate-fade-in"
+                className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] animate-fade-in"
                 onClick={() => setCatalogOpen(false)}
               />
               <div className={`fixed left-4 top-1/2 -translate-y-1/2 z-[70] h-[95%] p-3 flex gap-3 animate-in slide-in-from-left duration-500 transition-all ${activeSectionId === undefined ? 'w-auto' : 'w-[95%]'}`}>
