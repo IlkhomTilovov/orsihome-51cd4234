@@ -41,6 +41,7 @@ interface Category {
   icon: string;
   sort_order: number;
   is_active: boolean;
+  parent_id: string | null;
   created_at: string;
   updated_at: string;
   meta_title_uz: string | null;
@@ -61,6 +62,7 @@ interface FormData {
   icon: string;
   is_active: boolean;
   sort_order: number;
+  parent_id: string;
   meta_title_uz: string;
   meta_title_ru: string;
   meta_description_uz: string;
@@ -78,6 +80,7 @@ const initialFormData: FormData = {
   icon: 'Package',
   is_active: true,
   sort_order: 0,
+  parent_id: '',
   meta_title_uz: '',
   meta_title_ru: '',
   meta_description_uz: '',
