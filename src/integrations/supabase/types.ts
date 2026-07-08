@@ -30,6 +30,7 @@ export type Database = {
           meta_title_uz: string | null
           name_ru: string
           name_uz: string
+          parent_id: string | null
           slug: string
           sort_order: number | null
           updated_at: string
@@ -49,6 +50,7 @@ export type Database = {
           meta_title_uz?: string | null
           name_ru: string
           name_uz: string
+          parent_id?: string | null
           slug: string
           sort_order?: number | null
           updated_at?: string
@@ -68,11 +70,20 @@ export type Database = {
           meta_title_uz?: string | null
           name_ru?: string
           name_uz?: string
+          parent_id?: string | null
           slug?: string
           sort_order?: number | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       checkout_field_options: {
         Row: {
