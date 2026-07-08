@@ -308,18 +308,161 @@ export default function Catalog() {
           </div>
         )}
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+            <Sheet open={catalogDrawerOpen} onOpenChange={setCatalogDrawerOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  className="rounded-xl h-11 px-5 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                  {language === 'uz' ? 'Katalog' : 'Каталог'}
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[340px] sm:w-[380px] p-0 flex flex-col">
+                <SheetHeader className="px-5 py-4 border-b">
+                  <SheetTitle className="text-lg">
+                    {language === 'uz' ? 'Katalog' : 'Каталог'}
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex-1 overflow-y-auto p-3">
+                  <button
+                    onClick={() => {
+                      setSearchParams(prev => {
+                        const p = new URLSearchParams(prev);
+                        p.delete('category');
+                        p.delete('page');
+                        return p;
+                      });
+                      setCatalogDrawerOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors mb-1 ${
+                      sidebarFilters.categoryId === 'all'
+                        ? 'bg-neutral-900 text-white'
+                        : 'hover:bg-neutral-100 text-neutral-900'
+                    }`}
+                  >
+                    <span className={`inline-flex w-9 h-9 items-center justify-center rounded-lg shrink-0 ${
+                      sidebarFilters.categoryId === 'all' ? 'bg-white/10' : 'bg-neutral-100'
+                    }`}>
+                      <LayoutGrid className="w-[18px] h-[18px]" strokeWidth={1.75} />
+                    </span>
+                    <span className="text-sm font-semibold">
+                      {language === 'uz' ? 'Barcha kategoriyalar' : 'Все категории'}
+                    </span>
+                  </button>
+
+                  {[
+                    ...sections.map(s => ({
+                      id: s.id,
+                      name: language === 'uz' ? s.name_uz : s.name_ru,
+                      parents: categories.filter(c => !c.parent_id && c.section_id === s.id),
+                    })),
+                    {
+                      id: '__none__',
+                      name: language === 'uz' ? 'Boshqa' : 'Другое',
+                      parents: categories.filter(c => !c.parent_id && !c.section_id),
+                    },
+                  ]
+                    .filter(sec => sec.parents.length > 0)
+                    .map(section => (
+                      <div key={section.id} className="mt-4">
+                        <p className="px-3 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
+                          {section.name}
+                        </p>
+                        <ul className="space-y-0.5">
+                          {section.parents.map(parent => {
+                            const subs = categories.filter(c => c.parent_id === parent.id);
+                            const isActive = sidebarFilters.categoryId === parent.id;
+                            const isExpanded = expandedParents[parent.id] ?? isActive;
+                            const hasSubs = subs.length > 0;
+                            return (
+                              <li key={parent.id}>
+                                <div className={`group flex items-stretch rounded-xl overflow-hidden ${
+                                  isActive ? 'bg-neutral-100' : 'hover:bg-neutral-50'
+                                }`}>
+                                  <button
+                                    onClick={() => {
+                                      setSearchParams(prev => {
+                                        const p = new URLSearchParams(prev);
+                                        p.set('category', parent.slug);
+                                        p.delete('page');
+                                        return p;
+                                      });
+                                      setCatalogDrawerOpen(false);
+                                    }}
+                                    className="flex-1 flex items-center gap-3 px-3 py-2.5 text-left min-w-0"
+                                  >
+                                    {parent.image ? (
+                                      <img
+                                        src={parent.image}
+                                        alt=""
+                                        className="w-9 h-9 rounded-lg object-cover shrink-0"
+                                      />
+                                    ) : (
+                                      <span className="w-9 h-9 rounded-lg bg-neutral-100 shrink-0" />
+                                    )}
+                                    <span className="text-sm font-medium text-neutral-900 truncate">
+                                      {language === 'uz' ? parent.name_uz : parent.name_ru}
+                                    </span>
+                                  </button>
+                                  {hasSubs && (
+                                    <button
+                                      onClick={() => setExpandedParents(prev => ({ ...prev, [parent.id]: !isExpanded }))}
+                                      className="px-3 flex items-center text-neutral-400 hover:text-neutral-900"
+                                      aria-label="toggle"
+                                    >
+                                      <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                    </button>
+                                  )}
+                                </div>
+                                {hasSubs && isExpanded && (
+                                  <ul className="ml-12 mt-0.5 mb-1 border-l border-neutral-200 pl-3">
+                                    {subs.map(sub => (
+                                      <li key={sub.id}>
+                                        <button
+                                          onClick={() => {
+                                            setSearchParams(prev => {
+                                              const p = new URLSearchParams(prev);
+                                              p.set('category', sub.slug);
+                                              p.delete('page');
+                                              return p;
+                                            });
+                                            setCatalogDrawerOpen(false);
+                                          }}
+                                          className={`w-full text-left text-[13px] px-2 py-1.5 rounded-md transition-colors ${
+                                            sidebarFilters.categoryId === sub.id
+                                              ? 'text-primary font-medium'
+                                              : 'text-neutral-600 hover:text-neutral-900'
+                                          }`}
+                                        >
+                                          {language === 'uz' ? sub.name_uz : sub.name_ru}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 placeholder={t.catalog.search}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 rounded-xl"
+                className="pl-10 rounded-xl h-11"
               />
             </div>
           </div>
         </div>
+
 
 
 
