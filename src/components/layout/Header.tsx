@@ -55,13 +55,7 @@ export function Header() {
     [sections, parentsBySection]
   );
 
-  // Auto-select first section when catalog opens
-  useEffect(() => {
-    if (catalogOpen && !activeSectionId) {
-      if (visibleSections.length > 0) setActiveSectionId(visibleSections[0].id);
-      else if (parentsBySection.noSection.length > 0) setActiveSectionId('__none__');
-    }
-  }, [catalogOpen, visibleSections, parentsBySection.noSection.length, activeSectionId]);
+  // No auto-selection: categories shown only after a section is clicked
 
   const activeSectionParents = activeSectionId === '__none__'
     ? parentsBySection.noSection
@@ -122,7 +116,10 @@ export function Header() {
                   <div key={link.href} className="relative">
                     <button
                       type="button"
-                      onClick={() => setCatalogOpen(v => !v)}
+                      onClick={() => {
+                        setCatalogOpen(v => !v);
+                        setActiveSectionId(null);
+                      }}
                       className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
                         isActive(link.href) || catalogOpen
                           ? 'text-primary after:w-full'
@@ -356,7 +353,6 @@ export function Header() {
                                 <li key={section.id}>
                                   <button
                                     type="button"
-                                    onMouseEnter={() => setActiveSectionId(section.id)}
                                     onClick={() => setActiveSectionId(section.id)}
                                     className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                       active
@@ -373,7 +369,6 @@ export function Header() {
                               <li>
                                 <button
                                   type="button"
-                                  onMouseEnter={() => setActiveSectionId('__none__')}
                                   onClick={() => setActiveSectionId('__none__')}
                                   className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                     activeSectionId === '__none__'
@@ -390,36 +385,44 @@ export function Header() {
 
                         {/* Categories column */}
                         <div className="col-span-12 sm:col-span-8">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                            {activeSectionParents.map((parent) => {
-                              const subs = categories.filter((c) => c.parent_id === parent.id);
-                              return (
-                                <div key={parent.id} className="space-y-1">
-                                  <Link
-                                    to={`/catalog?category=${parent.slug}`}
-                                    onClick={() => setCatalogOpen(false)}
-                                    className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                                  >
-                                    {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                  </Link>
-                                  {subs.length > 0 && (
-                                    <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
-                                      {subs.map((sub) => (
-                                        <Link
-                                          key={sub.id}
-                                          to={`/catalog?category=${sub.slug}`}
-                                          onClick={() => setCatalogOpen(false)}
-                                          className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
-                                        >
-                                          {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
+                          {activeSectionParents.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                              {activeSectionParents.map((parent) => {
+                                const subs = categories.filter((c) => c.parent_id === parent.id);
+                                return (
+                                  <div key={parent.id} className="space-y-1">
+                                    <Link
+                                      to={`/catalog?category=${parent.slug}`}
+                                      onClick={() => setCatalogOpen(false)}
+                                      className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                                    >
+                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                    </Link>
+                                    {subs.length > 0 && (
+                                      <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
+                                        {subs.map((sub) => (
+                                          <Link
+                                            key={sub.id}
+                                            to={`/catalog?category=${sub.slug}`}
+                                            onClick={() => setCatalogOpen(false)}
+                                            className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
+                                          >
+                                            {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              {language === 'ru'
+                                ? 'Выберите раздел, чтобы увидеть категории'
+                                : "Kategoriyalarni ko'rish uchun bo'limni tanlang"}
+                            </p>
+                          )}
                         </div>
                       </div>
                     ) : (
