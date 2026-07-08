@@ -349,24 +349,24 @@ export function Header() {
             <Link
               to={`/product/${p.slug}`}
               onClick={() => setCatalogOpen(false)}
-              className="group flex gap-3 p-2 rounded-xl hover:bg-neutral-50 transition-colors"
+              className="group flex gap-3 p-2 rounded-xl hover:bg-white transition-colors"
             >
-              <div className="w-16 h-16 rounded-lg bg-neutral-100 overflow-hidden shrink-0">
+              <div className="w-[68px] h-[68px] rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/5">
                 {p.images?.[0] && (
                   <img
                     src={p.images[0]}
                     alt={p.name_uz}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-medium text-neutral-900 line-clamp-2 leading-snug">
+              <div className="min-w-0 flex-1 flex flex-col justify-center">
+                <p className="text-[13px] font-medium text-neutral-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                   {language === 'ru' ? p.name_ru : p.name_uz}
                 </p>
                 <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-[13px] font-semibold text-primary">{formatPrice(p.price)}</span>
+                  <span className="text-[13px] font-semibold text-neutral-900">{formatPrice(p.price)}</span>
                   {p.original_price && p.price && p.original_price > p.price && (
                     <span className="text-[11px] line-through text-neutral-400">
                       {formatPrice(p.original_price)}
@@ -380,107 +380,152 @@ export function Header() {
           return (
             <>
               <div
-                className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[60] animate-fade-in"
+                className="fixed inset-0 bg-neutral-950/50 backdrop-blur-md z-[60] animate-fade-in"
                 onClick={() => setCatalogOpen(false)}
               />
-              <div className="fixed left-1/2 -translate-x-1/2 top-24 z-[70] w-[min(1120px,calc(100vw-2rem))] max-h-[78vh] bg-background rounded-2xl shadow-2xl border border-border/40 overflow-hidden flex flex-col animate-fade-in">
-                <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900">
-                    <LayoutGrid className="w-4 h-4" />
-                    {language === 'ru' ? 'Каталог' : 'Katalog'}
+              <div className="fixed left-1/2 -translate-x-1/2 top-24 z-[70] w-[min(1180px,calc(100vw-2rem))] max-h-[80vh] bg-white rounded-[28px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 overflow-hidden flex animate-fade-in">
+                {/* Dark left sidebar */}
+                <aside
+                  className="w-[280px] shrink-0 bg-neutral-950 text-neutral-100 flex flex-col"
+                  onMouseLeave={() => setActiveSectionId(null)}
+                >
+                  <div className="px-6 pt-6 pb-4 flex items-center gap-2.5">
+                    <span className="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-white/10">
+                      <LayoutGrid className="w-4 h-4" />
+                    </span>
+                    <div className="text-[15px] font-semibold tracking-wide">
+                      {language === 'ru' ? 'Каталог' : 'Katalog'}
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setCatalogOpen(false)}
-                    className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-neutral-500"
-                    aria-label="close"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
 
-                <div className="flex flex-1 min-h-0">
-                  {/* Left: sections list */}
-                  <aside
-                    className="w-[260px] shrink-0 border-r border-border/40 overflow-y-auto py-3"
-                    onMouseLeave={() => setActiveSectionId(null)}
-                  >
+                  <div className="px-4">
                     <Link
                       to="/catalog"
                       onClick={() => setCatalogOpen(false)}
                       onMouseEnter={() => setActiveSectionId(null)}
-                      className="mx-3 mb-2 flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 text-sm font-semibold text-neutral-900"
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-colors ${
+                        activeSectionId === null
+                          ? 'bg-white/10 text-white'
+                          : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                      }`}
                     >
-                      <span className="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-neutral-100">
-                        <LayoutGrid className="w-[16px] h-[16px]" strokeWidth={1.75} />
-                      </span>
-                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                      <LayoutGrid className="w-[17px] h-[17px]" strokeWidth={1.75} />
+                      <span>{language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}</span>
                     </Link>
+                  </div>
 
-                    <div className="h-px bg-border/40 mx-4 my-2" />
+                  <div className="mx-6 my-4 h-px bg-white/10" />
 
-                    <ul className="px-2 space-y-0.5">
-                      {displaySections.map((section) => {
-                        const isActive = activeSectionId === section.id;
-                        return (
-                          <li key={section.id}>
-                            <button
-                              type="button"
-                              onMouseEnter={() => setActiveSectionId(section.id)}
-                              onClick={() => setActiveSectionId(section.id)}
-                              className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-sm font-medium transition-colors ${
-                                isActive
-                                  ? 'bg-primary/10 text-primary'
-                                  : 'text-neutral-800 hover:bg-neutral-100'
-                              }`}
-                            >
-                              <span className="truncate">{section.name}</span>
-                              <ChevronRight className="w-4 h-4 opacity-60" />
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </aside>
+                  <div className="px-4 pb-2">
+                    <p className="px-3 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
+                      {language === 'ru' ? 'Разделы' : "Bo'limlar"}
+                    </p>
+                  </div>
 
-                  {/* Right: content */}
+                  <nav className="flex-1 overflow-y-auto px-4 pb-6 space-y-1">
+                    {displaySections.map((section) => {
+                      const isActive = activeSectionId === section.id;
+                      return (
+                        <button
+                          key={section.id}
+                          type="button"
+                          onMouseEnter={() => setActiveSectionId(section.id)}
+                          onClick={() => setActiveSectionId(section.id)}
+                          className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-[13.5px] font-medium transition-all ${
+                            isActive
+                              ? 'bg-white text-neutral-950 shadow-sm'
+                              : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                          }`}
+                        >
+                          <span className="truncate">{section.name}</span>
+                          <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? 'translate-x-0.5' : 'opacity-50'}`} />
+                        </button>
+                      );
+                    })}
+                  </nav>
+
+                  <div className="px-6 py-4 border-t border-white/10 text-[11px] text-neutral-500">
+                    ORSI HOME · {language === 'ru' ? 'Мебель' : 'Mebel'}
+                  </div>
+                </aside>
+
+                {/* Right content */}
+                <div className="flex-1 flex flex-col bg-neutral-50/60 min-w-0">
+                  <div className="flex items-center justify-between px-7 py-4 bg-white border-b border-neutral-200/70">
+                    <div className="flex items-center gap-2 text-[13px] text-neutral-500">
+                      <span className="font-medium text-neutral-900">
+                        {activeSection
+                          ? activeSection.name
+                          : language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
+                      </span>
+                      {activeSection && (
+                        <>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                          <span>{activeSection.parents.length} {language === 'ru' ? 'категорий' : 'kategoriya'}</span>
+                        </>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => setCatalogOpen(false)}
+                      className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-neutral-500"
+                      aria-label="close"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
                   <div className="flex-1 overflow-y-auto p-6">
                     {activeSection ? (
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {activeSection.parents.map((parent) => {
                           const subs = categories.filter((c) => c.parent_id === parent.id);
                           return (
-                            <div key={parent.id}>
+                            <div
+                              key={parent.id}
+                              className="bg-white rounded-2xl p-4 ring-1 ring-black/5 hover:ring-primary/30 hover:shadow-sm transition-all"
+                            >
                               <Link
                                 to={`/catalog?category=${parent.slug}`}
                                 onClick={() => setCatalogOpen(false)}
-                                className="flex items-center gap-3 mb-2 group"
+                                className="flex items-center gap-3 mb-3 group"
                               >
                                 {parent.image ? (
                                   <img
                                     src={parent.image}
                                     alt=""
-                                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                                    className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-black/5"
                                   />
                                 ) : (
-                                  <span className="w-10 h-10 rounded-lg bg-neutral-100 shrink-0" />
+                                  <span className="w-11 h-11 rounded-xl bg-neutral-100 shrink-0" />
                                 )}
-                                <span className="text-sm font-semibold text-neutral-900 group-hover:text-primary transition-colors">
+                                <span className="text-[14px] font-semibold text-neutral-900 group-hover:text-primary transition-colors line-clamp-2">
                                   {language === 'ru' ? parent.name_ru : parent.name_uz}
                                 </span>
                               </Link>
                               {subs.length > 0 && (
-                                <ul className="ml-1 pl-3 border-l border-neutral-200 space-y-1">
-                                  {subs.map((sub) => (
+                                <ul className="space-y-0.5">
+                                  {subs.slice(0, 5).map((sub) => (
                                     <li key={sub.id}>
                                       <Link
                                         to={`/catalog?category=${sub.slug}`}
                                         onClick={() => setCatalogOpen(false)}
-                                        className="block text-[13px] py-1 text-neutral-600 hover:text-primary transition-colors"
+                                        className="block text-[12.5px] py-1 text-neutral-500 hover:text-primary transition-colors"
                                       >
-                                        {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                        · {language === 'ru' ? sub.name_ru : sub.name_uz}
                                       </Link>
                                     </li>
                                   ))}
+                                  {subs.length > 5 && (
+                                    <li>
+                                      <Link
+                                        to={`/catalog?category=${parent.slug}`}
+                                        onClick={() => setCatalogOpen(false)}
+                                        className="block text-[12px] py-1 text-primary font-medium"
+                                      >
+                                        +{subs.length - 5} {language === 'ru' ? 'ещё' : "yana"}
+                                      </Link>
+                                    </li>
+                                  )}
                                 </ul>
                               )}
                             </div>
@@ -488,19 +533,29 @@ export function Header() {
                         })}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <section>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex w-7 h-7 rounded-lg bg-primary/10 text-primary items-center justify-center">
-                              <Tag className="w-4 h-4" />
-                            </span>
-                            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900">
-                              {language === 'ru' ? 'Со скидкой' : 'Chegirmada'}
-                            </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2.5">
+                              <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
+                                <Tag className="w-4 h-4" />
+                              </span>
+                              <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                {language === 'ru' ? 'Со скидкой' : 'Chegirmada'}
+                              </h3>
+                            </div>
+                            <Link
+                              to="/catalog?discounted=1"
+                              onClick={() => setCatalogOpen(false)}
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                            >
+                              {language === 'ru' ? 'Все' : 'Barchasi'}
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </Link>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col gap-1">
                             {promoProducts.length === 0 ? (
-                              <p className="text-sm text-neutral-400 px-2 py-6 text-center">
+                              <p className="text-sm text-neutral-400 px-2 py-8 text-center">
                                 {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                               </p>
                             ) : (
@@ -508,18 +563,28 @@ export function Header() {
                             )}
                           </div>
                         </section>
-                        <section>
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="inline-flex w-7 h-7 rounded-lg bg-primary/10 text-primary items-center justify-center">
-                              <Sparkles className="w-4 h-4" />
-                            </span>
-                            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900">
-                              {language === 'ru' ? 'Новинки' : 'Yangi kelganlar'}
-                            </h3>
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2.5">
+                              <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
+                                <Sparkles className="w-4 h-4" />
+                              </span>
+                              <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                {language === 'ru' ? 'Новинки' : 'Yangi kelganlar'}
+                              </h3>
+                            </div>
+                            <Link
+                              to="/catalog"
+                              onClick={() => setCatalogOpen(false)}
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                            >
+                              {language === 'ru' ? 'Все' : 'Barchasi'}
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </Link>
                           </div>
-                          <div className="flex flex-col">
+                          <div className="flex flex-col gap-1">
                             {newProducts.length === 0 ? (
-                              <p className="text-sm text-neutral-400 px-2 py-6 text-center">
+                              <p className="text-sm text-neutral-400 px-2 py-8 text-center">
                                 {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                               </p>
                             ) : (
