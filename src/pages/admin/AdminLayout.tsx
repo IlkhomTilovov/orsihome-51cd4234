@@ -69,6 +69,7 @@ const navGroups: NavGroup[] = [
     titleKey: 'groupCatalog',
     icon: Boxes,
     items: [
+      { titleKey: 'navSections', url: '/admin/sections', icon: LayoutGrid, module: 'categories' },
       { titleKey: 'navCategories', url: '/admin/categories', icon: FolderTree, module: 'categories' },
       { titleKey: 'navProducts', url: '/admin/products', icon: Package, module: 'products' },
       { titleKey: 'navPromoTiles', url: '/admin/promo-tiles', icon: LayoutGrid, module: 'siteContent' },

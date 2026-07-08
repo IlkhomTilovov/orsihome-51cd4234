@@ -43,6 +43,7 @@ export interface Category {
   image: string | null;
   is_active: boolean | null;
   parent_id: string | null;
+  section_id: string | null;
   meta_title_uz: string | null;
   meta_title_ru: string | null;
   meta_description_uz: string | null;
@@ -270,7 +271,7 @@ export function useCategories() {
       try {
         const { data, error } = await supabase
           .from('categories')
-          .select('id, name_uz, name_ru, slug, icon, image, is_active, parent_id, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
+          .select('id, name_uz, name_ru, slug, icon, image, is_active, parent_id, section_id, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
           .eq('is_active', true)
           .order('sort_order', { ascending: true });
 
@@ -287,6 +288,34 @@ export function useCategories() {
   }, []);
 
   return { categories, loading };
+}
+
+export function useSections() {
+  const [sections, setSections] = useState<Array<{ id: string; name_uz: string; name_ru: string; slug: string; sort_order: number; is_active: boolean }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('sections')
+          .select('id, name_uz, name_ru, slug, sort_order, is_active')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
+        if (error) throw error;
+        setSections(data || []);
+      } catch (err) {
+        console.error('Error fetching sections:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSections();
+  }, []);
+
+  return { sections, loading };
 }
 
 export function useProductBySlug(slug: string) {
