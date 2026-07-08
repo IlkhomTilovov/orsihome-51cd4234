@@ -448,7 +448,7 @@ export function Header() {
 
                 {/* Right content - appears after clicking a section */}
                 {activeSectionId !== undefined && (
-                  <div className="flex-1 flex flex-col bg-white rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.06] overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
+                  <div className="relative z-[1] flex-1 flex flex-col bg-white rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.06] overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
                     <div className="flex items-center justify-between px-7 py-4 bg-white border-b border-neutral-200/70">
                       <div className="flex items-center gap-2 text-[13px] text-neutral-500">
                         <span className="font-medium text-neutral-900">
