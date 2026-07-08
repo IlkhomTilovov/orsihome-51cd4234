@@ -208,16 +208,30 @@ export function Header() {
                           >
                             {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
                           </Link>
-                          {categories.map((c) => (
-                            <Link
-                              key={c.id}
-                              to={`/catalog?category=${c.slug}`}
-                              onClick={() => setIsOpen(false)}
-                              className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
-                            >
-                              {language === 'ru' ? c.name_ru : c.name_uz}
-                            </Link>
-                          ))}
+                          {categories.filter(c => !c.parent_id).map((parent) => {
+                            const subs = categories.filter(c => c.parent_id === parent.id);
+                            return (
+                              <div key={parent.id}>
+                                <Link
+                                  to={`/catalog?category=${parent.slug}`}
+                                  onClick={() => setIsOpen(false)}
+                                  className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
+                                >
+                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                </Link>
+                                {subs.map((sub) => (
+                                  <Link
+                                    key={sub.id}
+                                    to={`/catalog?category=${sub.slug}`}
+                                    onClick={() => setIsOpen(false)}
+                                    className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
+                                  >
+                                    — {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                  </Link>
+                                ))}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
