@@ -1,13 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, LayoutGrid } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories, useSections } from '@/hooks/useProducts';
+import { useCategories, useSections, type Product } from '@/hooks/useProducts';
+import { supabase } from '@/integrations/supabase/client';
 import { CartDrawer } from '@/components/CartDrawer';
 import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
