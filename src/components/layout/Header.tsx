@@ -349,9 +349,9 @@ export function Header() {
             <Link
               to={`/product/${p.slug}`}
               onClick={() => setCatalogOpen(false)}
-              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-neutral-50 transition-colors"
+              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-muted transition-colors"
             >
-              <div className="w-16 h-16 rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/[0.06]">
+              <div className="w-16 h-16 rounded-xl bg-muted overflow-hidden shrink-0 ring-1 ring-border">
                 {p.images?.[0] && (
                   <img
                     src={p.images[0]}
@@ -362,13 +362,13 @@ export function Header() {
                 )}
               </div>
               <div className="min-w-0 flex-1 flex flex-col justify-center">
-                <p className="text-[13px] font-medium text-neutral-900 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                <p className="text-[13px] font-medium text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {language === 'ru' ? p.name_ru : p.name_uz}
                 </p>
                 <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-[13px] font-semibold text-neutral-900">{formatPrice(p.price)}</span>
+                  <span className="text-[13px] font-semibold text-foreground">{formatPrice(p.price)}</span>
                   {p.original_price && p.price && p.original_price > p.price && (
-                    <span className="text-[11px] line-through text-neutral-400">
+                    <span className="text-[11px] line-through text-muted-foreground">
                       {formatPrice(p.original_price)}
                     </span>
                   )}
@@ -380,16 +380,16 @@ export function Header() {
           return (
             <>
               <div
-                className="fixed inset-0 bg-neutral-950/50 backdrop-blur-md z-[60] animate-fade-in"
+                className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] animate-fade-in"
                 onClick={() => setCatalogOpen(false)}
               />
               <div className={`fixed left-4 top-1/2 -translate-y-1/2 z-[70] h-[95%] p-3 flex gap-3 animate-in slide-in-from-left duration-500 transition-all ${activeSectionId === undefined ? 'w-auto' : 'w-[95%]'}`}>
                 {/* Dark left sidebar */}
                 <aside
-                  className="w-[280px] shrink-0 bg-neutral-950 text-neutral-100 flex flex-col rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-white/10 overflow-hidden relative z-[2]"
+                  className="w-[280px] shrink-0 bg-background text-foreground flex flex-col rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-border overflow-hidden relative z-[2]"
                 >
                   <div className="px-6 pt-6 pb-4 flex items-center gap-2.5">
-                    <span className="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-white/10">
+                    <span className="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <LayoutGrid className="w-4 h-4" />
                     </span>
                     <div className="text-[15px] font-semibold tracking-wide">
@@ -403,8 +403,8 @@ export function Header() {
                       onClick={() => setActiveSectionId(null)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-colors text-left ${
                         activeSectionId === null
-                          ? 'bg-white/10 text-white'
-                          : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
                       <LayoutGrid className="w-[17px] h-[17px]" strokeWidth={1.75} />
@@ -412,10 +412,10 @@ export function Header() {
                     </button>
                   </div>
 
-                  <div className="mx-6 my-4 h-px bg-white/10" />
+                  <div className="mx-6 my-4 h-px bg-border" />
 
                   <div className="px-4 pb-2">
-                    <p className="px-3 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
+                    <p className="px-3 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                       {language === 'ru' ? 'Разделы' : "Bo'limlar"}
                     </p>
                   </div>
@@ -430,8 +430,8 @@ export function Header() {
                           onClick={() => setActiveSectionId(section.id)}
                           className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-[13.5px] font-medium transition-all ${
                             isActive
-                              ? 'bg-white text-neutral-950 shadow-sm'
-                              : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                              ? 'bg-primary text-primary-foreground shadow-sm'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                           }`}
                         >
                           <span className="truncate">{section.name}</span>
@@ -441,17 +441,17 @@ export function Header() {
                     })}
                   </nav>
 
-                  <div className="px-6 py-4 border-t border-white/10 text-[11px] text-neutral-500">
+                  <div className="px-6 py-4 border-t border-border text-[11px] text-muted-foreground">
                     ORSI HOME · {language === 'ru' ? 'Мебель' : 'Mebel'}
                   </div>
                 </aside>
 
                 {/* Right content - appears after clicking a section */}
                 {activeSectionId !== undefined && (
-                  <div className="relative z-[1] flex-1 flex flex-col bg-white rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.06] overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
-                    <div className="flex items-center justify-between px-7 py-4 bg-white border-b border-neutral-200/70">
-                      <div className="flex items-center gap-2 text-[13px] text-neutral-500">
-                        <span className="font-medium text-neutral-900">
+                  <div className="relative z-[1] flex-1 flex flex-col bg-card text-card-foreground rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-border overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
+                    <div className="flex items-center justify-between px-7 py-4 bg-card border-b border-border">
+                      <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                        <span className="font-medium text-foreground">
                           {activeSection
                             ? activeSection.name
                             : language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
@@ -465,7 +465,7 @@ export function Header() {
                       </div>
                       <button
                         onClick={() => setCatalogOpen(false)}
-                        className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-neutral-500"
+                        className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground"
                         aria-label="close"
                       >
                         <X className="w-4 h-4" />
@@ -480,7 +480,7 @@ export function Header() {
                             return (
                               <div
                                 key={parent.id}
-                                className="bg-white rounded-2xl p-4 ring-1 ring-black/5 hover:ring-primary/30 hover:shadow-sm transition-all"
+                                className="bg-background rounded-2xl p-4 ring-1 ring-border hover:ring-primary/30 hover:shadow-sm transition-all"
                               >
                                 <Link
                                   to={`/catalog?category=${parent.slug}`}
@@ -491,12 +491,12 @@ export function Header() {
                                     <img
                                       src={parent.image}
                                       alt=""
-                                      className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-black/5"
+                                      className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-border"
                                     />
                                   ) : (
-                                    <span className="w-11 h-11 rounded-xl bg-neutral-100 shrink-0" />
+                                    <span className="w-11 h-11 rounded-xl bg-muted shrink-0" />
                                   )}
-                                  <span className="text-[14px] font-semibold text-neutral-900 group-hover:text-primary transition-colors line-clamp-2">
+                                  <span className="text-[14px] font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                                     {language === 'ru' ? parent.name_ru : parent.name_uz}
                                   </span>
                                 </Link>
@@ -507,7 +507,7 @@ export function Header() {
                                         <Link
                                           to={`/catalog?category=${sub.slug}`}
                                           onClick={() => setCatalogOpen(false)}
-                                          className="block text-[12.5px] py-1 text-neutral-500 hover:text-primary transition-colors"
+                                          className="block text-[12.5px] py-1 text-muted-foreground hover:text-primary transition-colors"
                                         >
                                           · {language === 'ru' ? sub.name_ru : sub.name_uz}
                                         </Link>
@@ -532,20 +532,20 @@ export function Header() {
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-                          <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <section className="bg-background rounded-2xl p-5 ring-1 ring-border shadow-sm flex flex-col">
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2.5">
                                 <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                   <Tag className="w-4 h-4" />
                                 </span>
-                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-foreground">
                                   {language === 'ru' ? 'Со скидкой' : 'Chegirmada'}
                                 </h3>
                               </div>
                               <Link
                                 to="/catalog?discounted=1"
                                 onClick={() => setCatalogOpen(false)}
-                                className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
+                                className="text-[11.5px] font-medium text-muted-foreground hover:text-primary flex items-center gap-0.5"
                               >
                                 {language === 'ru' ? 'Все' : 'Barchasi'}
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -553,7 +553,7 @@ export function Header() {
                             </div>
                             <div className="flex flex-col gap-1">
                               {promoProducts.length === 0 ? (
-                                <p className="text-sm text-neutral-400 px-2 py-8 text-center">
+                                <p className="text-sm text-muted-foreground px-2 py-8 text-center">
                                   {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                                 </p>
                               ) : (
@@ -561,20 +561,20 @@ export function Header() {
                               )}
                             </div>
                           </section>
-                          <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <section className="bg-background rounded-2xl p-5 ring-1 ring-border shadow-sm flex flex-col">
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2.5">
                                 <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                   <Sparkles className="w-4 h-4" />
                                 </span>
-                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-foreground">
                                   {language === 'ru' ? 'Новинки' : 'Yangi kelganlar'}
                                 </h3>
                               </div>
                               <Link
                                 to="/catalog"
                                 onClick={() => setCatalogOpen(false)}
-                                className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
+                                className="text-[11.5px] font-medium text-muted-foreground hover:text-primary flex items-center gap-0.5"
                               >
                                 {language === 'ru' ? 'Все' : 'Barchasi'}
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -582,7 +582,7 @@ export function Header() {
                             </div>
                             <div className="flex flex-col gap-1">
                               {newProducts.length === 0 ? (
-                                <p className="text-sm text-neutral-400 px-2 py-8 text-center">
+                                <p className="text-sm text-muted-foreground px-2 py-8 text-center">
                                   {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                                 </p>
                               ) : (
