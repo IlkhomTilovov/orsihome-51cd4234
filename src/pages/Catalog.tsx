@@ -118,13 +118,17 @@ export default function Catalog() {
     }
 
     if (debouncedSearch) f.search = debouncedSearch;
-    // Only pass category if it's a valid UUID
+    // Only pass category if it's a valid UUID. If the selected category has
+    // subcategories, include all descendants so parent view shows every product.
     if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
-      f.categoryId = sidebarFilters.categoryId;
+      const selectedId = sidebarFilters.categoryId;
+      const childIds = categories.filter(c => c.parent_id === selectedId).map(c => c.id);
+      if (childIds.length > 0) {
+        f.categoryIds = [selectedId, ...childIds];
+      } else {
+        f.categoryId = selectedId;
+      }
     }
-    // Only apply price filters after the user has explicitly changed them.
-    // Prevents a race where the initial default (700000) is sent before
-    // filterOptions.maxPrice resolves, causing a double-fetch flicker.
     if (priceTouched && sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
     if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
@@ -135,7 +139,7 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched, categories]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
