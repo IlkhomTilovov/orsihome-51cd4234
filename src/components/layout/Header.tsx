@@ -432,43 +432,51 @@ export function Header() {
                     <div className="lg:col-span-7 bg-neutral-50 p-6 border-l border-neutral-100 min-h-[280px]">
                       {activeSectionId && activeSectionParents.length > 0 ? (
                         <div className="h-full flex flex-col">
-                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-4">
-                            {language === 'ru' ? 'Категории' : 'Kategoriyalar'}
-                          </p>
-                          <div className="grid grid-cols-2 gap-x-6 gap-y-5 flex-1">
+                          <div className="flex items-center justify-between mb-4">
+                            <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
+                              {language === 'ru' ? 'Категории' : 'Kategoriyalar'}
+                            </p>
+                            <span className="text-[10.5px] text-neutral-400">
+                              {activeSectionParents.length}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 flex-1 content-start">
                             {activeSectionParents.map((parent) => {
                               const subs = categories.filter((c) => c.parent_id === parent.id);
                               return (
-                                <div key={parent.id} className="space-y-1.5">
-                                  <Link
-                                    to={`/catalog?category=${parent.slug}`}
-                                    onClick={() => setCatalogOpen(false)}
-                                    className="group inline-flex items-center gap-1 text-[13.5px] font-semibold text-neutral-900 hover:text-primary transition-colors"
-                                  >
-                                    {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                    <ChevronRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                                  </Link>
-                                  {subs.length > 0 && (
-                                    <ul className="flex flex-col gap-1">
-                                      {subs.map((sub) => (
-                                        <li key={sub.id}>
-                                          <Link
-                                            to={`/catalog?category=${sub.slug}`}
-                                            onClick={() => setCatalogOpen(false)}
-                                            className="text-[12.5px] text-neutral-500 hover:text-neutral-900 transition-colors"
-                                          >
-                                            {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                          </Link>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </div>
+                                <Link
+                                  key={parent.id}
+                                  to={`/catalog?category=${parent.slug}`}
+                                  onClick={() => setCatalogOpen(false)}
+                                  className="group relative flex items-start gap-3 px-3.5 py-3 rounded-xl bg-white ring-1 ring-black/[0.05] hover:ring-neutral-900/20 hover:-translate-y-0.5 transition-all duration-200"
+                                >
+                                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-primary transition-colors shrink-0" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-[13px] font-semibold text-neutral-900 leading-tight">
+                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                    </p>
+                                    {subs.length > 0 ? (
+                                      <p className="mt-1 text-[11.5px] text-neutral-500 line-clamp-1">
+                                        {subs
+                                          .slice(0, 3)
+                                          .map((s) => (language === 'ru' ? s.name_ru : s.name_uz))
+                                          .join(' · ')}
+                                        {subs.length > 3 && ` +${subs.length - 3}`}
+                                      </p>
+                                    ) : (
+                                      <p className="mt-1 text-[11.5px] text-neutral-400">
+                                        {language === 'ru' ? 'Смотреть товары' : "Tovarlarni ko'rish"}
+                                      </p>
+                                    )}
+                                  </div>
+                                  <ChevronRight className="w-4 h-4 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all shrink-0 mt-0.5" />
+                                </Link>
                               );
                             })}
                           </div>
                         </div>
                       ) : (
+
                         <div className="h-full flex flex-col">
                           <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-4">
                             {language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
