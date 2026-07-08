@@ -55,13 +55,7 @@ export function Header() {
     [sections, parentsBySection]
   );
 
-  // Auto-select first section when catalog opens
-  useEffect(() => {
-    if (catalogOpen && !activeSectionId) {
-      if (visibleSections.length > 0) setActiveSectionId(visibleSections[0].id);
-      else if (parentsBySection.noSection.length > 0) setActiveSectionId('__none__');
-    }
-  }, [catalogOpen, visibleSections, parentsBySection.noSection.length, activeSectionId]);
+  // No auto-selection: categories shown only after a section is clicked
 
   const activeSectionParents = activeSectionId === '__none__'
     ? parentsBySection.noSection
