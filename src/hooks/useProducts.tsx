@@ -53,6 +53,7 @@ export interface Category {
 export interface ProductFilters {
   search?: string;
   categoryId?: string;
+  categoryIds?: string[];
   priceMin?: number;
   priceMax?: number;
   materials?: string[];
