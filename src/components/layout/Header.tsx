@@ -398,10 +398,10 @@ export function Header() {
                   </div>
 
                   <div className="px-4">
-                    <Link
-                      to="/catalog"
-                      onClick={() => setCatalogOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-colors ${
+                    <button
+                      type="button"
+                      onClick={() => setActiveSectionId(null)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-colors text-left ${
                         activeSectionId === null
                           ? 'bg-white/10 text-white'
                           : 'text-neutral-300 hover:bg-white/5 hover:text-white'
@@ -409,7 +409,7 @@ export function Header() {
                     >
                       <LayoutGrid className="w-[17px] h-[17px]" strokeWidth={1.75} />
                       <span>{language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}</span>
-                    </Link>
+                    </button>
                   </div>
 
                   <div className="mx-6 my-4 h-px bg-white/10" />
