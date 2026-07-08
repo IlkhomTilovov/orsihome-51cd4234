@@ -247,6 +247,7 @@ export default function Categories() {
       icon: category.icon,
       is_active: category.is_active,
       sort_order: category.sort_order,
+      parent_id: category.parent_id || '',
       meta_title_uz: category.meta_title_uz || '',
       meta_title_ru: category.meta_title_ru || '',
       meta_description_uz: category.meta_description_uz || '',
