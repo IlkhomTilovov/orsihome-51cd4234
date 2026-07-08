@@ -533,9 +533,9 @@ export function Header() {
                         })}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
-                          <div className="flex items-center justify-between mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2.5">
                               <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                 <Tag className="w-4 h-4" />
@@ -547,7 +547,7 @@ export function Header() {
                             <Link
                               to="/catalog?discounted=1"
                               onClick={() => setCatalogOpen(false)}
-                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
                             >
                               {language === 'ru' ? 'Все' : 'Barchasi'}
                               <ChevronRight className="w-3.5 h-3.5" />
@@ -563,8 +563,8 @@ export function Header() {
                             )}
                           </div>
                         </section>
-                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
-                          <div className="flex items-center justify-between mb-4">
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2.5">
                               <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                 <Sparkles className="w-4 h-4" />
@@ -576,7 +576,7 @@ export function Header() {
                             <Link
                               to="/catalog"
                               onClick={() => setCatalogOpen(false)}
-                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
                             >
                               {language === 'ru' ? 'Все' : 'Barchasi'}
                               <ChevronRight className="w-3.5 h-3.5" />
