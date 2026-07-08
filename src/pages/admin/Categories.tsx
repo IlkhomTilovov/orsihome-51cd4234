@@ -616,6 +616,34 @@ export default function Categories() {
               </div>
 
               <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Родительская категория' : 'Ota kategoriya'}</Label>
+                <Select
+                  value={formData.parent_id || 'none'}
+                  onValueChange={(v) => setFormData({ ...formData, parent_id: v === 'none' ? '' : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={language === 'ru' ? 'Без родителя (верхний уровень)' : "Ota yo'q (yuqori daraja)"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {language === 'ru' ? '— Без родителя (верхний уровень) —' : "— Ota yo'q (yuqori daraja) —"}
+                    </SelectItem>
+                    {categories
+                      .filter(c => c.id !== selectedCategory?.id && !c.parent_id)
+                      .map(c => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {catName(c)}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'ru'
+                    ? 'Выберите родителя, чтобы сделать эту категорию подкатегорией.'
+                    : 'Ushbu kategoriyani subkategoriya qilish uchun ota kategoriya tanlang.'}
+                </p>
+
+              <div className="space-y-2">
                 <Label>{t.categories.slugUrl}</Label>
                 <Input
                   value={formData.slug}
