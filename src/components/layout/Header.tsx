@@ -532,20 +532,20 @@ export function Header() {
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-                          <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <section className="bg-background rounded-2xl p-5 ring-1 ring-border shadow-sm flex flex-col">
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2.5">
                                 <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                   <Tag className="w-4 h-4" />
                                 </span>
-                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-foreground">
                                   {language === 'ru' ? 'Со скидкой' : 'Chegirmada'}
                                 </h3>
                               </div>
                               <Link
                                 to="/catalog?discounted=1"
                                 onClick={() => setCatalogOpen(false)}
-                                className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
+                                className="text-[11.5px] font-medium text-muted-foreground hover:text-primary flex items-center gap-0.5"
                               >
                                 {language === 'ru' ? 'Все' : 'Barchasi'}
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -553,7 +553,7 @@ export function Header() {
                             </div>
                             <div className="flex flex-col gap-1">
                               {promoProducts.length === 0 ? (
-                                <p className="text-sm text-neutral-400 px-2 py-8 text-center">
+                                <p className="text-sm text-muted-foreground px-2 py-8 text-center">
                                   {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                                 </p>
                               ) : (
@@ -561,20 +561,20 @@ export function Header() {
                               )}
                             </div>
                           </section>
-                          <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <section className="bg-background rounded-2xl p-5 ring-1 ring-border shadow-sm flex flex-col">
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-2.5">
                                 <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                   <Sparkles className="w-4 h-4" />
                                 </span>
-                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-neutral-900">
+                                <h3 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-foreground">
                                   {language === 'ru' ? 'Новинки' : 'Yangi kelganlar'}
                                 </h3>
                               </div>
                               <Link
                                 to="/catalog"
                                 onClick={() => setCatalogOpen(false)}
-                                className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
+                                className="text-[11.5px] font-medium text-muted-foreground hover:text-primary flex items-center gap-0.5"
                               >
                                 {language === 'ru' ? 'Все' : 'Barchasi'}
                                 <ChevronRight className="w-3.5 h-3.5" />
@@ -582,7 +582,7 @@ export function Header() {
                             </div>
                             <div className="flex flex-col gap-1">
                               {newProducts.length === 0 ? (
-                                <p className="text-sm text-neutral-400 px-2 py-8 text-center">
+                                <p className="text-sm text-muted-foreground px-2 py-8 text-center">
                                   {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
                                 </p>
                               ) : (
