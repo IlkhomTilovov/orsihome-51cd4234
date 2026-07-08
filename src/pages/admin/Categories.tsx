@@ -405,6 +405,23 @@ export default function Categories() {
     );
   });
 
+  // Order: parents first, then their children indented directly after
+  const orderedCategories = (() => {
+    const parents = filteredCategories.filter(c => !c.parent_id);
+    const orphans = filteredCategories.filter(
+      c => c.parent_id && !filteredCategories.some(p => p.id === c.parent_id)
+    );
+    const result: Array<Category & { _depth: number }> = [];
+    parents.forEach(p => {
+      result.push({ ...p, _depth: 0 });
+      filteredCategories
+        .filter(c => c.parent_id === p.id)
+        .forEach(child => result.push({ ...child, _depth: 1 }));
+    });
+    orphans.forEach(o => result.push({ ...o, _depth: 1 }));
+    return result;
+  })();
+
   const getSeoStatus = (category: Category) => {
     const hasTitle = category.meta_title_uz || category.meta_title_ru;
     const hasDescription = category.meta_description_uz || category.meta_description_ru;
