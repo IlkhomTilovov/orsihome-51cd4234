@@ -930,9 +930,9 @@ export default function ProductsNew() {
                     <SelectValue placeholder="Toifani tanlang" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((cat) => (
+                    {orderedCategories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id}>
-                        {language === 'uz' ? cat.name_uz : cat.name_ru}
+                        {cat._depth > 0 ? '— ' : ''}{language === 'uz' ? cat.name_uz : cat.name_ru}
                       </SelectItem>
                     ))}
                   </SelectContent>
