@@ -349,9 +349,9 @@ export function Header() {
             <Link
               to={`/product/${p.slug}`}
               onClick={() => setCatalogOpen(false)}
-              className="group flex gap-3 p-2 rounded-xl hover:bg-white transition-colors"
+              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-neutral-50 transition-colors"
             >
-              <div className="w-[68px] h-[68px] rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+              <div className="w-16 h-16 rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/[0.06]">
                 {p.images?.[0] && (
                   <img
                     src={p.images[0]}
@@ -362,7 +362,7 @@ export function Header() {
                 )}
               </div>
               <div className="min-w-0 flex-1 flex flex-col justify-center">
-                <p className="text-[13px] font-medium text-neutral-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                <p className="text-[13px] font-medium text-neutral-900 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {language === 'ru' ? p.name_ru : p.name_uz}
                 </p>
                 <div className="mt-1 flex items-baseline gap-2">
@@ -533,9 +533,9 @@ export function Header() {
                         })}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
-                          <div className="flex items-center justify-between mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2.5">
                               <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                 <Tag className="w-4 h-4" />
@@ -547,7 +547,7 @@ export function Header() {
                             <Link
                               to="/catalog?discounted=1"
                               onClick={() => setCatalogOpen(false)}
-                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
                             >
                               {language === 'ru' ? 'Все' : 'Barchasi'}
                               <ChevronRight className="w-3.5 h-3.5" />
@@ -563,8 +563,8 @@ export function Header() {
                             )}
                           </div>
                         </section>
-                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/5">
-                          <div className="flex items-center justify-between mb-4">
+                        <section className="bg-white rounded-2xl p-5 ring-1 ring-black/[0.06] shadow-sm flex flex-col">
+                          <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2.5">
                               <span className="inline-flex w-8 h-8 rounded-lg bg-primary/10 text-primary items-center justify-center">
                                 <Sparkles className="w-4 h-4" />
@@ -576,7 +576,7 @@ export function Header() {
                             <Link
                               to="/catalog"
                               onClick={() => setCatalogOpen(false)}
-                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-1"
+                              className="text-[11.5px] font-medium text-neutral-500 hover:text-primary flex items-center gap-0.5"
                             >
                               {language === 'ru' ? 'Все' : 'Barchasi'}
                               <ChevronRight className="w-3.5 h-3.5" />
