@@ -37,7 +37,7 @@ export function Header() {
 
   useEffect(() => {
     if (!catalogOpen) {
-      setActiveSectionId(null);
+      setActiveSectionId(undefined);
       return;
     }
     let cancelled = false;
