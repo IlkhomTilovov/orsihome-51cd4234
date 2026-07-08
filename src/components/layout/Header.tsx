@@ -30,7 +30,7 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
-  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
+  
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [promoProducts, setPromoProducts] = useState<Product[]>([]);
   const [newProducts, setNewProducts] = useState<Product[]>([]);
