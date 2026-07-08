@@ -353,16 +353,34 @@ export function Header() {
         return (
           <>
             <div
-              className="fixed left-0 right-0 top-0 bottom-0 z-40 bg-black/30 backdrop-blur-sm animate-fade-in"
+              className="fixed left-0 right-0 top-0 bottom-0 z-40 bg-neutral-950/40 backdrop-blur-md animate-fade-in"
               onClick={() => setCatalogOpen(false)}
             />
             <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
               <div className="container mx-auto px-4 lg:px-8 py-4">
-                <div className="mx-auto max-w-4xl bg-white rounded-2xl shadow-2xl border border-black/5 overflow-hidden">
+                <div
+                  className="mx-auto max-w-5xl bg-white rounded-[20px] overflow-hidden ring-1 ring-black/[0.06]"
+                  style={{ boxShadow: '0 30px 80px -20px rgba(15,15,15,0.25), 0 12px 32px -12px rgba(15,15,15,0.15)' }}
+                >
+                  {/* Top bar */}
+                  <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-100">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
+                      {language === 'ru' ? 'Каталог' : 'Katalog'}
+                    </p>
+                    <Link
+                      to="/catalog"
+                      onClick={() => setCatalogOpen(false)}
+                      className="group inline-flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+                    >
+                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </Link>
+                  </div>
+
                   <div className="grid grid-cols-1 lg:grid-cols-12">
                     {/* Left: sections list */}
-                    <div className="lg:col-span-5 p-5">
-                      <ul className="space-y-1">
+                    <div className="lg:col-span-5 p-4">
+                      <ul className="space-y-0.5">
                         {allSectionEntries.map(({ id, name, Icon, count }) => {
                           const active = activeSectionId === id;
                           return (
@@ -371,17 +389,38 @@ export function Header() {
                                 type="button"
                                 onMouseEnter={() => setActiveSectionId(id)}
                                 onClick={() => setActiveSectionId(id)}
-                                className={`w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
-                                  active ? 'bg-neutral-100' : 'hover:bg-neutral-50'
+                                className={`group w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all ${
+                                  active
+                                    ? 'bg-neutral-900 text-white'
+                                    : 'text-neutral-900 hover:bg-neutral-100'
                                 }`}
                               >
-                                <Icon className="w-5 h-5 mt-0.5 text-neutral-700 shrink-0" strokeWidth={1.5} />
-                                <div className="min-w-0">
-                                  <p className="text-sm font-semibold text-neutral-900 leading-tight">{name}</p>
-                                  <p className="text-xs text-neutral-500 mt-0.5">
+                                <span
+                                  className={`inline-flex w-9 h-9 items-center justify-center rounded-lg shrink-0 transition-colors ${
+                                    active
+                                      ? 'bg-white/10 text-white'
+                                      : 'bg-neutral-100 text-neutral-700 group-hover:bg-white'
+                                  }`}
+                                >
+                                  <Icon className="w-[18px] h-[18px]" strokeWidth={1.75} />
+                                </span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[13.5px] font-semibold leading-tight">{name}</p>
+                                  <p
+                                    className={`text-[11.5px] mt-0.5 ${
+                                      active ? 'text-white/60' : 'text-neutral-500'
+                                    }`}
+                                  >
                                     {count} {language === 'ru' ? 'категорий' : 'kategoriya'}
                                   </p>
                                 </div>
+                                <ChevronRight
+                                  className={`w-4 h-4 transition-all ${
+                                    active
+                                      ? 'text-white/70 translate-x-0.5'
+                                      : 'text-neutral-300 group-hover:text-neutral-500 group-hover:translate-x-0.5'
+                                  }`}
+                                />
                               </button>
                             </li>
                           );
@@ -390,74 +429,93 @@ export function Header() {
                     </div>
 
                     {/* Right: categories or promo cards */}
-                    <div className="lg:col-span-7 bg-neutral-50/70 p-5 border-l border-black/5">
+                    <div className="lg:col-span-7 bg-neutral-50 p-6 border-l border-neutral-100 min-h-[280px]">
                       {activeSectionId && activeSectionParents.length > 0 ? (
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-4 h-full">
-                          {activeSectionParents.map((parent) => {
-                            const subs = categories.filter((c) => c.parent_id === parent.id);
-                            return (
-                              <div key={parent.id} className="space-y-1">
-                                <Link
-                                  to={`/catalog?category=${parent.slug}`}
-                                  onClick={() => setCatalogOpen(false)}
-                                  className="block text-sm font-semibold text-neutral-900 hover:text-primary transition-colors"
-                                >
-                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                </Link>
-                                {subs.length > 0 && (
-                                  <div className="flex flex-col gap-0.5">
-                                    {subs.map((sub) => (
-                                      <Link
-                                        key={sub.id}
-                                        to={`/catalog?category=${sub.slug}`}
-                                        onClick={() => setCatalogOpen(false)}
-                                        className="text-xs text-neutral-500 hover:text-primary transition-colors"
-                                      >
-                                        {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                      </Link>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
+                        <div className="h-full flex flex-col">
+                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-4">
+                            {language === 'ru' ? 'Категории' : 'Kategoriyalar'}
+                          </p>
+                          <div className="grid grid-cols-2 gap-x-6 gap-y-5 flex-1">
+                            {activeSectionParents.map((parent) => {
+                              const subs = categories.filter((c) => c.parent_id === parent.id);
+                              return (
+                                <div key={parent.id} className="space-y-1.5">
+                                  <Link
+                                    to={`/catalog?category=${parent.slug}`}
+                                    onClick={() => setCatalogOpen(false)}
+                                    className="group inline-flex items-center gap-1 text-[13.5px] font-semibold text-neutral-900 hover:text-primary transition-colors"
+                                  >
+                                    {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                    <ChevronRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                                  </Link>
+                                  {subs.length > 0 && (
+                                    <ul className="flex flex-col gap-1">
+                                      {subs.map((sub) => (
+                                        <li key={sub.id}>
+                                          <Link
+                                            to={`/catalog?category=${sub.slug}`}
+                                            onClick={() => setCatalogOpen(false)}
+                                            className="text-[12.5px] text-neutral-500 hover:text-neutral-900 transition-colors"
+                                          >
+                                            {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                          </Link>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 gap-3 h-full">
-                          {[promo1, promo2].filter(Boolean).map((p, i) => {
-                            const img = p!.images?.[0];
-                            const name = language === 'ru' ? p!.name_ru : p!.name_uz;
-                            return (
-                              <Link
-                                key={p!.id + i}
-                                to={`/product/${p!.slug || p!.id}`}
-                                onClick={() => setCatalogOpen(false)}
-                                className="relative rounded-xl overflow-hidden border border-black/5 bg-white group min-h-[110px]"
-                              >
-                                {img && (
-                                  <LazyImage
-                                    src={img}
-                                    alt={name}
-                                    wrapperClassName="absolute inset-0 w-full h-full"
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  />
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                                <div className="absolute bottom-0 left-0 right-0 p-3">
-                                  <p className="text-sm font-semibold text-white leading-snug line-clamp-1">
-                                    {name}
-                                  </p>
-                                </div>
-                              </Link>
-                            );
-                          })}
-                          {!promo1 && (
-                            <p className="text-sm text-neutral-500 self-center text-center">
-                              {language === 'ru'
-                                ? 'Выберите раздел'
-                                : "Bo'limni tanlang"}
-                            </p>
-                          )}
+                        <div className="h-full flex flex-col">
+                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-4">
+                            {language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
+                          </p>
+                          <div className="grid grid-cols-2 gap-3 flex-1">
+                            {[promo1, promo2].filter(Boolean).slice(0, 2).map((p, i) => {
+                              const img = p!.images?.[0];
+                              const name = language === 'ru' ? p!.name_ru : p!.name_uz;
+                              return (
+                                <Link
+                                  key={p!.id + i}
+                                  to={`/product/${p!.slug || p!.id}`}
+                                  onClick={() => setCatalogOpen(false)}
+                                  className="relative rounded-xl overflow-hidden bg-white ring-1 ring-black/5 group hover:ring-black/10 transition-all min-h-[180px]"
+                                >
+                                  {img && (
+                                    <LazyImage
+                                      src={img}
+                                      alt={name}
+                                      wrapperClassName="absolute inset-0 w-full h-full"
+                                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                  )}
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                                  {i === 0 && promo1 && (
+                                    <span className="absolute top-3 left-3 inline-flex items-center px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold uppercase tracking-wider text-neutral-900">
+                                      {language === 'ru' ? 'Скидка' : 'Chegirma'}
+                                    </span>
+                                  )}
+                                  <div className="absolute bottom-0 left-0 right-0 p-3.5">
+                                    <p className="text-[13px] font-semibold text-white leading-snug line-clamp-2">
+                                      {name}
+                                    </p>
+                                    <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-white/85">
+                                      {language === 'ru' ? 'Смотреть' : "Ko'rish"}
+                                      <ArrowUpRight className="w-3 h-3" />
+                                    </span>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                            {!promo1 && (
+                              <p className="col-span-2 text-sm text-neutral-500 self-center text-center">
+                                {language === 'ru' ? 'Выберите раздел' : "Bo'limni tanlang"}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -468,6 +526,7 @@ export function Header() {
           </>
         );
       })()}
+
 
 
 
