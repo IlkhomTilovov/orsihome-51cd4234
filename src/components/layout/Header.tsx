@@ -349,9 +349,9 @@ export function Header() {
             <Link
               to={`/product/${p.slug}`}
               onClick={() => setCatalogOpen(false)}
-              className="group flex gap-3 p-2 rounded-xl hover:bg-white transition-colors"
+              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-neutral-50 transition-colors"
             >
-              <div className="w-[68px] h-[68px] rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+              <div className="w-16 h-16 rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/[0.06]">
                 {p.images?.[0] && (
                   <img
                     src={p.images[0]}
@@ -362,7 +362,7 @@ export function Header() {
                 )}
               </div>
               <div className="min-w-0 flex-1 flex flex-col justify-center">
-                <p className="text-[13px] font-medium text-neutral-900 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                <p className="text-[13px] font-medium text-neutral-900 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {language === 'ru' ? p.name_ru : p.name_uz}
                 </p>
                 <div className="mt-1 flex items-baseline gap-2">
