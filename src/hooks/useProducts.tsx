@@ -42,6 +42,7 @@ export interface Category {
   icon: string | null;
   image: string | null;
   is_active: boolean | null;
+  parent_id: string | null;
   meta_title_uz: string | null;
   meta_title_ru: string | null;
   meta_description_uz: string | null;
