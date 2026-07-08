@@ -369,7 +369,6 @@ export function Header() {
                               <li>
                                 <button
                                   type="button"
-                                  onMouseEnter={() => setActiveSectionId('__none__')}
                                   onClick={() => setActiveSectionId('__none__')}
                                   className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                                     activeSectionId === '__none__'
