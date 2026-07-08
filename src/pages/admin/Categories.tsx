@@ -308,6 +308,7 @@ export default function Categories() {
         icon: formData.icon,
         is_active: formData.is_active,
         sort_order: formData.sort_order,
+        parent_id: formData.parent_id || null,
         meta_title_uz: formData.meta_title_uz || null,
         meta_title_ru: formData.meta_title_ru || null,
         meta_description_uz: formData.meta_description_uz || null,
