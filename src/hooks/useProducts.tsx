@@ -267,7 +267,7 @@ export function useCategories() {
       try {
         const { data, error } = await supabase
           .from('categories')
-          .select('id, name_uz, name_ru, slug, icon, image, is_active, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
+          .select('id, name_uz, name_ru, slug, icon, image, is_active, parent_id, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
           .eq('is_active', true)
           .order('sort_order', { ascending: true });
 
