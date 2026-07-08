@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, Loader2, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2, ChevronLeft, ChevronRight, X, LayoutGrid, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
