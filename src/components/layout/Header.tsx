@@ -116,7 +116,10 @@ export function Header() {
                   <div key={link.href} className="relative">
                     <button
                       type="button"
-                      onClick={() => setCatalogOpen(v => !v)}
+                      onClick={() => {
+                        setCatalogOpen(v => !v);
+                        setActiveSectionId(null);
+                      }}
                       className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
                         isActive(link.href) || catalogOpen
                           ? 'text-primary after:w-full'
