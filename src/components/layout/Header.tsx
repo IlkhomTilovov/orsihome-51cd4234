@@ -387,7 +387,6 @@ export function Header() {
                             <li key={id}>
                               <button
                                 type="button"
-                                onMouseEnter={() => setActiveSectionId(id)}
                                 onClick={() => setActiveSectionId(id)}
                                 className={`group w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all ${
                                   active
