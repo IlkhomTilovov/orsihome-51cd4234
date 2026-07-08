@@ -21,6 +21,8 @@ export default function Catalog() {
   const { isAdmin } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [catalogDrawerOpen, setCatalogDrawerOpen] = useState(false);
+  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
   
   const initialCategoryParam = searchParams.get('category') || 'all';
   const promoTileId = searchParams.get('promo') || '';
