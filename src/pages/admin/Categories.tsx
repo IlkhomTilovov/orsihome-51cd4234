@@ -642,6 +642,9 @@ export default function Categories() {
                     ? 'Выберите родителя, чтобы сделать эту категорию подкатегорией.'
                     : 'Ushbu kategoriyani subkategoriya qilish uchun ota kategoriya tanlang.'}
                 </p>
+              </div>
+
+
 
               <div className="space-y-2">
                 <Label>{t.categories.slugUrl}</Label>
