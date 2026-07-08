@@ -349,9 +349,9 @@ export function Header() {
             <Link
               to={`/product/${p.slug}`}
               onClick={() => setCatalogOpen(false)}
-              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-neutral-50 transition-colors"
+              className="group flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-muted transition-colors"
             >
-              <div className="w-16 h-16 rounded-xl bg-neutral-100 overflow-hidden shrink-0 ring-1 ring-black/[0.06]">
+              <div className="w-16 h-16 rounded-xl bg-muted overflow-hidden shrink-0 ring-1 ring-border">
                 {p.images?.[0] && (
                   <img
                     src={p.images[0]}
@@ -362,13 +362,13 @@ export function Header() {
                 )}
               </div>
               <div className="min-w-0 flex-1 flex flex-col justify-center">
-                <p className="text-[13px] font-medium text-neutral-900 leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                <p className="text-[13px] font-medium text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {language === 'ru' ? p.name_ru : p.name_uz}
                 </p>
                 <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-[13px] font-semibold text-neutral-900">{formatPrice(p.price)}</span>
+                  <span className="text-[13px] font-semibold text-foreground">{formatPrice(p.price)}</span>
                   {p.original_price && p.price && p.original_price > p.price && (
-                    <span className="text-[11px] line-through text-neutral-400">
+                    <span className="text-[11px] line-through text-muted-foreground">
                       {formatPrice(p.original_price)}
                     </span>
                   )}
