@@ -504,20 +504,21 @@ export default function Categories() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCategories.map((category) => {
+              {orderedCategories.map((category) => {
                 const seoStatus = getSeoStatus(category);
                 const productsCount = productCounts[category.id] || 0;
-                
+                const isChild = category._depth > 0;
+
                 return (
-                  <TableRow key={category.id}>
+                  <TableRow key={category.id} className={isChild ? 'bg-muted/20' : ''}>
                     <TableCell>
                       <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                     </TableCell>
                     <TableCell>
                       {category.image ? (
-                        <img 
-                          src={category.image} 
-                          alt={category.name_uz} 
+                        <img
+                          src={category.image}
+                          alt={category.name_uz}
                           className="h-12 w-12 object-cover rounded-lg border"
                         />
                       ) : (
@@ -527,9 +528,12 @@ export default function Categories() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div>
-                        <p className="font-medium">{catName(category)}</p>
-                        <p className="text-sm text-muted-foreground">{language === 'ru' ? category.name_uz : category.name_ru}</p>
+                      <div className="flex items-center gap-2" style={{ paddingLeft: isChild ? 20 : 0 }}>
+                        {isChild && <span className="text-muted-foreground">└</span>}
+                        <div>
+                          <p className="font-medium">{catName(category)}</p>
+                          <p className="text-sm text-muted-foreground">{language === 'ru' ? category.name_uz : category.name_ru}</p>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
