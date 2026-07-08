@@ -250,6 +250,54 @@ export default function Catalog() {
             <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
               {categoryName || t.catalog.title}
             </h1>
+            {(() => {
+              // Show subcategory chips: children of currently selected top-level category,
+              // or all top-level parents when viewing "all" categories.
+              const selectedId = sidebarFilters.categoryId;
+              const currentCat = categories.find(c => c.id === selectedId);
+              // If a subcategory is selected, show its siblings under the same parent.
+              const parentId = currentCat?.parent_id || (currentCat ? currentCat.id : null);
+              const chips = parentId
+                ? categories.filter(c => c.parent_id === parentId)
+                : [];
+              if (chips.length === 0) return null;
+              const parentCat = categories.find(c => c.id === parentId);
+              return (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {parentCat && (
+                    <Button
+                      size="sm"
+                      variant={selectedId === parentCat.id ? 'default' : 'outline'}
+                      className="rounded-full"
+                      onClick={() => setSearchParams(prev => {
+                        const p = new URLSearchParams(prev);
+                        p.set('category', parentCat.slug);
+                        p.delete('page');
+                        return p;
+                      })}
+                    >
+                      {language === 'uz' ? 'Barchasi' : 'Все'}
+                    </Button>
+                  )}
+                  {chips.map(sub => (
+                    <Button
+                      key={sub.id}
+                      size="sm"
+                      variant={selectedId === sub.id ? 'default' : 'outline'}
+                      className="rounded-full"
+                      onClick={() => setSearchParams(prev => {
+                        const p = new URLSearchParams(prev);
+                        p.set('category', sub.slug);
+                        p.delete('page');
+                        return p;
+                      })}
+                    >
+                      {language === 'uz' ? sub.name_uz : sub.name_ru}
+                    </Button>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
         <div className="mb-8">
