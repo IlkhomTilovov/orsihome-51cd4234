@@ -410,7 +410,7 @@ export default function Catalog() {
                   </div>
                 )}
               </>
-            )}
+
           </div>
         </div>
       </div>
