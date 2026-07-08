@@ -31,6 +31,7 @@ export function Header() {
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
 
   // Group parent categories by section
   const parentsBySection = useMemo(() => {
@@ -48,12 +49,23 @@ export function Header() {
     return { grouped, noSection };
   }, [categories]);
 
-  // Auto-select first category when catalog opens or categories load
+  // Sections that actually have parent categories
+  const visibleSections = useMemo(
+    () => sections.filter((s) => (parentsBySection.grouped[s.id] || []).length > 0),
+    [sections, parentsBySection]
+  );
+
+  // Auto-select first section when catalog opens
   useEffect(() => {
-    if (catalogOpen && categories.length > 0) {
-      setActiveCategoryId(categories[0].id);
+    if (catalogOpen && !activeSectionId) {
+      if (visibleSections.length > 0) setActiveSectionId(visibleSections[0].id);
+      else if (parentsBySection.noSection.length > 0) setActiveSectionId('__none__');
     }
-  }, [catalogOpen, categories]);
+  }, [catalogOpen, visibleSections, parentsBySection.noSection.length, activeSectionId]);
+
+  const activeSectionParents = activeSectionId === '__none__'
+    ? parentsBySection.noSection
+    : (activeSectionId ? parentsBySection.grouped[activeSectionId] || [] : []);
 
   const activeCategory = categories.find((c) => c.id === activeCategoryId) || categories[0];
   const { products: previewProducts, loading: previewLoading } = useProducts(
