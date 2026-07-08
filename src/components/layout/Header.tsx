@@ -1,14 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, ArrowUpRight, Sofa, Armchair, Package, Box, Lamp, Layers } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, LayoutGrid } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories, useProducts, useSections } from '@/hooks/useProducts';
+import { useCategories, useSections } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
-import { LazyImage } from '@/components/LazyImage';
 import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
 export function Header() {
@@ -30,49 +30,9 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
-  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
-  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
 
-  // Group parent categories by section
-  const parentsBySection = useMemo(() => {
-    const parents = categories.filter((c) => !c.parent_id);
-    const grouped: Record<string, typeof parents> = {};
-    const noSection: typeof parents = [];
-    parents.forEach((p) => {
-      if (p.section_id) {
-        grouped[p.section_id] = grouped[p.section_id] || [];
-        grouped[p.section_id].push(p);
-      } else {
-        noSection.push(p);
-      }
-    });
-    return { grouped, noSection };
-  }, [categories]);
 
-  // Sections that actually have parent categories
-  const visibleSections = useMemo(
-    () => sections.filter((s) => (parentsBySection.grouped[s.id] || []).length > 0),
-    [sections, parentsBySection]
-  );
-
-  // No auto-selection: categories shown only after a section is clicked
-
-  const activeSectionParents = activeSectionId === '__none__'
-    ? parentsBySection.noSection
-    : (activeSectionId ? parentsBySection.grouped[activeSectionId] || [] : []);
-
-  const activeCategory = categories.find((c) => c.id === activeCategoryId) || categories[0];
-  const { products: previewProducts, loading: previewLoading } = useProducts(
-    1,
-    { categoryId: activeCategoryId || undefined },
-    6
-  );
-  // Promo card uchun faqat chegirmadagi mahsulotlar
-  const { products: discountedProducts } = useProducts(
-    1,
-    { discounted: true },
-    1
-  );
 
 
 
@@ -116,10 +76,7 @@ export function Header() {
                   <div key={link.href} className="relative">
                     <button
                       type="button"
-                      onClick={() => {
-                        setCatalogOpen(v => !v);
-                        setActiveSectionId(null);
-                      }}
+                      onClick={() => setCatalogOpen(v => !v)}
                       className={`flex items-center gap-1 text-sm font-medium tracking-widest uppercase transition-colors duration-300 hover:text-primary relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 ${
                         isActive(link.href) || catalogOpen
                           ? 'text-primary after:w-full'
@@ -329,210 +286,110 @@ export function Header() {
         )}
       </div>
 
-      {/* Catalog Mega Menu — Linear style, white */}
-      {catalogOpen && (() => {
-        const sectionIcons = [Sofa, Armchair, Lamp, Package, Box, Layers];
-        const allSectionEntries = [
-          ...visibleSections.map((s, i) => ({
-            id: s.id,
-            name: language === 'ru' ? s.name_ru : s.name_uz,
-            Icon: sectionIcons[i % sectionIcons.length],
-            count: (parentsBySection.grouped[s.id] || []).length,
-          })),
-          ...(parentsBySection.noSection.length > 0
-            ? [{
+      {/* Catalog Sidebar Drawer (left) */}
+      <Sheet open={catalogOpen} onOpenChange={setCatalogOpen}>
+        <SheetContent side="left" className="w-[340px] sm:w-[400px] p-0 flex flex-col">
+          <SheetHeader className="px-5 py-4 border-b flex-row items-center justify-between space-y-0">
+            <SheetTitle className="text-lg flex items-center gap-2">
+              <LayoutGrid className="w-4 h-4" />
+              {language === 'ru' ? 'Каталог' : 'Katalog'}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto p-3">
+            <Link
+              to="/catalog"
+              onClick={() => setCatalogOpen(false)}
+              className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-neutral-100 mb-2 text-sm font-semibold text-neutral-900"
+            >
+              <span className="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-neutral-100">
+                <LayoutGrid className="w-[18px] h-[18px]" strokeWidth={1.75} />
+              </span>
+              {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+            </Link>
+
+            {[
+              ...sections.map((s) => ({
+                id: s.id,
+                name: language === 'ru' ? s.name_ru : s.name_uz,
+                parents: categories.filter((c) => !c.parent_id && c.section_id === s.id),
+              })),
+              {
                 id: '__none__',
                 name: language === 'ru' ? 'Другое' : 'Boshqa',
-                Icon: Package,
-                count: parentsBySection.noSection.length,
-              }]
-            : []),
-        ];
-        const promo1 = discountedProducts[0];
-        const promo2 = previewProducts.find((p) => p.id !== promo1?.id) || previewProducts[0];
-        return (
-          <>
-            <div
-              className="fixed left-0 right-0 top-0 bottom-0 z-40 bg-neutral-950/40 backdrop-blur-md animate-fade-in"
-              onClick={() => setCatalogOpen(false)}
-            />
-            <div className="absolute left-0 right-0 top-full z-50 animate-fade-in">
-              <div className="container mx-auto px-4 lg:px-8 py-4">
-                <div
-                  className="mx-auto max-w-5xl bg-white rounded-[20px] overflow-hidden ring-1 ring-black/[0.06]"
-                  style={{ boxShadow: '0 30px 80px -20px rgba(15,15,15,0.25), 0 12px 32px -12px rgba(15,15,15,0.15)' }}
-                >
-                  {/* Top bar */}
-                  <div className="flex items-center justify-between px-6 py-3 border-b border-neutral-100">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-neutral-500">
-                      {language === 'ru' ? 'Каталог' : 'Katalog'}
-                    </p>
-                    <Link
-                      to="/catalog"
-                      onClick={() => setCatalogOpen(false)}
-                      className="group inline-flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
-                    >
-                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
-                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </Link>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-12">
-                    {/* Left: sections list */}
-                    <div className="lg:col-span-5 p-4">
-                      <ul className="space-y-0.5">
-                        {allSectionEntries.map(({ id, name, Icon, count }) => {
-                          const active = activeSectionId === id;
-                          return (
-                            <li key={id}>
+                parents: categories.filter((c) => !c.parent_id && !c.section_id),
+              },
+            ]
+              .filter((sec) => sec.parents.length > 0)
+              .map((section) => (
+                <div key={section.id} className="mt-4">
+                  <p className="px-3 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
+                    {section.name}
+                  </p>
+                  <ul className="space-y-0.5">
+                    {section.parents.map((parent) => {
+                      const subs = categories.filter((c) => c.parent_id === parent.id);
+                      const isExpanded = expandedParents[parent.id] ?? false;
+                      const hasSubs = subs.length > 0;
+                      return (
+                        <li key={parent.id}>
+                          <div className="group flex items-stretch rounded-xl overflow-hidden hover:bg-neutral-50">
+                            <Link
+                              to={`/catalog?category=${parent.slug}`}
+                              onClick={() => setCatalogOpen(false)}
+                              className="flex-1 flex items-center gap-3 px-3 py-2.5 min-w-0"
+                            >
+                              {parent.image ? (
+                                <img
+                                  src={parent.image}
+                                  alt=""
+                                  className="w-9 h-9 rounded-lg object-cover shrink-0"
+                                />
+                              ) : (
+                                <span className="w-9 h-9 rounded-lg bg-neutral-100 shrink-0" />
+                              )}
+                              <span className="text-sm font-medium text-neutral-900 truncate">
+                                {language === 'ru' ? parent.name_ru : parent.name_uz}
+                              </span>
+                            </Link>
+                            {hasSubs && (
                               <button
-                                type="button"
-                                onClick={() => setActiveSectionId(id)}
-                                className={`group w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all ${
-                                  active
-                                    ? 'bg-neutral-900 text-white'
-                                    : 'text-neutral-900 hover:bg-neutral-100'
-                                }`}
+                                onClick={() =>
+                                  setExpandedParents((prev) => ({ ...prev, [parent.id]: !isExpanded }))
+                                }
+                                className="px-3 flex items-center text-neutral-400 hover:text-neutral-900"
+                                aria-label="toggle"
                               >
-                                <span
-                                  className={`inline-flex w-9 h-9 items-center justify-center rounded-lg shrink-0 transition-colors ${
-                                    active
-                                      ? 'bg-white/10 text-white'
-                                      : 'bg-neutral-100 text-neutral-700 group-hover:bg-white'
-                                  }`}
-                                >
-                                  <Icon className="w-[18px] h-[18px]" strokeWidth={1.75} />
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[13.5px] font-semibold leading-tight">{name}</p>
-                                  <p
-                                    className={`text-[11.5px] mt-0.5 ${
-                                      active ? 'text-white/60' : 'text-neutral-500'
-                                    }`}
-                                  >
-                                    {count} {language === 'ru' ? 'категорий' : 'kategoriya'}
-                                  </p>
-                                </div>
-                                <ChevronRight
-                                  className={`w-4 h-4 transition-all ${
-                                    active
-                                      ? 'text-white/70 translate-x-0.5'
-                                      : 'text-neutral-300 group-hover:text-neutral-500 group-hover:translate-x-0.5'
-                                  }`}
+                                <ChevronDown
+                                  className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                                 />
                               </button>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-
-                    {/* Right: categories or promo cards */}
-                    <div className="lg:col-span-7 bg-neutral-50 p-6 border-l border-neutral-100 min-h-[280px]">
-                      {activeSectionId && activeSectionParents.length > 0 ? (
-                        <div className="h-full flex flex-col">
-                          <div className="flex items-center justify-between mb-4">
-                            <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
-                              {language === 'ru' ? 'Категории' : 'Kategoriyalar'}
-                            </p>
-                            <span className="text-[10.5px] text-neutral-400">
-                              {activeSectionParents.length}
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 flex-1 content-start">
-                            {activeSectionParents.map((parent) => {
-                              const subs = categories.filter((c) => c.parent_id === parent.id);
-                              return (
-                                <Link
-                                  key={parent.id}
-                                  to={`/catalog?category=${parent.slug}`}
-                                  onClick={() => setCatalogOpen(false)}
-                                  className="group relative flex items-start gap-3 px-3.5 py-3 rounded-xl bg-white ring-1 ring-black/[0.05] hover:ring-neutral-900/20 hover:-translate-y-0.5 transition-all duration-200"
-                                >
-                                  <span className="mt-1 w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-primary transition-colors shrink-0" />
-                                  <div className="min-w-0 flex-1">
-                                    <p className="text-[13px] font-semibold text-neutral-900 leading-tight">
-                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                    </p>
-                                    {subs.length > 0 ? (
-                                      <p className="mt-1 text-[11.5px] text-neutral-500 line-clamp-1">
-                                        {subs
-                                          .slice(0, 3)
-                                          .map((s) => (language === 'ru' ? s.name_ru : s.name_uz))
-                                          .join(' · ')}
-                                        {subs.length > 3 && ` +${subs.length - 3}`}
-                                      </p>
-                                    ) : (
-                                      <p className="mt-1 text-[11.5px] text-neutral-400">
-                                        {language === 'ru' ? 'Смотреть товары' : "Tovarlarni ko'rish"}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <ChevronRight className="w-4 h-4 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-0.5 transition-all shrink-0 mt-0.5" />
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ) : (
-
-                        <div className="h-full flex flex-col">
-                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400 mb-4">
-                            {language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
-                          </p>
-                          <div className="grid grid-cols-2 gap-3 flex-1">
-                            {[promo1, promo2].filter(Boolean).slice(0, 2).map((p, i) => {
-                              const img = p!.images?.[0];
-                              const name = language === 'ru' ? p!.name_ru : p!.name_uz;
-                              return (
-                                <Link
-                                  key={p!.id + i}
-                                  to={`/product/${p!.slug || p!.id}`}
-                                  onClick={() => setCatalogOpen(false)}
-                                  className="relative rounded-xl overflow-hidden bg-white ring-1 ring-black/5 group hover:ring-black/10 transition-all min-h-[180px]"
-                                >
-                                  {img && (
-                                    <LazyImage
-                                      src={img}
-                                      alt={name}
-                                      wrapperClassName="absolute inset-0 w-full h-full"
-                                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                  )}
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                                  {i === 0 && promo1 && (
-                                    <span className="absolute top-3 left-3 inline-flex items-center px-2 py-0.5 rounded-full bg-white/95 text-[10px] font-semibold uppercase tracking-wider text-neutral-900">
-                                      {language === 'ru' ? 'Скидка' : 'Chegirma'}
-                                    </span>
-                                  )}
-                                  <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                                    <p className="text-[13px] font-semibold text-white leading-snug line-clamp-2">
-                                      {name}
-                                    </p>
-                                    <span className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-white/85">
-                                      {language === 'ru' ? 'Смотреть' : "Ko'rish"}
-                                      <ArrowUpRight className="w-3 h-3" />
-                                    </span>
-                                  </div>
-                                </Link>
-                              );
-                            })}
-                            {!promo1 && (
-                              <p className="col-span-2 text-sm text-neutral-500 self-center text-center">
-                                {language === 'ru' ? 'Выберите раздел' : "Bo'limni tanlang"}
-                              </p>
                             )}
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                          {hasSubs && isExpanded && (
+                            <ul className="ml-12 mt-0.5 mb-1 border-l border-neutral-200 pl-3">
+                              {subs.map((sub) => (
+                                <li key={sub.id}>
+                                  <Link
+                                    to={`/catalog?category=${sub.slug}`}
+                                    onClick={() => setCatalogOpen(false)}
+                                    className="block text-[13px] px-2 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors"
+                                  >
+                                    {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-              </div>
-            </div>
-          </>
-        );
-      })()}
+              ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+
 
 
 
