@@ -30,49 +30,9 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
-  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
-  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
 
-  // Group parent categories by section
-  const parentsBySection = useMemo(() => {
-    const parents = categories.filter((c) => !c.parent_id);
-    const grouped: Record<string, typeof parents> = {};
-    const noSection: typeof parents = [];
-    parents.forEach((p) => {
-      if (p.section_id) {
-        grouped[p.section_id] = grouped[p.section_id] || [];
-        grouped[p.section_id].push(p);
-      } else {
-        noSection.push(p);
-      }
-    });
-    return { grouped, noSection };
-  }, [categories]);
 
-  // Sections that actually have parent categories
-  const visibleSections = useMemo(
-    () => sections.filter((s) => (parentsBySection.grouped[s.id] || []).length > 0),
-    [sections, parentsBySection]
-  );
-
-  // No auto-selection: categories shown only after a section is clicked
-
-  const activeSectionParents = activeSectionId === '__none__'
-    ? parentsBySection.noSection
-    : (activeSectionId ? parentsBySection.grouped[activeSectionId] || [] : []);
-
-  const activeCategory = categories.find((c) => c.id === activeCategoryId) || categories[0];
-  const { products: previewProducts, loading: previewLoading } = useProducts(
-    1,
-    { categoryId: activeCategoryId || undefined },
-    6
-  );
-  // Promo card uchun faqat chegirmadagi mahsulotlar
-  const { products: discountedProducts } = useProducts(
-    1,
-    { discounted: true },
-    1
-  );
 
 
 
