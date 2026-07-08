@@ -386,10 +386,10 @@ export function Header() {
               <div className={`fixed left-4 top-1/2 -translate-y-1/2 z-[70] h-[95%] p-3 flex gap-3 animate-in slide-in-from-left duration-500 transition-all ${activeSectionId === undefined ? 'w-auto' : 'w-[95%]'}`}>
                 {/* Dark left sidebar */}
                 <aside
-                  className="w-[280px] shrink-0 bg-neutral-950 text-neutral-100 flex flex-col rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-white/10 overflow-hidden relative z-[2]"
+                  className="w-[280px] shrink-0 bg-background text-foreground flex flex-col rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-border overflow-hidden relative z-[2]"
                 >
                   <div className="px-6 pt-6 pb-4 flex items-center gap-2.5">
-                    <span className="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-white/10">
+                    <span className="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <LayoutGrid className="w-4 h-4" />
                     </span>
                     <div className="text-[15px] font-semibold tracking-wide">
@@ -403,8 +403,8 @@ export function Header() {
                       onClick={() => setActiveSectionId(null)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-colors text-left ${
                         activeSectionId === null
-                          ? 'bg-white/10 text-white'
-                          : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
                       <LayoutGrid className="w-[17px] h-[17px]" strokeWidth={1.75} />
@@ -412,10 +412,10 @@ export function Header() {
                     </button>
                   </div>
 
-                  <div className="mx-6 my-4 h-px bg-white/10" />
+                  <div className="mx-6 my-4 h-px bg-border" />
 
                   <div className="px-4 pb-2">
-                    <p className="px-3 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
+                    <p className="px-3 mb-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                       {language === 'ru' ? 'Разделы' : "Bo'limlar"}
                     </p>
                   </div>
@@ -430,8 +430,8 @@ export function Header() {
                           onClick={() => setActiveSectionId(section.id)}
                           className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-[13.5px] font-medium transition-all ${
                             isActive
-                              ? 'bg-white text-neutral-950 shadow-sm'
-                              : 'text-neutral-300 hover:bg-white/5 hover:text-white'
+                              ? 'bg-primary text-primary-foreground shadow-sm'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                           }`}
                         >
                           <span className="truncate">{section.name}</span>
@@ -441,7 +441,7 @@ export function Header() {
                     })}
                   </nav>
 
-                  <div className="px-6 py-4 border-t border-white/10 text-[11px] text-neutral-500">
+                  <div className="px-6 py-4 border-t border-border text-[11px] text-muted-foreground">
                     ORSI HOME · {language === 'ru' ? 'Мебель' : 'Mebel'}
                   </div>
                 </aside>
