@@ -118,13 +118,17 @@ export default function Catalog() {
     }
 
     if (debouncedSearch) f.search = debouncedSearch;
-    // Only pass category if it's a valid UUID
+    // Only pass category if it's a valid UUID. If the selected category has
+    // subcategories, include all descendants so parent view shows every product.
     if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
-      f.categoryId = sidebarFilters.categoryId;
+      const selectedId = sidebarFilters.categoryId;
+      const childIds = categories.filter(c => c.parent_id === selectedId).map(c => c.id);
+      if (childIds.length > 0) {
+        f.categoryIds = [selectedId, ...childIds];
+      } else {
+        f.categoryId = selectedId;
+      }
     }
-    // Only apply price filters after the user has explicitly changed them.
-    // Prevents a race where the initial default (700000) is sent before
-    // filterOptions.maxPrice resolves, causing a double-fetch flicker.
     if (priceTouched && sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
     if (priceTouched && sidebarFilters.priceMax < filterOptions.maxPrice) f.priceMax = sidebarFilters.priceMax;
     if (sidebarFilters.materials.length > 0) f.materials = sidebarFilters.materials;
@@ -135,7 +139,7 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched, categories]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
@@ -246,6 +250,54 @@ export default function Catalog() {
             <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
               {categoryName || t.catalog.title}
             </h1>
+            {(() => {
+              // Show subcategory chips: children of currently selected top-level category,
+              // or all top-level parents when viewing "all" categories.
+              const selectedId = sidebarFilters.categoryId;
+              const currentCat = categories.find(c => c.id === selectedId);
+              // If a subcategory is selected, show its siblings under the same parent.
+              const parentId = currentCat?.parent_id || (currentCat ? currentCat.id : null);
+              const chips = parentId
+                ? categories.filter(c => c.parent_id === parentId)
+                : [];
+              if (chips.length === 0) return null;
+              const parentCat = categories.find(c => c.id === parentId);
+              return (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {parentCat && (
+                    <Button
+                      size="sm"
+                      variant={selectedId === parentCat.id ? 'default' : 'outline'}
+                      className="rounded-full"
+                      onClick={() => setSearchParams(prev => {
+                        const p = new URLSearchParams(prev);
+                        p.set('category', parentCat.slug);
+                        p.delete('page');
+                        return p;
+                      })}
+                    >
+                      {language === 'uz' ? 'Barchasi' : 'Все'}
+                    </Button>
+                  )}
+                  {chips.map(sub => (
+                    <Button
+                      key={sub.id}
+                      size="sm"
+                      variant={selectedId === sub.id ? 'default' : 'outline'}
+                      className="rounded-full"
+                      onClick={() => setSearchParams(prev => {
+                        const p = new URLSearchParams(prev);
+                        p.set('category', sub.slug);
+                        p.delete('page');
+                        return p;
+                      })}
+                    >
+                      {language === 'uz' ? sub.name_uz : sub.name_ru}
+                    </Button>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
         <div className="mb-8">

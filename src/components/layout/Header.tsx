@@ -208,16 +208,30 @@ export function Header() {
                           >
                             {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
                           </Link>
-                          {categories.map((c) => (
-                            <Link
-                              key={c.id}
-                              to={`/catalog?category=${c.slug}`}
-                              onClick={() => setIsOpen(false)}
-                              className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
-                            >
-                              {language === 'ru' ? c.name_ru : c.name_uz}
-                            </Link>
-                          ))}
+                          {categories.filter(c => !c.parent_id).map((parent) => {
+                            const subs = categories.filter(c => c.parent_id === parent.id);
+                            return (
+                              <div key={parent.id}>
+                                <Link
+                                  to={`/catalog?category=${parent.slug}`}
+                                  onClick={() => setIsOpen(false)}
+                                  className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
+                                >
+                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                </Link>
+                                {subs.map((sub) => (
+                                  <Link
+                                    key={sub.id}
+                                    to={`/catalog?category=${sub.slug}`}
+                                    onClick={() => setIsOpen(false)}
+                                    className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
+                                  >
+                                    — {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                  </Link>
+                                ))}
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -259,17 +273,35 @@ export function Header() {
                       {language === 'ru' ? 'Товары' : 'Tovarlar'}
                     </h3>
                     {categories.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                        {categories.map((c) => (
-                          <Link
-                            key={c.id}
-                            to={`/catalog?category=${c.slug}`}
-                            onClick={() => setCatalogOpen(false)}
-                            className="text-sm text-foreground/80 hover:text-primary transition-colors py-1"
-                          >
-                            {language === 'ru' ? c.name_ru : c.name_uz}
-                          </Link>
-                        ))}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                        {categories.filter(c => !c.parent_id).map((parent) => {
+                          const subs = categories.filter(c => c.parent_id === parent.id);
+                          return (
+                            <div key={parent.id} className="space-y-2">
+                              <Link
+                                to={`/catalog?category=${parent.slug}`}
+                                onClick={() => setCatalogOpen(false)}
+                                className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                              >
+                                {language === 'ru' ? parent.name_ru : parent.name_uz}
+                              </Link>
+                              {subs.length > 0 && (
+                                <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
+                                  {subs.map(sub => (
+                                    <Link
+                                      key={sub.id}
+                                      to={`/catalog?category=${sub.slug}`}
+                                      onClick={() => setCatalogOpen(false)}
+                                      className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
+                                    >
+                                      {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     ) : (
                       <Link

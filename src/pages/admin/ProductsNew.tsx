@@ -43,6 +43,7 @@ interface Category {
   id: string;
   name_uz: string;
   name_ru: string;
+  parent_id?: string | null;
 }
 
 interface Product {
@@ -198,6 +199,21 @@ export default function ProductsNew() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Categories ordered hierarchically: parents then children indented
+  const orderedCategories = (() => {
+    const parents = categories.filter(c => !c.parent_id);
+    const orphans = categories.filter(c => c.parent_id && !categories.some(p => p.id === c.parent_id));
+    const result: Array<Category & { _depth: number }> = [];
+    parents.forEach(p => {
+      result.push({ ...p, _depth: 0 });
+      categories.filter(c => c.parent_id === p.id).forEach(child => {
+        result.push({ ...child, _depth: 1 });
+      });
+    });
+    orphans.forEach(o => result.push({ ...o, _depth: 1 }));
+    return result;
+  })();
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -210,7 +226,7 @@ export default function ProductsNew() {
     try {
       const { data, error } = await supabase
         .from('categories')
-        .select('id, name_uz, name_ru')
+        .select('id, name_uz, name_ru, parent_id')
         .order('sort_order');
       
       if (error) throw error;
@@ -672,9 +688,9 @@ export default function ProductsNew() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t.products.allCategories}</SelectItem>
-                {categories.map(cat => (
+                {orderedCategories.map(cat => (
                   <SelectItem key={cat.id} value={cat.id}>
-                    {language === 'uz' ? cat.name_uz : cat.name_ru}
+                    {cat._depth > 0 ? '— ' : ''}{language === 'uz' ? cat.name_uz : cat.name_ru}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -914,9 +930,9 @@ export default function ProductsNew() {
                     <SelectValue placeholder="Toifani tanlang" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories.map((cat) => (
+                    {orderedCategories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id}>
-                        {language === 'uz' ? cat.name_uz : cat.name_ru}
+                        {cat._depth > 0 ? '— ' : ''}{language === 'uz' ? cat.name_uz : cat.name_ru}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -28,6 +28,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useAdminT } from '@/hooks/useAdminT';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -41,6 +42,7 @@ interface Category {
   icon: string;
   sort_order: number;
   is_active: boolean;
+  parent_id: string | null;
   created_at: string;
   updated_at: string;
   meta_title_uz: string | null;
@@ -61,6 +63,7 @@ interface FormData {
   icon: string;
   is_active: boolean;
   sort_order: number;
+  parent_id: string;
   meta_title_uz: string;
   meta_title_ru: string;
   meta_description_uz: string;
@@ -78,6 +81,7 @@ const initialFormData: FormData = {
   icon: 'Package',
   is_active: true,
   sort_order: 0,
+  parent_id: '',
   meta_title_uz: '',
   meta_title_ru: '',
   meta_description_uz: '',
@@ -244,6 +248,7 @@ export default function Categories() {
       icon: category.icon,
       is_active: category.is_active,
       sort_order: category.sort_order,
+      parent_id: category.parent_id || '',
       meta_title_uz: category.meta_title_uz || '',
       meta_title_ru: category.meta_title_ru || '',
       meta_description_uz: category.meta_description_uz || '',
@@ -304,6 +309,7 @@ export default function Categories() {
         icon: formData.icon,
         is_active: formData.is_active,
         sort_order: formData.sort_order,
+        parent_id: formData.parent_id || null,
         meta_title_uz: formData.meta_title_uz || null,
         meta_title_ru: formData.meta_title_ru || null,
         meta_description_uz: formData.meta_description_uz || null,
@@ -399,6 +405,23 @@ export default function Categories() {
     );
   });
 
+  // Order: parents first, then their children indented directly after
+  const orderedCategories = (() => {
+    const parents = filteredCategories.filter(c => !c.parent_id);
+    const orphans = filteredCategories.filter(
+      c => c.parent_id && !filteredCategories.some(p => p.id === c.parent_id)
+    );
+    const result: Array<Category & { _depth: number }> = [];
+    parents.forEach(p => {
+      result.push({ ...p, _depth: 0 });
+      filteredCategories
+        .filter(c => c.parent_id === p.id)
+        .forEach(child => result.push({ ...child, _depth: 1 }));
+    });
+    orphans.forEach(o => result.push({ ...o, _depth: 1 }));
+    return result;
+  })();
+
   const getSeoStatus = (category: Category) => {
     const hasTitle = category.meta_title_uz || category.meta_title_ru;
     const hasDescription = category.meta_description_uz || category.meta_description_ru;
@@ -481,20 +504,21 @@ export default function Categories() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCategories.map((category) => {
+              {orderedCategories.map((category) => {
                 const seoStatus = getSeoStatus(category);
                 const productsCount = productCounts[category.id] || 0;
-                
+                const isChild = category._depth > 0;
+
                 return (
-                  <TableRow key={category.id}>
+                  <TableRow key={category.id} className={isChild ? 'bg-muted/20' : ''}>
                     <TableCell>
                       <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                     </TableCell>
                     <TableCell>
                       {category.image ? (
-                        <img 
-                          src={category.image} 
-                          alt={category.name_uz} 
+                        <img
+                          src={category.image}
+                          alt={category.name_uz}
                           className="h-12 w-12 object-cover rounded-lg border"
                         />
                       ) : (
@@ -504,9 +528,12 @@ export default function Categories() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div>
-                        <p className="font-medium">{catName(category)}</p>
-                        <p className="text-sm text-muted-foreground">{language === 'ru' ? category.name_uz : category.name_ru}</p>
+                      <div className="flex items-center gap-2" style={{ paddingLeft: isChild ? 20 : 0 }}>
+                        {isChild && <span className="text-muted-foreground">└</span>}
+                        <div>
+                          <p className="font-medium">{catName(category)}</p>
+                          <p className="text-sm text-muted-foreground">{language === 'ru' ? category.name_uz : category.name_ru}</p>
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -608,6 +635,37 @@ export default function Categories() {
                   />
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Родительская категория' : 'Ota kategoriya'}</Label>
+                <Select
+                  value={formData.parent_id || 'none'}
+                  onValueChange={(v) => setFormData({ ...formData, parent_id: v === 'none' ? '' : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={language === 'ru' ? 'Без родителя (верхний уровень)' : "Ota yo'q (yuqori daraja)"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {language === 'ru' ? '— Без родителя (верхний уровень) —' : "— Ota yo'q (yuqori daraja) —"}
+                    </SelectItem>
+                    {categories
+                      .filter(c => c.id !== selectedCategory?.id && !c.parent_id)
+                      .map(c => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {catName(c)}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'ru'
+                    ? 'Выберите родителя, чтобы сделать эту категорию подкатегорией.'
+                    : 'Ushbu kategoriyani subkategoriya qilish uchun ota kategoriya tanlang.'}
+                </p>
+              </div>
+
+
 
               <div className="space-y-2">
                 <Label>{t.categories.slugUrl}</Label>

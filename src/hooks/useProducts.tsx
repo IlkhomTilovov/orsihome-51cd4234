@@ -42,6 +42,7 @@ export interface Category {
   icon: string | null;
   image: string | null;
   is_active: boolean | null;
+  parent_id: string | null;
   meta_title_uz: string | null;
   meta_title_ru: string | null;
   meta_description_uz: string | null;
@@ -52,6 +53,7 @@ export interface Category {
 export interface ProductFilters {
   search?: string;
   categoryId?: string;
+  categoryIds?: string[];
   priceMin?: number;
   priceMax?: number;
   materials?: string[];
@@ -105,7 +107,9 @@ export function useProducts(
         query = query.eq('is_active', true);
       }
 
-      if (filters.categoryId && filters.categoryId !== 'all') {
+      if (filters.categoryIds && filters.categoryIds.length > 0) {
+        query = query.in('category_id', filters.categoryIds);
+      } else if (filters.categoryId && filters.categoryId !== 'all') {
         query = query.eq('category_id', filters.categoryId);
       }
 
@@ -266,7 +270,7 @@ export function useCategories() {
       try {
         const { data, error } = await supabase
           .from('categories')
-          .select('id, name_uz, name_ru, slug, icon, image, is_active, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
+          .select('id, name_uz, name_ru, slug, icon, image, is_active, parent_id, meta_title_uz, meta_title_ru, meta_description_uz, meta_description_ru, meta_keywords')
           .eq('is_active', true)
           .order('sort_order', { ascending: true });
 
