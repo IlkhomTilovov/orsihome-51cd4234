@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, Sofa, Armchair, Package, Box, Lamp, Layers } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
