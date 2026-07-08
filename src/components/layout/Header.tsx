@@ -448,10 +448,10 @@ export function Header() {
 
                 {/* Right content - appears after clicking a section */}
                 {activeSectionId !== undefined && (
-                  <div className="relative z-[1] flex-1 flex flex-col bg-white rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/[0.06] overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
-                    <div className="flex items-center justify-between px-7 py-4 bg-white border-b border-neutral-200/70">
-                      <div className="flex items-center gap-2 text-[13px] text-neutral-500">
-                        <span className="font-medium text-neutral-900">
+                  <div className="relative z-[1] flex-1 flex flex-col bg-card text-card-foreground rounded-[24px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-border overflow-hidden min-w-0 animate-in slide-in-from-left duration-500">
+                    <div className="flex items-center justify-between px-7 py-4 bg-card border-b border-border">
+                      <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
+                        <span className="font-medium text-foreground">
                           {activeSection
                             ? activeSection.name
                             : language === 'ru' ? 'Рекомендуем' : 'Tavsiya etamiz'}
@@ -465,7 +465,7 @@ export function Header() {
                       </div>
                       <button
                         onClick={() => setCatalogOpen(false)}
-                        className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-neutral-500"
+                        className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground"
                         aria-label="close"
                       >
                         <X className="w-4 h-4" />
