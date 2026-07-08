@@ -31,6 +31,44 @@ export function Header() {
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [promoProducts, setPromoProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (!catalogOpen) {
+      setActiveSectionId(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const [{ data: promo }, { data: fresh }] = await Promise.all([
+        supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .not('original_price', 'is', null)
+          .gt('original_price', 0)
+          .order('created_at', { ascending: false })
+          .limit(4),
+        supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(4),
+      ]);
+      if (cancelled) return;
+      const filteredPromo = (promo || []).filter(
+        (p: any) => p.original_price && p.price && p.original_price > p.price
+      );
+      setPromoProducts(filteredPromo as Product[]);
+      setNewProducts((fresh as Product[]) || []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [catalogOpen]);
 
 
 
