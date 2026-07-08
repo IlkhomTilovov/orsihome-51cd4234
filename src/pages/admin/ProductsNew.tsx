@@ -688,9 +688,9 @@ export default function ProductsNew() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t.products.allCategories}</SelectItem>
-                {categories.map(cat => (
+                {orderedCategories.map(cat => (
                   <SelectItem key={cat.id} value={cat.id}>
-                    {language === 'uz' ? cat.name_uz : cat.name_ru}
+                    {cat._depth > 0 ? '— ' : ''}{language === 'uz' ? cat.name_uz : cat.name_ru}
                   </SelectItem>
                 ))}
               </SelectContent>
