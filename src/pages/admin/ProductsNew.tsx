@@ -199,6 +199,21 @@ export default function ProductsNew() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Categories ordered hierarchically: parents then children indented
+  const orderedCategories = (() => {
+    const parents = categories.filter(c => !c.parent_id);
+    const orphans = categories.filter(c => c.parent_id && !categories.some(p => p.id === c.parent_id));
+    const result: Array<Category & { _depth: number }> = [];
+    parents.forEach(p => {
+      result.push({ ...p, _depth: 0 });
+      categories.filter(c => c.parent_id === p.id).forEach(child => {
+        result.push({ ...child, _depth: 1 });
+      });
+    });
+    orphans.forEach(o => result.push({ ...o, _depth: 1 }));
+    return result;
+  })();
+
   useEffect(() => {
     fetchCategories();
   }, []);
