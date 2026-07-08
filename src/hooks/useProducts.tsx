@@ -107,7 +107,9 @@ export function useProducts(
         query = query.eq('is_active', true);
       }
 
-      if (filters.categoryId && filters.categoryId !== 'all') {
+      if (filters.categoryIds && filters.categoryIds.length > 0) {
+        query = query.in('category_id', filters.categoryIds);
+      } else if (filters.categoryId && filters.categoryId !== 'all') {
         query = query.eq('category_id', filters.categoryId);
       }
 
