@@ -383,7 +383,7 @@ export function Header() {
                 className="fixed inset-0 bg-neutral-950/50 backdrop-blur-md z-[60] animate-fade-in"
                 onClick={() => setCatalogOpen(false)}
               />
-              <div className="fixed left-1/2 -translate-x-1/2 top-24 z-[70] w-[min(1180px,calc(100vw-2rem))] max-h-[80vh] bg-white rounded-[28px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 overflow-hidden flex animate-fade-in">
+              <div className="fixed left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-[70] w-[95%] h-[95%] bg-white rounded-[28px] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.45)] ring-1 ring-black/5 overflow-hidden flex animate-fade-in">
                 {/* Dark left sidebar */}
                 <aside
                   className="w-[280px] shrink-0 bg-neutral-950 text-neutral-100 flex flex-col"
