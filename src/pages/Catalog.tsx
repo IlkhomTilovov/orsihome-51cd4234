@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, Loader2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { ProductCard } from '@/components/ProductCard';
-import { useProducts, useCategories, useProductFilterOptions, ProductFilters } from '@/hooks/useProducts';
+import { useProducts, useCategories, useProductFilterOptions, useSections, ProductFilters } from '@/hooks/useProducts';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
@@ -37,6 +37,7 @@ export default function Catalog() {
 
   const { options: filterOptions } = useProductFilterOptions();
   const { categories } = useCategories();
+  const { sections } = useSections();
 
   // Resolve slug to category ID for filtering - only return UUID or 'all'
   const resolvedCategoryId = useMemo(() => {
@@ -143,6 +144,10 @@ export default function Catalog() {
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
+
+  // Show the catalog sections overview when no filters/search/set are active and sections exist.
+  const showSectionsOverview =
+    !setTitle && !promoTileId && !debouncedSearch && sidebarFilters.categoryId === 'all' && sections.length > 0;
 
   // Treat as loading while the URL category slug hasn't synced into local filters yet
   // to avoid showing stale products from the previous category.
@@ -318,88 +323,184 @@ export default function Catalog() {
 
         <div className="flex gap-8">
           <div className="flex-1">
-            <p className="text-sm text-muted-foreground mb-4">
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  {language === 'uz' ? 'Yuklanmoqda...' : 'Загрузка...'}
-                </span>
-              ) : (
-                <>
-                  {t.catalog.showing} {products.length} {t.catalog.of} {totalCount} {t.catalog.products}
-                </>
-              )}
-            </p>
-
-            {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-card rounded-2xl overflow-hidden shadow-warm animate-pulse">
-                    <div className="aspect-[4/3] bg-muted" />
-                    <div className="p-4 space-y-3">
-                      <div className="h-4 bg-muted rounded w-3/4" />
-                      <div className="h-4 bg-muted rounded w-1/2" />
+            {/* Sections overview when no filters are active */}
+            {!setTitle && !promoTileId && !debouncedSearch && sidebarFilters.categoryId === 'all' && sections.length > 0 && (
+              <div className="mb-10 space-y-8">
+                {sections.map((section) => {
+                  const sectionParents = categories.filter(
+                    (c) => !c.parent_id && c.section_id === section.id
+                  );
+                  if (sectionParents.length === 0) return null;
+                  return (
+                    <div key={section.id}>
+                      <h2 className="text-xl font-bold mb-4">
+                        {language === 'ru' ? section.name_ru : section.name_uz}
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {sectionParents.map((parent) => (
+                          <Link
+                            key={parent.id}
+                            to={`/catalog?category=${parent.slug}`}
+                            className="group relative overflow-hidden rounded-2xl border bg-card p-4 hover:shadow-soft-md transition-shadow"
+                          >
+                            <div className="flex items-center gap-3">
+                              {parent.image ? (
+                                <img
+                                  src={parent.image}
+                                  alt={language === 'ru' ? parent.name_ru : parent.name_uz}
+                                  className="h-12 w-12 rounded-lg object-cover"
+                                />
+                              ) : (
+                                <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
+                                  <span className="text-lg">📁</span>
+                                </div>
+                              )}
+                              <div>
+                                <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {categories.filter((c) => c.parent_id === parent.id).length > 0
+                                    ? `${categories.filter((c) => c.parent_id === parent.id).length} ${language === 'ru' ? 'подкатегорий' : 'kichik kategoriya'}`
+                                    : language === 'ru' ? 'Перейти к товарам' : 'Mahsulotlarga o\'tish'}
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+                {categories.filter((c) => !c.parent_id && !c.section_id).length > 0 && (
+                  <div>
+                    <h2 className="text-xl font-bold mb-4">
+                      {language === 'ru' ? 'Другое' : 'Boshqa'}
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {categories.filter((c) => !c.parent_id && !c.section_id).map((parent) => (
+                        <Link
+                          key={parent.id}
+                          to={`/catalog?category=${parent.slug}`}
+                          className="group relative overflow-hidden rounded-2xl border bg-card p-4 hover:shadow-soft-md transition-shadow"
+                        >
+                          <div className="flex items-center gap-3">
+                            {parent.image ? (
+                              <img
+                                src={parent.image}
+                                alt={language === 'ru' ? parent.name_ru : parent.name_uz}
+                                className="h-12 w-12 rounded-lg object-cover"
+                              />
+                            ) : (
+                              <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
+                                <span className="text-lg">📁</span>
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                                {language === 'ru' ? parent.name_ru : parent.name_uz}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {categories.filter((c) => c.parent_id === parent.id).length > 0
+                                  ? `${categories.filter((c) => c.parent_id === parent.id).length} ${language === 'ru' ? 'подкатегорий' : 'kichik kategoriya'}`
+                                  : language === 'ru' ? 'Перейти к товарам' : 'Mahsulotlarga o\'tish'}
+                              </p>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-            ) : products.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {products.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
+            )}
 
-                {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2 mt-8">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </Button>
-                    {getPaginationNumbers().map((page, idx) =>
-                      page === 'ellipsis' ? (
-                        <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">...</span>
-                      ) : (
+            {!showSectionsOverview && (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {loading ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {language === 'uz' ? 'Yuklanmoqda...' : 'Загрузка...'}
+                    </span>
+                  ) : (
+                    <>
+                      {t.catalog.showing} {products.length} {t.catalog.of} {totalCount} {t.catalog.products}
+                    </>
+                  )}
+                </p>
+
+                {loading ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="bg-card rounded-2xl overflow-hidden shadow-warm animate-pulse">
+                        <div className="aspect-[4/3] bg-muted" />
+                        <div className="p-4 space-y-3">
+                          <div className="h-4 bg-muted rounded w-3/4" />
+                          <div className="h-4 bg-muted rounded w-1/2" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : products.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {products.map(product => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex justify-center items-center gap-2 mt-8">
                         <Button
-                          key={page}
-                          variant={currentPage === page ? 'default' : 'outline'}
+                          variant="outline"
                           size="sm"
-                          onClick={() => handlePageChange(page)}
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
                         >
-                          {page}
+                          <ChevronLeft className="h-4 w-4" />
                         </Button>
-                      )
+                        {getPaginationNumbers().map((page, idx) =>
+                          page === 'ellipsis' ? (
+                            <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">...</span>
+                          ) : (
+                            <Button
+                              key={page}
+                              variant={currentPage === page ? 'default' : 'outline'}
+                              size="sm"
+                              onClick={() => handlePageChange(page)}
+                            >
+                              {page}
+                            </Button>
+                          )
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </div>
                     )}
+                  </>
+                ) : (
+                  <div className="text-center py-16">
+                    <p className="text-muted-foreground">{t.catalog.noProducts}</p>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
+                      variant="link"
+                      onClick={() => handleApplyFilters({
+                        categoryId: 'all', priceMin: 0, priceMax: filterOptions.maxPrice,
+                        materials: [], colors: [], furLengths: [],
+                        applications: [], inStock: false, discounted: false,
+                      })}
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      {t.catalog.clearFilters}
                     </Button>
                   </div>
                 )}
               </>
-            ) : (
-              <div className="text-center py-16">
-                <p className="text-muted-foreground">{t.catalog.noProducts}</p>
-                <Button
-                  variant="link"
-                  onClick={() => handleApplyFilters({
-                    categoryId: 'all', priceMin: 0, priceMax: filterOptions.maxPrice,
-                    materials: [], colors: [], furLengths: [],
-                    applications: [], inStock: false, discounted: false,
-                  })}
-                >
-                  {t.catalog.clearFilters}
-                </Button>
-              </div>
             )}
           </div>
         </div>

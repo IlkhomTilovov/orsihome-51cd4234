@@ -31,6 +31,7 @@ export type Database = {
           name_ru: string
           name_uz: string
           parent_id: string | null
+          section_id: string | null
           slug: string
           sort_order: number | null
           updated_at: string
@@ -51,6 +52,7 @@ export type Database = {
           name_ru: string
           name_uz: string
           parent_id?: string | null
+          section_id?: string | null
           slug: string
           sort_order?: number | null
           updated_at?: string
@@ -71,6 +73,7 @@ export type Database = {
           name_ru?: string
           name_uz?: string
           parent_id?: string | null
+          section_id?: string | null
           slug?: string
           sort_order?: number | null
           updated_at?: string
@@ -81,6 +84,13 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "categories_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
             referencedColumns: ["id"]
           },
         ]
@@ -545,6 +555,39 @@ export type Database = {
           text_class?: string
           title_ru?: string
           title_uz?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      sections: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name_ru: string
+          name_uz: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_ru: string
+          name_uz: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_ru?: string
+          name_uz?: string
+          slug?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []

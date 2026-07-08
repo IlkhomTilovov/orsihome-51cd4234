@@ -43,6 +43,7 @@ interface Category {
   sort_order: number;
   is_active: boolean;
   parent_id: string | null;
+  section_id: string | null;
   created_at: string;
   updated_at: string;
   meta_title_uz: string | null;
@@ -55,6 +56,15 @@ interface Category {
   products_count?: number;
 }
 
+interface Section {
+  id: string;
+  name_uz: string;
+  name_ru: string;
+  slug: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
 interface FormData {
   name_uz: string;
   name_ru: string;
@@ -64,6 +74,7 @@ interface FormData {
   is_active: boolean;
   sort_order: number;
   parent_id: string;
+  section_id: string;
   meta_title_uz: string;
   meta_title_ru: string;
   meta_description_uz: string;
@@ -82,6 +93,7 @@ const initialFormData: FormData = {
   is_active: true,
   sort_order: 0,
   parent_id: '',
+  section_id: '',
   meta_title_uz: '',
   meta_title_ru: '',
   meta_description_uz: '',
@@ -103,11 +115,14 @@ export default function Categories() {
   const [activeTab, setActiveTab] = useState('general');
   const [productCounts, setProductCounts] = useState<Record<string, number>>({});
   const [imageUploading, setImageUploading] = useState(false);
+  const [sections, setSections] = useState<Section[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const t = useAdminT();
   const { language } = useLanguage();
-  const catName = (c: Category) => language === 'ru' ? c.name_ru : c.name_uz;
+  const catName = (c: Category) => (language === 'ru' ? c.name_ru : c.name_uz);
+
+  const sectionName = (s: Section) => (language === 'ru' ? s.name_ru : s.name_uz);
 
   const handleImageUpload = async (file: File) => {
     if (!file) return;
@@ -170,6 +185,15 @@ export default function Categories() {
       if (error) throw error;
       setCategories(data || []);
 
+      // Fetch active sections
+      const { data: sectionsData, error: sectionsError } = await supabase
+        .from('sections')
+        .select('id, name_uz, name_ru, slug, sort_order, is_active')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
+
+      if (!sectionsError) setSections(sectionsData || []);
+
       // Fetch product counts per category
       const { data: products, error: productsError } = await supabase
         .from('products')
@@ -177,7 +201,7 @@ export default function Categories() {
 
       if (!productsError && products) {
         const counts: Record<string, number> = {};
-        products.forEach(p => {
+        products.forEach((p) => {
           if (p.category_id) {
             counts[p.category_id] = (counts[p.category_id] || 0) + 1;
           }
@@ -249,6 +273,7 @@ export default function Categories() {
       is_active: category.is_active,
       sort_order: category.sort_order,
       parent_id: category.parent_id || '',
+      section_id: category.section_id || '',
       meta_title_uz: category.meta_title_uz || '',
       meta_title_ru: category.meta_title_ru || '',
       meta_description_uz: category.meta_description_uz || '',
@@ -310,6 +335,7 @@ export default function Categories() {
         is_active: formData.is_active,
         sort_order: formData.sort_order,
         parent_id: formData.parent_id || null,
+        section_id: formData.section_id || null,
         meta_title_uz: formData.meta_title_uz || null,
         meta_title_ru: formData.meta_title_ru || null,
         meta_description_uz: formData.meta_description_uz || null,
@@ -497,6 +523,7 @@ export default function Categories() {
                 <TableHead className="w-16">{t.categories.image}</TableHead>
                 <TableHead>{t.categories.nameUzRu}</TableHead>
                 <TableHead>{t.categories.slug}</TableHead>
+                <TableHead>{t.categories.section}</TableHead>
                 <TableHead className="text-center">{t.categories.products}</TableHead>
                 <TableHead>{t.categories.seo}</TableHead>
                 <TableHead>{t.categories.status}</TableHead>
@@ -538,6 +565,15 @@ export default function Categories() {
                     </TableCell>
                     <TableCell>
                       <code className="text-xs bg-muted px-2 py-1 rounded">/{category.slug}</code>
+                    </TableCell>
+                    <TableCell>
+                      {category.section_id ? (
+                        <Badge variant="outline" className="font-normal">
+                          {sectionName(sections.find((s) => s.id === category.section_id) || ({ name_uz: category.section_id, name_ru: category.section_id } as Section))}
+                        </Badge>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge variant="secondary" className="gap-1">
@@ -581,7 +617,7 @@ export default function Categories() {
               })}
               {filteredCategories.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
+                  <TableCell colSpan={9} className="text-center py-12">
                     <div className="flex flex-col items-center gap-2">
                       <Package className="h-8 w-8 text-muted-foreground" />
                       <p className="text-muted-foreground">{t.categories.notFound}</p>
@@ -634,6 +670,33 @@ export default function Categories() {
                     placeholder={t.categories.placeholderRu}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Раздел каталога' : "Katalog bo'limi"}</Label>
+                <Select
+                  value={formData.section_id || 'none'}
+                  onValueChange={(v) => setFormData({ ...formData, section_id: v === 'none' ? '' : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={language === 'ru' ? '— Без раздела —' : "— Bo'limsiz —"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {language === 'ru' ? '— Без раздела —' : "— Bo'limsiz —"}
+                    </SelectItem>
+                    {sections.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {sectionName(s)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'ru'
+                    ? 'Выберите раздел, к которому относится категория.'
+                    : "Kategoriya tegishli bo'lgan bo'limni tanlang."}
+                </p>
               </div>
 
               <div className="space-y-2">

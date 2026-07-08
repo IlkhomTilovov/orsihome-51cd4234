@@ -42,6 +42,7 @@ const AdminAuth = lazy(() => import("./pages/admin/Auth"));
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const Orders = lazy(() => import("./pages/admin/Orders"));
 const Categories = lazy(() => import("./pages/admin/Categories"));
+const Sections = lazy(() => import("./pages/admin/Sections"));
 const ProductsNew = lazy(() => import("./pages/admin/ProductsNew"));
 const Customers = lazy(() => import("./pages/admin/Customers"));
 const SiteContent = lazy(() => import("./pages/admin/SiteContent"));
@@ -109,6 +110,11 @@ const App = () => (
                           <Route path="categories" element={
                             <ProtectedRoute module="categories">
                               <Categories />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="sections" element={
+                            <ProtectedRoute module="categories">
+                              <Sections />
                             </ProtectedRoute>
                           } />
                           <Route path="products" element={

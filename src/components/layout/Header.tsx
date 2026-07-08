@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag, Phone, ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories, useProducts } from '@/hooks/useProducts';
+import { useCategories, useProducts, useSections } from '@/hooks/useProducts';
 import { CartDrawer } from '@/components/CartDrawer';
 import { LazyImage } from '@/components/LazyImage';
 import logoAsset from '@/assets/orsi-logo.svg.asset.json';
@@ -27,9 +27,26 @@ export function Header() {
   }, []);
 
   const { categories } = useCategories();
+  const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
+  // Group parent categories by section
+  const parentsBySection = useMemo(() => {
+    const parents = categories.filter((c) => !c.parent_id);
+    const grouped: Record<string, typeof parents> = {};
+    const noSection: typeof parents = [];
+    parents.forEach((p) => {
+      if (p.section_id) {
+        grouped[p.section_id] = grouped[p.section_id] || [];
+        grouped[p.section_id].push(p);
+      } else {
+        noSection.push(p);
+      }
+    });
+    return { grouped, noSection };
+  }, [categories]);
 
   // Auto-select first category when catalog opens or categories load
   useEffect(() => {
@@ -38,7 +55,7 @@ export function Header() {
     }
   }, [catalogOpen, categories]);
 
-  const activeCategory = categories.find(c => c.id === activeCategoryId) || categories[0];
+  const activeCategory = categories.find((c) => c.id === activeCategoryId) || categories[0];
   const { products: previewProducts, loading: previewLoading } = useProducts(
     1,
     { categoryId: activeCategoryId || undefined },
@@ -208,30 +225,74 @@ export function Header() {
                           >
                             {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
                           </Link>
-                          {categories.filter(c => !c.parent_id).map((parent) => {
-                            const subs = categories.filter(c => c.parent_id === parent.id);
+                          {sections.map((section) => {
+                            const sectionParents = categories.filter(
+                              (c) => !c.parent_id && c.section_id === section.id
+                            );
+                            if (sectionParents.length === 0) return null;
                             return (
-                              <div key={parent.id}>
-                                <Link
-                                  to={`/catalog?category=${parent.slug}`}
-                                  onClick={() => setIsOpen(false)}
-                                  className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
-                                >
-                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                </Link>
-                                {subs.map((sub) => (
-                                  <Link
-                                    key={sub.id}
-                                    to={`/catalog?category=${sub.slug}`}
-                                    onClick={() => setIsOpen(false)}
-                                    className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
-                                  >
-                                    — {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                  </Link>
-                                ))}
+                              <div key={section.id}>
+                                <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                  {language === 'ru' ? section.name_ru : section.name_uz}
+                                </p>
+                                {sectionParents.map((parent) => {
+                                  const subs = categories.filter((c) => c.parent_id === parent.id);
+                                  return (
+                                    <div key={parent.id}>
+                                      <Link
+                                        to={`/catalog?category=${parent.slug}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
+                                      >
+                                        {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                      </Link>
+                                      {subs.map((sub) => (
+                                        <Link
+                                          key={sub.id}
+                                          to={`/catalog?category=${sub.slug}`}
+                                          onClick={() => setIsOpen(false)}
+                                          className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
+                                        >
+                                          — {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             );
                           })}
+                          {categories.filter((c) => !c.parent_id && !c.section_id).length > 0 && (
+                            <div>
+                              <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                {language === 'ru' ? 'Другое' : 'Boshqa'}
+                              </p>
+                              {categories.filter((c) => !c.parent_id && !c.section_id).map((parent) => {
+                                const subs = categories.filter((c) => c.parent_id === parent.id);
+                                return (
+                                  <div key={parent.id}>
+                                    <Link
+                                      to={`/catalog?category=${parent.slug}`}
+                                      onClick={() => setIsOpen(false)}
+                                      className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
+                                    >
+                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                    </Link>
+                                    {subs.map((sub) => (
+                                      <Link
+                                        key={sub.id}
+                                        to={`/catalog?category=${sub.slug}`}
+                                        onClick={() => setIsOpen(false)}
+                                        className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
+                                      >
+                                        — {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -273,35 +334,85 @@ export function Header() {
                       {language === 'ru' ? 'Товары' : 'Tovarlar'}
                     </h3>
                     {categories.length > 0 ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                        {categories.filter(c => !c.parent_id).map((parent) => {
-                          const subs = categories.filter(c => c.parent_id === parent.id);
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+                        {sections.map((section) => {
+                          const parents = parentsBySection.grouped[section.id] || [];
+                          if (parents.length === 0) return null;
                           return (
-                            <div key={parent.id} className="space-y-2">
-                              <Link
-                                to={`/catalog?category=${parent.slug}`}
-                                onClick={() => setCatalogOpen(false)}
-                                className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
-                              >
-                                {language === 'ru' ? parent.name_ru : parent.name_uz}
-                              </Link>
-                              {subs.length > 0 && (
-                                <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
-                                  {subs.map(sub => (
-                                    <Link
-                                      key={sub.id}
-                                      to={`/catalog?category=${sub.slug}`}
-                                      onClick={() => setCatalogOpen(false)}
-                                      className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
-                                    >
-                                      {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                    </Link>
-                                  ))}
-                                </div>
-                              )}
+                            <div key={section.id} className="space-y-3">
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                {language === 'ru' ? section.name_ru : section.name_uz}
+                              </h4>
+                              <div className="space-y-2">
+                                {parents.map((parent) => {
+                                  const subs = categories.filter((c) => c.parent_id === parent.id);
+                                  return (
+                                    <div key={parent.id} className="space-y-1">
+                                      <Link
+                                        to={`/catalog?category=${parent.slug}`}
+                                        onClick={() => setCatalogOpen(false)}
+                                        className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                                      >
+                                        {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                      </Link>
+                                      {subs.length > 0 && (
+                                        <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
+                                          {subs.map((sub) => (
+                                            <Link
+                                              key={sub.id}
+                                              to={`/catalog?category=${sub.slug}`}
+                                              onClick={() => setCatalogOpen(false)}
+                                              className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
+                                            >
+                                              {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                            </Link>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
                             </div>
                           );
                         })}
+                        {parentsBySection.noSection.length > 0 && (
+                          <div className="space-y-3">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                              {language === 'ru' ? 'Другое' : 'Boshqa'}
+                            </h4>
+                            <div className="space-y-2">
+                              {parentsBySection.noSection.map((parent) => {
+                                const subs = categories.filter((c) => c.parent_id === parent.id);
+                                return (
+                                  <div key={parent.id} className="space-y-1">
+                                    <Link
+                                      to={`/catalog?category=${parent.slug}`}
+                                      onClick={() => setCatalogOpen(false)}
+                                      className="block text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                                    >
+                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                    </Link>
+                                    {subs.length > 0 && (
+                                      <div className="pl-3 border-l border-border/40 flex flex-col gap-1">
+                                        {subs.map((sub) => (
+                                          <Link
+                                            key={sub.id}
+                                            to={`/catalog?category=${sub.slug}`}
+                                            onClick={() => setCatalogOpen(false)}
+                                            className="text-sm text-muted-foreground hover:text-primary transition-colors py-0.5"
+                                          >
+                                            {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <Link
