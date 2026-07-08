@@ -1,13 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, LayoutGrid } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
-import { useCategories, useSections } from '@/hooks/useProducts';
+import { useCategories, useSections, type Product } from '@/hooks/useProducts';
+import { supabase } from '@/integrations/supabase/client';
 import { CartDrawer } from '@/components/CartDrawer';
 import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
@@ -30,7 +30,45 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
-  const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
+  
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+  const [promoProducts, setPromoProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (!catalogOpen) {
+      setActiveSectionId(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const [{ data: promo }, { data: fresh }] = await Promise.all([
+        supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .not('original_price', 'is', null)
+          .gt('original_price', 0)
+          .order('created_at', { ascending: false })
+          .limit(4),
+        supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(4),
+      ]);
+      if (cancelled) return;
+      const filteredPromo = (promo || []).filter(
+        (p: any) => p.original_price && p.price && p.original_price > p.price
+      );
+      setPromoProducts(filteredPromo as Product[]);
+      setNewProducts((fresh as Product[]) || []);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [catalogOpen]);
 
 
 
@@ -286,109 +324,219 @@ export function Header() {
         )}
       </div>
 
-      {/* Catalog Sidebar Drawer (left) */}
-      <Sheet open={catalogOpen} onOpenChange={setCatalogOpen}>
-        <SheetContent side="left" className="w-[340px] sm:w-[400px] p-0 flex flex-col">
-          <SheetHeader className="px-5 py-4 border-b flex-row items-center justify-between space-y-0">
-            <SheetTitle className="text-lg flex items-center gap-2">
-              <LayoutGrid className="w-4 h-4" />
-              {language === 'ru' ? 'Каталог' : 'Katalog'}
-            </SheetTitle>
-          </SheetHeader>
-          <div className="flex-1 overflow-y-auto p-3">
-            <Link
-              to="/catalog"
-              onClick={() => setCatalogOpen(false)}
-              className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-neutral-100 mb-2 text-sm font-semibold text-neutral-900"
-            >
-              <span className="inline-flex w-9 h-9 items-center justify-center rounded-lg bg-neutral-100">
-                <LayoutGrid className="w-[18px] h-[18px]" strokeWidth={1.75} />
-              </span>
-              {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
-            </Link>
+      {/* Floating Mega Menu */}
+      {catalogOpen && createPortal(
+        (() => {
+          const displaySections = [
+            ...sections.map((s) => ({
+              id: s.id,
+              name: language === 'ru' ? s.name_ru : s.name_uz,
+              parents: categories.filter((c) => !c.parent_id && c.section_id === s.id),
+            })),
+            {
+              id: '__none__',
+              name: language === 'ru' ? 'Другое' : 'Boshqa',
+              parents: categories.filter((c) => !c.parent_id && !c.section_id),
+            },
+          ].filter((s) => s.parents.length > 0);
 
-            {[
-              ...sections.map((s) => ({
-                id: s.id,
-                name: language === 'ru' ? s.name_ru : s.name_uz,
-                parents: categories.filter((c) => !c.parent_id && c.section_id === s.id),
-              })),
-              {
-                id: '__none__',
-                name: language === 'ru' ? 'Другое' : 'Boshqa',
-                parents: categories.filter((c) => !c.parent_id && !c.section_id),
-              },
-            ]
-              .filter((sec) => sec.parents.length > 0)
-              .map((section) => (
-                <div key={section.id} className="mt-4">
-                  <p className="px-3 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
-                    {section.name}
-                  </p>
-                  <ul className="space-y-0.5">
-                    {section.parents.map((parent) => {
-                      const subs = categories.filter((c) => c.parent_id === parent.id);
-                      const isExpanded = expandedParents[parent.id] ?? false;
-                      const hasSubs = subs.length > 0;
-                      return (
-                        <li key={parent.id}>
-                          <div className="group flex items-stretch rounded-xl overflow-hidden hover:bg-neutral-50">
-                            <Link
-                              to={`/catalog?category=${parent.slug}`}
-                              onClick={() => setCatalogOpen(false)}
-                              className="flex-1 flex items-center gap-3 px-3 py-2.5 min-w-0"
+          const activeSection = displaySections.find((s) => s.id === activeSectionId);
+
+          const formatPrice = (v: number | null) =>
+            v == null ? '' : new Intl.NumberFormat('ru-RU').format(v) + " so'm";
+
+          const ProductMini = ({ p }: { p: Product }) => (
+            <Link
+              to={`/product/${p.slug}`}
+              onClick={() => setCatalogOpen(false)}
+              className="group flex gap-3 p-2 rounded-xl hover:bg-neutral-50 transition-colors"
+            >
+              <div className="w-16 h-16 rounded-lg bg-neutral-100 overflow-hidden shrink-0">
+                {p.images?.[0] && (
+                  <img
+                    src={p.images[0]}
+                    alt={p.name_uz}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] font-medium text-neutral-900 line-clamp-2 leading-snug">
+                  {language === 'ru' ? p.name_ru : p.name_uz}
+                </p>
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="text-[13px] font-semibold text-primary">{formatPrice(p.price)}</span>
+                  {p.original_price && p.price && p.original_price > p.price && (
+                    <span className="text-[11px] line-through text-neutral-400">
+                      {formatPrice(p.original_price)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          );
+
+          return (
+            <>
+              <div
+                className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[60] animate-fade-in"
+                onClick={() => setCatalogOpen(false)}
+              />
+              <div className="fixed left-1/2 -translate-x-1/2 top-24 z-[70] w-[min(1120px,calc(100vw-2rem))] max-h-[78vh] bg-background rounded-2xl shadow-2xl border border-border/40 overflow-hidden flex flex-col animate-fade-in">
+                <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/40">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-neutral-900">
+                    <LayoutGrid className="w-4 h-4" />
+                    {language === 'ru' ? 'Каталог' : 'Katalog'}
+                  </div>
+                  <button
+                    onClick={() => setCatalogOpen(false)}
+                    className="w-8 h-8 rounded-full hover:bg-neutral-100 flex items-center justify-center text-neutral-500"
+                    aria-label="close"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="flex flex-1 min-h-0">
+                  {/* Left: sections list */}
+                  <aside
+                    className="w-[260px] shrink-0 border-r border-border/40 overflow-y-auto py-3"
+                    onMouseLeave={() => setActiveSectionId(null)}
+                  >
+                    <Link
+                      to="/catalog"
+                      onClick={() => setCatalogOpen(false)}
+                      onMouseEnter={() => setActiveSectionId(null)}
+                      className="mx-3 mb-2 flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-neutral-100 text-sm font-semibold text-neutral-900"
+                    >
+                      <span className="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-neutral-100">
+                        <LayoutGrid className="w-[16px] h-[16px]" strokeWidth={1.75} />
+                      </span>
+                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                    </Link>
+
+                    <div className="h-px bg-border/40 mx-4 my-2" />
+
+                    <ul className="px-2 space-y-0.5">
+                      {displaySections.map((section) => {
+                        const isActive = activeSectionId === section.id;
+                        return (
+                          <li key={section.id}>
+                            <button
+                              type="button"
+                              onMouseEnter={() => setActiveSectionId(section.id)}
+                              onClick={() => setActiveSectionId(section.id)}
+                              className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left text-sm font-medium transition-colors ${
+                                isActive
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'text-neutral-800 hover:bg-neutral-100'
+                              }`}
                             >
-                              {parent.image ? (
-                                <img
-                                  src={parent.image}
-                                  alt=""
-                                  className="w-9 h-9 rounded-lg object-cover shrink-0"
-                                />
-                              ) : (
-                                <span className="w-9 h-9 rounded-lg bg-neutral-100 shrink-0" />
-                              )}
-                              <span className="text-sm font-medium text-neutral-900 truncate">
-                                {language === 'ru' ? parent.name_ru : parent.name_uz}
-                              </span>
-                            </Link>
-                            {hasSubs && (
-                              <button
-                                onClick={() =>
-                                  setExpandedParents((prev) => ({ ...prev, [parent.id]: !isExpanded }))
-                                }
-                                className="px-3 flex items-center text-neutral-400 hover:text-neutral-900"
-                                aria-label="toggle"
+                              <span className="truncate">{section.name}</span>
+                              <ChevronRight className="w-4 h-4 opacity-60" />
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </aside>
+
+                  {/* Right: content */}
+                  <div className="flex-1 overflow-y-auto p-6">
+                    {activeSection ? (
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-5">
+                        {activeSection.parents.map((parent) => {
+                          const subs = categories.filter((c) => c.parent_id === parent.id);
+                          return (
+                            <div key={parent.id}>
+                              <Link
+                                to={`/catalog?category=${parent.slug}`}
+                                onClick={() => setCatalogOpen(false)}
+                                className="flex items-center gap-3 mb-2 group"
                               >
-                                <ChevronDown
-                                  className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                                />
-                              </button>
+                                {parent.image ? (
+                                  <img
+                                    src={parent.image}
+                                    alt=""
+                                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                                  />
+                                ) : (
+                                  <span className="w-10 h-10 rounded-lg bg-neutral-100 shrink-0" />
+                                )}
+                                <span className="text-sm font-semibold text-neutral-900 group-hover:text-primary transition-colors">
+                                  {language === 'ru' ? parent.name_ru : parent.name_uz}
+                                </span>
+                              </Link>
+                              {subs.length > 0 && (
+                                <ul className="ml-1 pl-3 border-l border-neutral-200 space-y-1">
+                                  {subs.map((sub) => (
+                                    <li key={sub.id}>
+                                      <Link
+                                        to={`/catalog?category=${sub.slug}`}
+                                        onClick={() => setCatalogOpen(false)}
+                                        className="block text-[13px] py-1 text-neutral-600 hover:text-primary transition-colors"
+                                      >
+                                        {language === 'ru' ? sub.name_ru : sub.name_uz}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <section>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex w-7 h-7 rounded-lg bg-primary/10 text-primary items-center justify-center">
+                              <Tag className="w-4 h-4" />
+                            </span>
+                            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900">
+                              {language === 'ru' ? 'Со скидкой' : 'Chegirmada'}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col">
+                            {promoProducts.length === 0 ? (
+                              <p className="text-sm text-neutral-400 px-2 py-6 text-center">
+                                {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
+                              </p>
+                            ) : (
+                              promoProducts.map((p) => <ProductMini key={p.id} p={p} />)
                             )}
                           </div>
-                          {hasSubs && isExpanded && (
-                            <ul className="ml-12 mt-0.5 mb-1 border-l border-neutral-200 pl-3">
-                              {subs.map((sub) => (
-                                <li key={sub.id}>
-                                  <Link
-                                    to={`/catalog?category=${sub.slug}`}
-                                    onClick={() => setCatalogOpen(false)}
-                                    className="block text-[13px] px-2 py-1.5 rounded-md text-neutral-600 hover:text-neutral-900 transition-colors"
-                                  >
-                                    {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                        </section>
+                        <section>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex w-7 h-7 rounded-lg bg-primary/10 text-primary items-center justify-center">
+                              <Sparkles className="w-4 h-4" />
+                            </span>
+                            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900">
+                              {language === 'ru' ? 'Новинки' : 'Yangi kelganlar'}
+                            </h3>
+                          </div>
+                          <div className="flex flex-col">
+                            {newProducts.length === 0 ? (
+                              <p className="text-sm text-neutral-400 px-2 py-6 text-center">
+                                {language === 'ru' ? 'Пока нет товаров' : "Hozircha mahsulot yo'q"}
+                              </p>
+                            ) : (
+                              newProducts.map((p) => <ProductMini key={p.id} p={p} />)
+                            )}
+                          </div>
+                        </section>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ))}
-          </div>
-        </SheetContent>
-      </Sheet>
+              </div>
+            </>
+          );
+        })(),
+        document.body
+      )}
 
 
 
