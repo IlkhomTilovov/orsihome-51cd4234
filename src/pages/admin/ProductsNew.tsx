@@ -211,7 +211,7 @@ export default function ProductsNew() {
     try {
       const { data, error } = await supabase
         .from('categories')
-        .select('id, name_uz, name_ru')
+        .select('id, name_uz, name_ru, parent_id')
         .order('sort_order');
       
       if (error) throw error;
