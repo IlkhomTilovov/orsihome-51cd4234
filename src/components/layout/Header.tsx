@@ -480,7 +480,7 @@ export function Header() {
                             return (
                               <div
                                 key={parent.id}
-                                className="bg-white rounded-2xl p-4 ring-1 ring-black/5 hover:ring-primary/30 hover:shadow-sm transition-all"
+                                className="bg-background rounded-2xl p-4 ring-1 ring-border hover:ring-primary/30 hover:shadow-sm transition-all"
                               >
                                 <Link
                                   to={`/catalog?category=${parent.slug}`}
@@ -491,12 +491,12 @@ export function Header() {
                                     <img
                                       src={parent.image}
                                       alt=""
-                                      className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-black/5"
+                                      className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-border"
                                     />
                                   ) : (
-                                    <span className="w-11 h-11 rounded-xl bg-neutral-100 shrink-0" />
+                                    <span className="w-11 h-11 rounded-xl bg-muted shrink-0" />
                                   )}
-                                  <span className="text-[14px] font-semibold text-neutral-900 group-hover:text-primary transition-colors line-clamp-2">
+                                  <span className="text-[14px] font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                                     {language === 'ru' ? parent.name_ru : parent.name_uz}
                                   </span>
                                 </Link>
@@ -507,7 +507,7 @@ export function Header() {
                                         <Link
                                           to={`/catalog?category=${sub.slug}`}
                                           onClick={() => setCatalogOpen(false)}
-                                          className="block text-[12.5px] py-1 text-neutral-500 hover:text-primary transition-colors"
+                                          className="block text-[12.5px] py-1 text-muted-foreground hover:text-primary transition-colors"
                                         >
                                           · {language === 'ru' ? sub.name_ru : sub.name_uz}
                                         </Link>
