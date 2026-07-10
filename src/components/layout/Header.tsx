@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Heart, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -315,22 +315,6 @@ export function Header() {
                   </div>
                 </div>
 
-                <Link
-                  to="/catalog"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground"
-                >
-                  <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                  {language === 'ru' ? 'Купить онлайн / В наличии' : 'Onlayn sotib olish / Mavjud'}
-                </Link>
-                <Link
-                  to="/cart"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground"
-                >
-                  <Heart className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                  {language === 'ru' ? 'Избранное' : 'Sevimlilar'}
-                </Link>
                 <button
                   onClick={() => { setIsOpen(false); setCartOpen(true); }}
                   className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground text-left"
