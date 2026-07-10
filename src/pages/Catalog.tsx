@@ -146,7 +146,15 @@ export default function Catalog() {
     if (debouncedSearch) f.search = debouncedSearch;
     // Only pass category if it's a valid UUID. If the selected category has
     // subcategories, include all descendants so parent view shows every product.
-    if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
+    // A section filter takes precedence and includes all categories in that section.
+    if (resolvedSectionId) {
+      if (sectionCategoryIds.length > 0) {
+        f.categoryIds = sectionCategoryIds;
+      } else {
+        // Section has no categories — force empty result
+        f.categoryIds = ['00000000-0000-0000-0000-000000000000'];
+      }
+    } else if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
       const selectedId = sidebarFilters.categoryId;
       const childIds = categories.filter(c => c.parent_id === selectedId).map(c => c.id);
       if (childIds.length > 0) {
