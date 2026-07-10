@@ -198,7 +198,7 @@ const App = () => (
                             </Suspense>
                           </main>
                           <Footer />
-                          
+                          <MobileBottomNav />
                           <EditModeToggle />
                           <EditorPanel />
                         </div>
