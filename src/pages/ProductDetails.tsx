@@ -46,9 +46,12 @@ export default function ProductDetails() {
   // Use target keyword for SEO title if available
   const seoTitle = metaTitle || targetKeyword || productName || undefined;
 
+  const seoDescription = metaDesc || productDesc || undefined;
   useSEO({
     title: seoTitle,
-    description: metaDesc || productDesc || undefined,
+    description: seoDescription,
+    ogTitle: seoTitle,
+    ogDescription: seoDescription,
     ogImage: product?.images?.[0] || undefined,
     noindex: product ? !product.is_indexed : false,
     nofollow: product ? !product.is_followed : false,
