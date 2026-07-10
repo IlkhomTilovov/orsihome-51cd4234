@@ -266,7 +266,7 @@ export function Header() {
               <div className="px-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => { setMobileCatalogOpen(v => !v); setMobileDrillCategoryId(null); }}
+                  onClick={() => { setMobileCatalogOpen(v => !v); }}
                   className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
                 >
                   <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
