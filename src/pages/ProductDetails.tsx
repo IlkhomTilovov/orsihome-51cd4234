@@ -22,6 +22,7 @@ interface MediaItem {
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const { isAdmin } = useAuth();
