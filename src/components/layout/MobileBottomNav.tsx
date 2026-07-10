@@ -2,11 +2,12 @@ import { NavLink, useLocation } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { Home, ShoppingBag, Phone, Menu, LayoutGrid } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+import { useLanguage } from '@/hooks/useLanguage';
 import { cn } from '@/lib/utils';
 
 type NavItem = {
   to?: string;
-  label: string;
+  label: { uz: string; ru: string };
   icon?: LucideIcon;
   image?: string;
   isCart?: boolean;
@@ -14,15 +15,16 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
-  { to: '/', icon: Home, label: 'Asosiy' },
-  { to: '/catalog', icon: LayoutGrid, label: 'Katalog' },
-  { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
-  { to: '/contact', icon: Phone, label: 'Aloqa' },
-  { icon: Menu, label: 'Menyu', action: 'open-menu' },
+  { to: '/', icon: Home, label: { uz: 'Asosiy', ru: 'Главная' } },
+  { to: '/catalog', icon: LayoutGrid, label: { uz: 'Katalog', ru: 'Каталог' } },
+  { to: '/cart', icon: ShoppingBag, label: { uz: 'Savat', ru: 'Корзина' }, isCart: true },
+  { to: '/contact', icon: Phone, label: { uz: 'Aloqa', ru: 'Контакты' } },
+  { icon: Menu, label: { uz: 'Menyu', ru: 'Меню' }, action: 'open-menu' },
 ];
 
 export function MobileBottomNav() {
   const { totalItems } = useCart();
+  const { language } = useLanguage();
   const location = useLocation();
 
   return (
@@ -33,6 +35,7 @@ export function MobileBottomNav() {
       <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] ring-1 ring-black/5 px-2 py-2 flex items-center justify-between">
         {items.map((item, idx) => {
           const { to, icon: Icon, image, label, isCart, action } = item;
+          const labelText = label[language];
           const active = to
             ? to === '/'
               ? location.pathname === '/'
@@ -60,7 +63,7 @@ export function MobileBottomNav() {
                   </span>
                 )}
               </div>
-              {active && <span className="text-xs font-medium whitespace-nowrap">{label}</span>}
+              {active && <span className="text-xs font-medium whitespace-nowrap">{labelText}</span>}
             </>
           );
 
@@ -74,7 +77,7 @@ export function MobileBottomNav() {
               <button
                 key={idx}
                 type="button"
-                aria-label={label}
+                aria-label={labelText}
                 onClick={() => window.dispatchEvent(new Event('open-mobile-menu'))}
                 className={classes}
               >
