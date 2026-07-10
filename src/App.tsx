@@ -16,6 +16,7 @@ import { TelegramShell } from "@/components/telegram/TelegramShell";
 import { ThemeLoader } from "@/components/ThemeLoader";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 import { EditModeToggle } from "@/components/EditModeToggle";
 import { EditorPanel } from "@/components/editor/EditorPanel";
