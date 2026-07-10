@@ -148,21 +148,21 @@ export default function Catalog() {
     if (debouncedSearch) f.search = debouncedSearch;
     // Only pass category if it's a valid UUID. If the selected category has
     // subcategories, include all descendants so parent view shows every product.
-    // A section filter takes precedence and includes all categories in that section.
-    if (resolvedSectionId) {
-      if (sectionCategoryIds.length > 0) {
-        f.categoryIds = sectionCategoryIds;
-      } else {
-        // Section has no categories — force empty result
-        f.categoryIds = ['00000000-0000-0000-0000-000000000000'];
-      }
-    } else if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
+    // If both category and section exist in the URL, category must win.
+    if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
       const selectedId = sidebarFilters.categoryId;
       const childIds = categories.filter(c => c.parent_id === selectedId).map(c => c.id);
       if (childIds.length > 0) {
         f.categoryIds = [selectedId, ...childIds];
       } else {
         f.categoryId = selectedId;
+      }
+    } else if (resolvedSectionId) {
+      if (sectionCategoryIds.length > 0) {
+        f.categoryIds = sectionCategoryIds;
+      } else {
+        // Section has no categories — force empty result
+        f.categoryIds = ['00000000-0000-0000-0000-000000000000'];
       }
     }
     if (priceTouched && sidebarFilters.priceMin > 0) f.priceMin = sidebarFilters.priceMin;
