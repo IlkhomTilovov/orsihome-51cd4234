@@ -14,7 +14,7 @@ type NavItem = {
 
 const items: NavItem[] = [
   { to: '/', icon: Home, label: 'Asosiy' },
-  { to: '/catalog', icon: Search, label: 'Katalog' },
+  { to: '/catalog', icon: LayoutGrid, label: 'Katalog' },
   { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
   { to: '/contact', icon: Phone, label: 'Aloqa' },
   { to: '/about', icon: Menu, label: 'Menyu' },
