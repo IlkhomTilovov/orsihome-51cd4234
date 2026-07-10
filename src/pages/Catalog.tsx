@@ -194,11 +194,17 @@ export default function Catalog() {
     ? (language === 'uz' ? selectedCategory.name_uz : selectedCategory.name_ru)
     : sectionName;
 
+  const catalogSeo = getPageSeo('catalog', language);
+  const seoTitle = categoryName || catalogSeo.title;
+  const seoDescription = selectedCategory
+    ? (language === 'uz' ? selectedCategory.meta_description_uz : selectedCategory.meta_description_ru) || categoryName || catalogSeo.description
+    : sectionName || catalogSeo.description;
+
   useSEO({
-    title: categoryName || t.catalog.title,
-    description: selectedCategory
-      ? (language === 'uz' ? selectedCategory.meta_description_uz : selectedCategory.meta_description_ru) || categoryName || undefined
-      : sectionName || undefined,
+    title: seoTitle,
+    description: seoDescription,
+    ogTitle: seoTitle,
+    ogDescription: seoDescription,
     keywords: selectedCategory?.meta_keywords || undefined,
     canonical: currentPage > 1 ? '/catalog' : undefined,
   });
