@@ -26,6 +26,12 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const openHandler = () => setIsOpen(true);
+    window.addEventListener('open-mobile-menu', openHandler);
+    return () => window.removeEventListener('open-mobile-menu', openHandler);
+  }, []);
+
   const { categories } = useCategories();
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);

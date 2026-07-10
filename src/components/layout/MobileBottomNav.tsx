@@ -5,11 +5,12 @@ import { useCart } from '@/hooks/useCart';
 import { cn } from '@/lib/utils';
 
 type NavItem = {
-  to: string;
+  to?: string;
   label: string;
   icon?: LucideIcon;
   image?: string;
   isCart?: boolean;
+  action?: 'open-menu';
 };
 
 const items: NavItem[] = [
@@ -17,7 +18,7 @@ const items: NavItem[] = [
   { to: '/catalog', icon: LayoutGrid, label: 'Katalog' },
   { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
   { to: '/contact', icon: Phone, label: 'Aloqa' },
-  { to: '/about', icon: Menu, label: 'Menyu' },
+  { icon: Menu, label: 'Menyu', action: 'open-menu' },
 ];
 
 export function MobileBottomNav() {
@@ -30,19 +31,16 @@ export function MobileBottomNav() {
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }}
     >
       <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] ring-1 ring-black/5 px-2 py-2 flex items-center justify-between">
-        {items.map(({ to, icon: Icon, image, label, isCart }) => {
-          const active = to === '/' ? location.pathname === '/' : location.pathname.startsWith(to);
-          return (
-            <NavLink
-              key={to}
-              to={to}
-              className={cn(
-                'relative flex items-center justify-center h-11 rounded-full transition-all',
-                active
-                  ? 'bg-neutral-900 text-white px-4 gap-2'
-                  : 'text-neutral-700 w-11'
-              )}
-            >
+        {items.map((item, idx) => {
+          const { to, icon: Icon, image, label, isCart, action } = item;
+          const active = to
+            ? to === '/'
+              ? location.pathname === '/'
+              : location.pathname.startsWith(to)
+            : false;
+
+          const content = (
+            <>
               <div className="relative flex items-center justify-center">
                 {image ? (
                   <img
@@ -63,6 +61,31 @@ export function MobileBottomNav() {
                 )}
               </div>
               {active && <span className="text-xs font-medium whitespace-nowrap">{label}</span>}
+            </>
+          );
+
+          const classes = cn(
+            'relative flex items-center justify-center h-11 rounded-full transition-all',
+            active ? 'bg-neutral-900 text-white px-4 gap-2' : 'text-neutral-700 w-11'
+          );
+
+          if (action === 'open-menu') {
+            return (
+              <button
+                key={idx}
+                type="button"
+                aria-label={label}
+                onClick={() => window.dispatchEvent(new Event('open-mobile-menu'))}
+                className={classes}
+              >
+                {content}
+              </button>
+            );
+          }
+
+          return (
+            <NavLink key={idx} to={to!} className={classes}>
+              {content}
             </NavLink>
           );
         })}
