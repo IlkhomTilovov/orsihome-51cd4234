@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { Home, ShoppingBag, Phone, Menu, Search } from 'lucide-react';
+import { Home, ShoppingBag, Phone, Menu, LayoutGrid } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { cn } from '@/lib/utils';
 
