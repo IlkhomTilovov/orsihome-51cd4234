@@ -2,11 +2,12 @@ import { NavLink, useLocation } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { Home, ShoppingBag, Phone, Menu, LayoutGrid } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+import { useLanguage } from '@/hooks/useLanguage';
 import { cn } from '@/lib/utils';
 
 type NavItem = {
   to?: string;
-  label: string;
+  label: { uz: string; ru: string };
   icon?: LucideIcon;
   image?: string;
   isCart?: boolean;
@@ -14,11 +15,11 @@ type NavItem = {
 };
 
 const items: NavItem[] = [
-  { to: '/', icon: Home, label: 'Asosiy' },
-  { to: '/catalog', icon: LayoutGrid, label: 'Katalog' },
-  { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
-  { to: '/contact', icon: Phone, label: 'Aloqa' },
-  { icon: Menu, label: 'Menyu', action: 'open-menu' },
+  { to: '/', icon: Home, label: { uz: 'Asosiy', ru: 'Главная' } },
+  { to: '/catalog', icon: LayoutGrid, label: { uz: 'Katalog', ru: 'Каталог' } },
+  { to: '/cart', icon: ShoppingBag, label: { uz: 'Savat', ru: 'Корзина' }, isCart: true },
+  { to: '/contact', icon: Phone, label: { uz: 'Aloqa', ru: 'Контакты' } },
+  { icon: Menu, label: { uz: 'Menyu', ru: 'Меню' }, action: 'open-menu' },
 ];
 
 export function MobileBottomNav() {
