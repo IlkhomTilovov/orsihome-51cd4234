@@ -149,6 +149,11 @@ const App = () => (
                               <SetsAdmin />
                             </ProtectedRoute>
                           } />
+                          <Route path="branches" element={
+                            <ProtectedRoute module="siteContent">
+                              <BranchesAdmin />
+                            </ProtectedRoute>
+                          } />
                           <Route path="system" element={
                             <ProtectedRoute module="systemSettings">
                               <SystemSettings />
