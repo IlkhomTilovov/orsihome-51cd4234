@@ -37,6 +37,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [branches, setBranches] = useState<Branch[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     (async () => {
