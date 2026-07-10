@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      branches: {
+        Row: {
+          address_ru: string
+          address_uz: string
+          created_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          longitude: number
+          name_ru: string
+          name_uz: string
+          order_index: number
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address_ru?: string
+          address_uz: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          latitude: number
+          longitude: number
+          name_ru?: string
+          name_uz: string
+          order_index?: number
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address_ru?: string
+          address_uz?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          latitude?: number
+          longitude?: number
+          name_ru?: string
+          name_uz?: string
+          order_index?: number
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Phone, Mail, MapPin, Clock, Send, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, ArrowRight, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,20 @@ import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { cn } from '@/lib/utils';
+
+interface Branch {
+  id: string;
+  name_uz: string;
+  name_ru: string;
+  address_uz: string;
+  address_ru: string;
+  phone: string | null;
+  latitude: number;
+  longitude: number;
+  is_active: boolean;
+  order_index: number;
+}
 
 export default function Contact() {
   const { language, t } = useLanguage();
@@ -21,8 +35,23 @@ export default function Contact() {
   const { getContent } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
 
-  const yandexMapLink = getContent('contact_yandex_map_link', language, 'https://yandex.uz/maps/-/CHQpYCZt');
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('branches')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+      const list = (data as Branch[]) || [];
+      setBranches(list);
+      if (list.length > 0) setSelectedBranchId(list[0].id);
+    })();
+  }, []);
+
+  const selectedBranch = branches.find((b) => b.id === selectedBranchId) || branches[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +86,6 @@ export default function Contact() {
   };
 
   const contactInfo = [
-    { icon: MapPin, labelKey: 'contact_address_label', valueKey: 'contact_address_value', label: t.contact.info.address, value: t.contact.info.addressValue, href: undefined },
     { icon: Phone, labelKey: 'contact_phone_label', valueKey: 'contact_phone_value', label: t.contact.info.phone, value: '', href: '#' },
     { icon: Mail, labelKey: 'contact_email_label', valueKey: 'contact_email_value', label: t.contact.info.email, value: 'info@mebelusta.uz', href: 'mailto:info@mebelusta.uz' },
     { icon: Clock, labelKey: 'contact_hours_label', valueKey: 'contact_hours_value', label: t.contact.info.workingHours, value: 'Du-Ju: 9:00-18:00, Sha: 10:00-16:00', href: undefined },
@@ -254,6 +282,94 @@ export default function Contact() {
           </div>
         </div>
       </section>
+
+      {/* Branches / Map Section */}
+      {branches.length > 0 && selectedBranch && (
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-10">
+                <span className="text-primary text-xs tracking-[0.3em] uppercase font-medium">
+                  {language === 'uz' ? 'Manzillar' : 'Адреса'}
+                </span>
+                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3">
+                  {language === 'uz' ? 'Bizning filiallarimiz' : 'Наши филиалы'}
+                </h2>
+              </div>
+
+              <div className="grid lg:grid-cols-5 gap-6">
+                {/* Branch list */}
+                <div className="lg:col-span-2 space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                  {branches.map((b) => {
+                    const active = b.id === selectedBranch.id;
+                    const name = language === 'ru' && b.name_ru ? b.name_ru : b.name_uz;
+                    const address = language === 'ru' && b.address_ru ? b.address_ru : b.address_uz;
+                    return (
+                      <button
+                        key={b.id}
+                        type="button"
+                        onClick={() => setSelectedBranchId(b.id)}
+                        className={cn(
+                          'w-full text-left p-5 rounded-xl border transition-all',
+                          active
+                            ? 'bg-primary/5 border-primary shadow-md'
+                            : 'bg-card border-border hover:border-primary/40'
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={cn(
+                              'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors',
+                              active ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+                            )}
+                          >
+                            <MapPin className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-foreground">{name}</h3>
+                            <p className="text-sm text-muted-foreground mt-1">{address}</p>
+                            {b.phone && (
+                              <a
+                                href={`tel:${b.phone.replace(/\s/g, '')}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline mt-2"
+                              >
+                                <Phone className="w-3.5 h-3.5" /> {b.phone}
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Map */}
+                <div className="lg:col-span-3">
+                  <div className="rounded-2xl overflow-hidden border border-border shadow-lg h-[400px] lg:h-[500px] bg-card">
+                    <iframe
+                      key={selectedBranch.id}
+                      title={selectedBranch.name_uz}
+                      src={`https://yandex.uz/map-widget/v1/?ll=${selectedBranch.longitude}%2C${selectedBranch.latitude}&z=16&pt=${selectedBranch.longitude}%2C${selectedBranch.latitude}%2Cpm2rdm&lang=${language === 'ru' ? 'ru_RU' : 'uz_UZ'}`}
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                    />
+                  </div>
+                  <a
+                    href={`https://yandex.uz/maps/?ll=${selectedBranch.longitude},${selectedBranch.latitude}&z=17&pt=${selectedBranch.longitude},${selectedBranch.latitude}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline mt-3"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    {language === 'uz' ? "Yandex xaritada ochish" : 'Открыть в Яндекс.Картах'}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
