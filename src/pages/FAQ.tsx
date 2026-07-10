@@ -25,8 +25,22 @@ export default function FAQ() {
     payment: t.faq.categories.payment,
   };
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: language === 'uz' ? f.question_uz : f.question_ru,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: language === 'uz' ? f.answer_uz : f.answer_ru,
+      },
+    })),
+  };
+
   return (
     <div id="hero" className="min-h-screen py-16">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="font-serif text-4xl font-bold mb-4">
