@@ -1,5 +1,6 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { useSearchParams, Link, useLocation, useNavigationType } from 'react-router-dom';
+
 import { Search, SlidersHorizontal, Loader2, ChevronLeft, ChevronRight, X, LayoutGrid, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -189,6 +190,40 @@ export default function Catalog() {
   const categorySyncing =
     resolvedCategoryId === null || resolvedCategoryId !== sidebarFilters.categoryId;
   const loading = productsLoading || categorySyncing;
+
+  // --- Scroll position preservation across product detail navigation ---
+  const location = useLocation();
+  const navigationType = useNavigationType();
+  const scrollKey = `catalog-scroll:${location.pathname}${location.search}`;
+  const restoredRef = useRef(false);
+
+  // Continuously persist scroll position for this catalog URL
+  useEffect(() => {
+    restoredRef.current = false;
+    const save = () => {
+      sessionStorage.setItem(scrollKey, String(window.scrollY));
+    };
+    window.addEventListener('scroll', save, { passive: true });
+    return () => {
+      save();
+      window.removeEventListener('scroll', save);
+    };
+  }, [scrollKey]);
+
+  // Restore scroll on back/forward once products have finished loading
+  useEffect(() => {
+    if (navigationType !== 'POP') return;
+    if (loading) return;
+    if (restoredRef.current) return;
+    const stored = sessionStorage.getItem(scrollKey);
+    if (stored == null) return;
+    restoredRef.current = true;
+    const y = parseInt(stored, 10);
+    if (Number.isNaN(y)) return;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: y, behavior: 'auto' });
+    });
+  }, [navigationType, loading, scrollKey, products.length]);
 
   const selectedCategory = categories?.find(c => c.slug === sidebarFilters.categoryId || c.id === sidebarFilters.categoryId);
   const categoryName = selectedCategory
