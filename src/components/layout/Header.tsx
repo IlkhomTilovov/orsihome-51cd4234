@@ -201,7 +201,10 @@ export function Header() {
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
+        </div>
       </div>
+
+
 
       {/* Mobile Drawer - left slide-in */}
       {createPortal(
