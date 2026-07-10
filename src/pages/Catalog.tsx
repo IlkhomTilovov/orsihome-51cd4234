@@ -518,6 +518,9 @@ export default function Catalog() {
                     </ul>
                   )}
                 </div>
+                <div className="px-5 py-4 border-t border-neutral-200 text-[11px] uppercase tracking-[0.14em] text-neutral-400">
+                  ORSI HOME · Mebel
+                </div>
               </SheetContent>
             </Sheet>
 
