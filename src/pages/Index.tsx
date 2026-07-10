@@ -13,6 +13,7 @@ import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
+import { getPageSeo } from '@/lib/pageSeo';
 
 
 import serviceWardrobe from '@/assets/service-wardrobe.jpg';
@@ -395,7 +396,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
 
 export default function Index() {
   const { language } = useLanguage();
-  useSEO({});
+  const homeSeo = getPageSeo('home', language);
+  useSEO({ title: homeSeo.title, description: homeSeo.description, ogTitle: homeSeo.title, ogDescription: homeSeo.description });
 
   const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
   const { settings } = useSystemSettings();

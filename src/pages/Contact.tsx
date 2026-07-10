@@ -11,6 +11,7 @@ import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { cn } from '@/lib/utils';
+import { getPageSeo } from '@/lib/pageSeo';
 
 interface Branch {
   id: string;
@@ -27,10 +28,9 @@ interface Branch {
 
 export default function Contact() {
   const { language, t } = useLanguage();
+  const seo = getPageSeo('contact', language);
 
-  useSEO({
-    title: t.nav.contact,
-  });
+  useSEO({ title: seo.title, description: seo.description, ogTitle: seo.title, ogDescription: seo.description });
   const { toast } = useToast();
   const { getContent } = useSiteContent();
   const [loading, setLoading] = useState(false);
