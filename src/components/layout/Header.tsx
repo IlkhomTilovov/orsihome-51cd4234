@@ -281,13 +281,6 @@ export function Header() {
                 >
                   <div className="overflow-hidden">
                     <div className="ml-[26px] mt-1 mb-2 pl-4 border-l border-border/60 flex flex-col">
-                      <Link
-                        to="/catalog"
-                        onClick={() => setIsOpen(false)}
-                        className="px-3 py-2.5 text-[13.5px] font-medium text-foreground hover:text-primary rounded-lg transition-colors"
-                      >
-                        {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
-                      </Link>
                       {sections.map((section) => {
                         const sectionParents = categories.filter(
                           (c) => !c.parent_id && c.section_id === section.id
