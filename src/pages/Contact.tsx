@@ -35,8 +35,23 @@ export default function Contact() {
   const { getContent } = useSiteContent();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
 
-  const yandexMapLink = getContent('contact_yandex_map_link', language, 'https://yandex.uz/maps/-/CHQpYCZt');
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('branches')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+      const list = (data as Branch[]) || [];
+      setBranches(list);
+      if (list.length > 0) setSelectedBranchId(list[0].id);
+    })();
+  }, []);
+
+  const selectedBranch = branches.find((b) => b.id === selectedBranchId) || branches[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
