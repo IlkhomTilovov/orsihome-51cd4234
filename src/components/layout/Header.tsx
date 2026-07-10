@@ -30,6 +30,7 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+  const [mobileSectionId, setMobileSectionId] = useState<string | null>(null);
   
   
   const [activeSectionId, setActiveSectionId] = useState<string | null | undefined>(undefined);
@@ -278,18 +279,66 @@ export function Header() {
 
                 {mobileCatalogOpen && (
                   <div className="ml-[26px] mt-1 mb-2 pl-4 border-l border-border/60">
-                    <div className="flex flex-col">
-                      {sections.map((section) => (
-                        <Link
-                          key={section.id}
-                          to={`/catalog?section=${section.slug}`}
-                          onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); }}
-                          className="px-3 py-2.5 text-[13.5px] font-medium text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
-                        >
-                          {language === 'ru' ? section.name_ru : section.name_uz}
-                        </Link>
-                      ))}
-                    </div>
+                    {mobileSectionId === null ? (
+                      <div className="flex flex-col">
+                        {sections.map((section) => {
+                          const hasCats = categories.some((c) => !c.parent_id && c.section_id === section.id);
+                          return (
+                            <button
+                              key={section.id}
+                              type="button"
+                              onClick={() => {
+                                if (hasCats) {
+                                  setMobileSectionId(section.id);
+                                } else {
+                                  setIsOpen(false);
+                                  setMobileCatalogOpen(false);
+                                  window.location.href = `/catalog?section=${section.slug}`;
+                                }
+                              }}
+                              className="w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] font-medium text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg transition-colors text-left"
+                            >
+                              <span>{language === 'ru' ? section.name_ru : section.name_uz}</span>
+                              {hasCats && <ChevronRight className="w-4 h-4 text-muted-foreground" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (() => {
+                      const section = sections.find((s) => s.id === mobileSectionId);
+                      const cats = categories.filter((c) => !c.parent_id && c.section_id === mobileSectionId);
+                      return (
+                        <div className="flex flex-col">
+                          <button
+                            type="button"
+                            onClick={() => setMobileSectionId(null)}
+                            className="flex items-center gap-1.5 px-3 py-2 text-[12.5px] font-medium text-muted-foreground hover:text-primary transition-colors"
+                          >
+                            <ChevronRight className="w-4 h-4 rotate-180" />
+                            {language === 'ru' ? 'Назад' : 'Orqaga'}
+                          </button>
+                          {section && (
+                            <Link
+                              to={`/catalog?section=${section.slug}`}
+                              onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); setMobileSectionId(null); }}
+                              className="px-3 py-2.5 text-[13.5px] font-semibold text-primary hover:bg-muted/60 rounded-lg block transition-colors"
+                            >
+                              {language === 'ru' ? `Все в «${section.name_ru}»` : `«${section.name_uz}» — barchasi`}
+                            </Link>
+                          )}
+                          {cats.map((cat) => (
+                            <Link
+                              key={cat.id}
+                              to={`/catalog?category=${cat.slug}`}
+                              onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); setMobileSectionId(null); }}
+                              className="px-3 py-2.5 text-[13.5px] font-medium text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
+                            >
+                              {language === 'ru' ? cat.name_ru : cat.name_uz}
+                            </Link>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
 
