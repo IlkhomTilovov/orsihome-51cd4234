@@ -191,7 +191,7 @@ export function Header() {
             </Button>
 
             {/* Cart */}
-            <button onClick={() => setCartOpen(prev => !prev)} className="relative">
+            <button onClick={() => setCartOpen(prev => !prev)} className="relative hidden lg:block">
               <Button variant="ghost" size="icon" className="relative text-foreground hover:text-primary" asChild>
                 <span>
                   <ShoppingBag className="w-5 h-5" />
@@ -203,11 +203,6 @@ export function Header() {
                 </span>
               </Button>
             </button>
-
-            {/* Mobile Menu */}
-            <Button variant="ghost" size="icon" className="lg:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
           </div>
         </div>
       </div>
