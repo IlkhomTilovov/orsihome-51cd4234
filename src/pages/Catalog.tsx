@@ -49,6 +49,28 @@ export default function Catalog() {
     return found ? found.id : null; // null means still resolving
   }, [initialCategoryParam, categories]);
 
+  // Resolve section slug to section ID for filtering
+  const resolvedSectionId = useMemo(() => {
+    if (!sectionParam || !sections.length) return null;
+    const found = sections.find(s => s.slug === sectionParam || s.id === sectionParam);
+    return found ? found.id : null;
+  }, [sectionParam, sections]);
+
+  const selectedSection = useMemo(() => sections.find(s => s.id === resolvedSectionId), [resolvedSectionId, sections]);
+  const sectionName = selectedSection ? (language === 'uz' ? selectedSection.name_uz : selectedSection.name_ru) : null;
+
+  // All category IDs belonging to the selected section (including descendants)
+  const sectionCategoryIds = useMemo(() => {
+    if (!resolvedSectionId) return [];
+    const ids = new Set<string>();
+    const walk = (id: string) => {
+      ids.add(id);
+      categories.filter(c => c.parent_id === id).forEach(child => walk(child.id));
+    };
+    categories.filter(c => c.section_id === resolvedSectionId).forEach(c => walk(c.id));
+    return Array.from(ids);
+  }, [resolvedSectionId, categories]);
+
   const [priceTouched, setPriceTouched] = useState(false);
   const [sidebarFilters, setSidebarFilters] = useState<SidebarFilters>({
     categoryId: 'all',
