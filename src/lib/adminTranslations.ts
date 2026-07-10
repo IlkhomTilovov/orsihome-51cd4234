@@ -889,6 +889,7 @@ export const adminTranslations = {
       navPromoTiles: 'Промо-карточки',
       navSets: 'Наборы',
       navSiteContent: 'Контент сайта',
+      navBranches: 'Филиалы',
       navCheckoutForm: 'Форма оформления',
       navThemes: 'Темы',
       navAdmins: 'Администраторы',
