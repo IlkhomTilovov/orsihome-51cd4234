@@ -366,9 +366,19 @@ export default function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline mt-3"
+                    onClick={(e) => {
+                      if (!isMobile) return;
+                      e.preventDefault();
+                      const appUrl = `yandexmaps://maps.yandex.com/?ll=${selectedBranch.longitude},${selectedBranch.latitude}&z=17&pt=${selectedBranch.longitude},${selectedBranch.latitude}`;
+                      const webUrl = e.currentTarget.href;
+                      window.location.href = appUrl;
+                      setTimeout(() => {
+                        window.location.href = webUrl;
+                      }, 1500);
+                    }}
                   >
                     <ExternalLink className="w-4 h-4" />
-                    {language === 'uz' ? "Yandex xaritada ochish" : 'Открыть в Яндекс.Картах'}
+                    {language === 'uz' ? "Yandex Mapsda ochish" : 'Открыть в Яндекс.Картах'}
                   </a>
                 </div>
               </div>
