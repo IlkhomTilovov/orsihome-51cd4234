@@ -279,7 +279,56 @@ export function Header() {
                 </div>
               ) : (
                 <>
-...
+                  {/* Search */}
+                  <div className="px-5 pt-4 pb-2">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.currentTarget as HTMLFormElement;
+                        const input = form.elements.namedItem('q') as HTMLInputElement;
+                        const q = input?.value.trim();
+                        setIsOpen(false);
+                        window.location.href = q ? `/catalog?search=${encodeURIComponent(q)}` : '/catalog';
+                      }}
+                      className="relative"
+                    >
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <input
+                        name="q"
+                        type="text"
+                        placeholder={language === 'ru' ? 'Поиск мебели...' : 'Mebel qidirish...'}
+                        className="w-full h-11 pl-10 pr-4 rounded-full bg-muted/60 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </form>
+                  </div>
+
+                  {/* Primary items */}
+                  <div className="px-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileCatalogOpen(true)}
+                      className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
+                    >
+                      <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
+                        <LayoutGrid className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                        {language === 'ru' ? 'Каталог' : 'Katalog'}
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </button>
+
+                    <button
+                      onClick={() => { setIsOpen(false); setCartOpen(true); }}
+                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground text-left"
+                    >
+                      <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                      <span className="flex-1">{language === 'ru' ? 'Корзина' : 'Savat'}</span>
+                      {totalItems > 0 && (
+                        <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold flex items-center justify-center">
+                          {totalItems}
+                        </span>
+                      )}
+                    </button>
+                  </div>
               {/* Kompaniya */}
               <div className="px-3 pt-5">
                 <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
