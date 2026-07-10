@@ -36,7 +36,8 @@ export function EditModeToggle() {
         <TooltipTrigger asChild>
           <button
             onClick={toggleEditMode}
-            className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all hover:scale-105"
+            className="fixed bottom-24 md:bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all hover:scale-105"
+
           >
             <Pencil className="h-4 w-4" />
             <span className="text-sm font-medium">Tahrirlash</span>
@@ -52,7 +53,7 @@ export function EditModeToggle() {
   // Compact floating toolbar in edit mode
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-24 md:bottom-6 right-6 z-50">
         <div className="bg-card/95 backdrop-blur-md rounded-xl shadow-2xl border p-1.5 flex items-center gap-1">
           {/* Edit Mode Indicator */}
           <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-amber-500/10 text-amber-600 rounded-lg">
