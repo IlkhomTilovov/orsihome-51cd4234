@@ -81,6 +81,7 @@ const navGroups: NavGroup[] = [
     icon: PaintBucket,
     items: [
       { titleKey: 'navSiteContent', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
+      { titleKey: 'navBranches', url: '/admin/branches', icon: MapPin, module: 'siteContent' },
       { titleKey: 'navCheckoutForm', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
       { titleKey: 'navThemes', url: '/admin/themes', icon: Palette, module: 'themes' },
     ],
