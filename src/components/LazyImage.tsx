@@ -81,6 +81,7 @@ export const LazyImage = memo(function LazyImage({
           onError={handleError}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
           sizes={finalSizes}
           className={cn(
             priority ? 'opacity-100' : 'transition-opacity duration-300',
