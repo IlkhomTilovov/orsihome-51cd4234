@@ -180,7 +180,7 @@ export default function Catalog() {
 
   // Show the catalog sections overview when no filters/search/set are active and sections exist.
   const showSectionsOverview =
-    !setTitle && !promoTileId && !debouncedSearch && sidebarFilters.categoryId === 'all' && sections.length > 0;
+    !setTitle && !promoTileId && !debouncedSearch && !sectionParam && sidebarFilters.categoryId === 'all' && sections.length > 0;
 
   // Treat as loading while the URL category slug hasn't synced into local filters yet
   // to avoid showing stale products from the previous category.
