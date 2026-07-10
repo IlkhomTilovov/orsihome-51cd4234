@@ -353,7 +353,7 @@ export default function Catalog() {
                   {language === 'uz' ? 'Katalog' : 'Каталог'}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[340px] sm:w-[360px] p-0 flex flex-col [&>button]:hidden">
+              <SheetContent side="left" className="w-[320px] sm:w-[340px] h-auto inset-y-4 left-4 p-0 flex flex-col rounded-3xl border shadow-2xl [&>button]:hidden">
                 <SheetHeader className="px-5 pt-6 pb-4 space-y-0">
                   <SheetTitle className="text-lg flex items-center gap-3">
                     {drawerSectionId ? (
