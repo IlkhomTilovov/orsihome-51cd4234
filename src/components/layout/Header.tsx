@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Heart, Info, Shield, Truck, RotateCcw, Mail, Send, Instagram } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Heart, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -362,28 +362,6 @@ export function Header() {
                 </Link>
               </div>
 
-              {/* Foydali ma'lumot */}
-              <div className="px-3 pt-5">
-                <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
-                  {language === 'ru' ? 'Полезная информация' : "Foydali ma'lumot"}
-                </p>
-                <Link
-                  to="/faq"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
-                >
-                  <Truck className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                  {language === 'ru' ? 'Доставка' : 'Yetkazib berish'}
-                </Link>
-                <Link
-                  to="/faq"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
-                >
-                  <RotateCcw className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                  {language === 'ru' ? 'Возврат' : 'Qaytarish'}
-                </Link>
-              </div>
 
               {/* Biz bilan bog'laning */}
               <div className="px-3 pt-5 pb-6">
