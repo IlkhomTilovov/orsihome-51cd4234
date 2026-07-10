@@ -274,40 +274,46 @@ export function Header() {
                   </span>
                   <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
                 </button>
-                {mobileCatalogOpen && (
-                  <div className="pl-10 pr-2 pb-2 flex flex-col animate-fade-in">
-                    <Link
-                      to="/catalog"
-                      onClick={() => setIsOpen(false)}
-                      className="px-3 py-2 text-[13.5px] text-muted-foreground hover:text-primary"
-                    >
-                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
-                    </Link>
-                    {sections.map((section) => {
-                      const sectionParents = categories.filter(
-                        (c) => !c.parent_id && c.section_id === section.id
-                      );
-                      if (sectionParents.length === 0) return null;
-                      return (
-                        <div key={section.id} className="mt-2">
-                          <p className="px-3 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-primary/80">
-                            {language === 'ru' ? section.name_ru : section.name_uz}
-                          </p>
-                          {sectionParents.map((parent) => (
-                            <Link
-                              key={parent.id}
-                              to={`/catalog?category=${parent.slug}`}
-                              onClick={() => setIsOpen(false)}
-                              className="px-3 py-2 text-[13.5px] text-foreground hover:text-primary block"
-                            >
-                              {language === 'ru' ? parent.name_ru : parent.name_uz}
-                            </Link>
-                          ))}
-                        </div>
-                      );
-                    })}
+                <div
+                  className={`grid transition-all duration-300 ease-luxe ${
+                    mobileCatalogOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="ml-[26px] mt-1 mb-2 pl-4 border-l border-border/60 flex flex-col">
+                      <Link
+                        to="/catalog"
+                        onClick={() => setIsOpen(false)}
+                        className="px-3 py-2.5 text-[13.5px] font-medium text-foreground hover:text-primary rounded-lg transition-colors"
+                      >
+                        {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                      </Link>
+                      {sections.map((section) => {
+                        const sectionParents = categories.filter(
+                          (c) => !c.parent_id && c.section_id === section.id
+                        );
+                        if (sectionParents.length === 0) return null;
+                        return (
+                          <div key={section.id} className="mt-3">
+                            <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                              {language === 'ru' ? section.name_ru : section.name_uz}
+                            </p>
+                            {sectionParents.map((parent) => (
+                              <Link
+                                key={parent.id}
+                                to={`/catalog?category=${parent.slug}`}
+                                onClick={() => setIsOpen(false)}
+                                className="px-3 py-2.5 text-[13.5px] text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
+                              >
+                                {language === 'ru' ? parent.name_ru : parent.name_uz}
+                              </Link>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                )}
+                </div>
 
                 <Link
                   to="/catalog"
