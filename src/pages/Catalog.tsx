@@ -191,13 +191,13 @@ export default function Catalog() {
   const selectedCategory = categories?.find(c => c.slug === sidebarFilters.categoryId || c.id === sidebarFilters.categoryId);
   const categoryName = selectedCategory
     ? (language === 'uz' ? selectedCategory.name_uz : selectedCategory.name_ru)
-    : null;
+    : sectionName;
 
   useSEO({
     title: categoryName || t.catalog.title,
     description: selectedCategory
       ? (language === 'uz' ? selectedCategory.meta_description_uz : selectedCategory.meta_description_ru) || categoryName || undefined
-      : undefined,
+      : sectionName || undefined,
     keywords: selectedCategory?.meta_keywords || undefined,
     canonical: currentPage > 1 ? '/catalog' : undefined,
   });
