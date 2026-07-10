@@ -83,6 +83,8 @@ export function useProducts(
   filters: ProductFilters = {},
   pageSize: number = PAGE_SIZE
 ) {
+  const filtersKey = JSON.stringify(filters);
+  const requestKey = `${page}:${pageSize}:${filtersKey}`;
   const [data, setData] = useState<ProductsResponse>({
     products: [],
     totalCount: 0,
@@ -91,6 +93,7 @@ export function useProducts(
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [loadedRequestKey, setLoadedRequestKey] = useState('');
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -166,6 +169,7 @@ export function useProducts(
         if (filters.productIds.length === 0) {
           // No products in set — short-circuit
           setData({ products: [], totalCount: 0, totalPages: 0, currentPage: page });
+          setLoadedRequestKey(requestKey);
           setLoading(false);
           return;
         }
@@ -202,19 +206,21 @@ export function useProducts(
         totalPages,
         currentPage: page,
       });
+      setLoadedRequestKey(requestKey);
     } catch (err) {
       console.error('Error fetching products:', err);
       setError(err instanceof Error ? err : new Error('Failed to fetch products'));
+      setLoadedRequestKey(requestKey);
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, JSON.stringify(filters)]);
+  }, [page, pageSize, filtersKey, requestKey]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  return { ...data, loading, error, refetch: fetchProducts };
+  return { ...data, loading: loading || loadedRequestKey !== requestKey, error, refetch: fetchProducts };
 }
 
 export function useFeaturedProducts(limit: number = 8) {
