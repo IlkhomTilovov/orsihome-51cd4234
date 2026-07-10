@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Phone, Mail, MapPin, Clock, Send, ArrowRight } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, ArrowRight, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,20 @@ import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
+import { cn } from '@/lib/utils';
+
+interface Branch {
+  id: string;
+  name_uz: string;
+  name_ru: string;
+  address_uz: string;
+  address_ru: string;
+  phone: string | null;
+  latitude: number;
+  longitude: number;
+  is_active: boolean;
+  order_index: number;
+}
 
 export default function Contact() {
   const { language, t } = useLanguage();
