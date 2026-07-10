@@ -37,6 +37,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [branches, setBranches] = useState<Branch[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,6 +50,11 @@ export default function Contact() {
       setBranches(list);
       if (list.length > 0) setSelectedBranchId(list[0].id);
     })();
+  }, []);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    setIsMobile(/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase()));
   }, []);
 
   const selectedBranch = branches.find((b) => b.id === selectedBranchId) || branches[0];
@@ -360,9 +366,19 @@ export default function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline mt-3"
+                    onClick={(e) => {
+                      if (!isMobile) return;
+                      e.preventDefault();
+                      const appUrl = `yandexmaps://maps.yandex.com/?ll=${selectedBranch.longitude},${selectedBranch.latitude}&z=17&pt=${selectedBranch.longitude},${selectedBranch.latitude}`;
+                      const webUrl = e.currentTarget.href;
+                      window.location.href = appUrl;
+                      setTimeout(() => {
+                        window.location.href = webUrl;
+                      }, 1500);
+                    }}
                   >
                     <ExternalLink className="w-4 h-4" />
-                    {language === 'uz' ? "Yandex xaritada ochish" : 'Открыть в Яндекс.Картах'}
+                    {language === 'uz' ? "Yandex Mapsda ochish" : 'Открыть в Яндекс.Картах'}
                   </a>
                 </div>
               </div>
