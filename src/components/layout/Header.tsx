@@ -225,9 +225,20 @@ export function Header() {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
-              <h2 className="text-base font-semibold text-foreground">
-                {language === 'ru' ? 'Меню' : 'Menyu'}
-              </h2>
+              {mobileCatalogOpen ? (
+                <button
+                  onClick={() => setMobileCatalogOpen(false)}
+                  className="flex items-center gap-2 text-base font-semibold text-foreground"
+                  aria-label="back"
+                >
+                  <ChevronRight className="w-5 h-5 rotate-180 text-muted-foreground" />
+                  {language === 'ru' ? 'Каталог' : 'Katalog'}
+                </button>
+              ) : (
+                <h2 className="text-base font-semibold text-foreground">
+                  {language === 'ru' ? 'Меню' : 'Menyu'}
+                </h2>
+              )}
               <button
                 onClick={() => setIsOpen(false)}
                 className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground"
@@ -238,90 +249,86 @@ export function Header() {
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {/* Search */}
-              <div className="px-5 pt-4 pb-2">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.currentTarget as HTMLFormElement;
-                    const input = form.elements.namedItem('q') as HTMLInputElement;
-                    const q = input?.value.trim();
-                    setIsOpen(false);
-                    window.location.href = q ? `/catalog?search=${encodeURIComponent(q)}` : '/catalog';
-                  }}
-                  className="relative"
-                >
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    name="q"
-                    type="text"
-                    placeholder={language === 'ru' ? 'Поиск мебели...' : 'Mebel qidirish...'}
-                    className="w-full h-11 pl-10 pr-4 rounded-full bg-muted/60 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                </form>
-              </div>
-
-              {/* Primary items */}
-              <div className="px-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setMobileCatalogOpen(v => !v)}
-                  className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
-                >
-                  <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
-                    <LayoutGrid className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                    {language === 'ru' ? 'Каталог' : 'Katalog'}
-                  </span>
-                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
-                </button>
-                <div
-                  className={`grid transition-all duration-300 ease-luxe ${
-                    mobileCatalogOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <div className="ml-[26px] mt-1 mb-2 pl-4 border-l border-border/60 flex flex-col">
-                      {sections.map((section) => {
-                        const sectionParents = categories.filter(
-                          (c) => !c.parent_id && c.section_id === section.id
-                        );
-                        if (sectionParents.length === 0) return null;
-                        return (
-                          <div key={section.id} className="mt-3">
-                            <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-                              {language === 'ru' ? section.name_ru : section.name_uz}
-                            </p>
-                            {sectionParents.map((parent) => (
-                              <Link
-                                key={parent.id}
-                                to={`/catalog?category=${parent.slug}`}
-                                onClick={() => setIsOpen(false)}
-                                className="px-3 py-2.5 text-[13.5px] text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
-                              >
-                                {language === 'ru' ? parent.name_ru : parent.name_uz}
-                              </Link>
-                            ))}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+              {mobileCatalogOpen ? (
+                /* Catalog sub-panel */
+                <div className="px-3 pt-3 pb-6">
+                  {sections.map((section) => {
+                    const sectionParents = categories.filter(
+                      (c) => !c.parent_id && c.section_id === section.id
+                    );
+                    if (sectionParents.length === 0) return null;
+                    return (
+                      <div key={section.id} className="mb-4">
+                        <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                          {language === 'ru' ? section.name_ru : section.name_uz}
+                        </p>
+                        {sectionParents.map((parent) => (
+                          <Link
+                            key={parent.id}
+                            to={`/catalog?category=${parent.slug}`}
+                            onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); }}
+                            className="flex items-center justify-between px-3 py-3.5 rounded-xl hover:bg-muted text-[14.5px] text-foreground transition-colors"
+                          >
+                            <span>{language === 'ru' ? parent.name_ru : parent.name_uz}</span>
+                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
+              ) : (
+                <>
+                  {/* Search */}
+                  <div className="px-5 pt-4 pb-2">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.currentTarget as HTMLFormElement;
+                        const input = form.elements.namedItem('q') as HTMLInputElement;
+                        const q = input?.value.trim();
+                        setIsOpen(false);
+                        window.location.href = q ? `/catalog?search=${encodeURIComponent(q)}` : '/catalog';
+                      }}
+                      className="relative"
+                    >
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <input
+                        name="q"
+                        type="text"
+                        placeholder={language === 'ru' ? 'Поиск мебели...' : 'Mebel qidirish...'}
+                        className="w-full h-11 pl-10 pr-4 rounded-full bg-muted/60 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      />
+                    </form>
+                  </div>
 
-                <button
-                  onClick={() => { setIsOpen(false); setCartOpen(true); }}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground text-left"
-                >
-                  <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
-                  <span className="flex-1">{language === 'ru' ? 'Корзина' : 'Savat'}</span>
-                  {totalItems > 0 && (
-                    <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold flex items-center justify-center">
-                      {totalItems}
-                    </span>
-                  )}
-                </button>
-              </div>
+                  {/* Primary items */}
+                  <div className="px-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setMobileCatalogOpen(true)}
+                      className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
+                    >
+                      <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
+                        <LayoutGrid className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                        {language === 'ru' ? 'Каталог' : 'Katalog'}
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </button>
 
+                    <button
+                      onClick={() => { setIsOpen(false); setCartOpen(true); }}
+                      className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground text-left"
+                    >
+                      <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                      <span className="flex-1">{language === 'ru' ? 'Корзина' : 'Savat'}</span>
+                      {totalItems > 0 && (
+                        <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold flex items-center justify-center">
+                          {totalItems}
+                        </span>
+                      )}
+                    </button>
+                  </div>
               {/* Kompaniya */}
               <div className="px-3 pt-5">
                 <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
@@ -383,6 +390,8 @@ export function Header() {
                   </a>
                 )}
               </div>
+                </>
+              )}
             </div>
           </aside>
         </>,
