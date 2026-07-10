@@ -63,7 +63,7 @@ export function MobileBottomNav() {
                   </span>
                 )}
               </div>
-              {active && <span className="text-xs font-medium whitespace-nowrap">{label}</span>}
+              {active && <span className="text-xs font-medium whitespace-nowrap">{labelText}</span>}
             </>
           );
 
@@ -77,7 +77,7 @@ export function MobileBottomNav() {
               <button
                 key={idx}
                 type="button"
-                aria-label={label}
+                aria-label={labelText}
                 onClick={() => window.dispatchEvent(new Event('open-mobile-menu'))}
                 className={classes}
               >
