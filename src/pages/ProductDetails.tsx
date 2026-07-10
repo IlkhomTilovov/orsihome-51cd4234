@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, ShoppingBag, MessageCircle, Phone, Check, Loader2, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -22,6 +22,7 @@ interface MediaItem {
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const { isAdmin } = useAuth();
@@ -207,8 +208,8 @@ export default function ProductDetails() {
     <div id="hero" className="min-h-screen py-8">
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
-        <Button asChild variant="ghost" className="mb-6 gap-2">
-          <Link to="/catalog"><ArrowLeft className="w-4 h-4" /> {t.common.back}</Link>
+        <Button variant="ghost" className="mb-6 gap-2" onClick={() => navigate(-1)}>
+          <ArrowLeft className="w-4 h-4" /> {t.common.back}
         </Button>
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
