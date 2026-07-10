@@ -3,13 +3,13 @@ import { faqs } from '@/lib/data';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
+import { getPageSeo } from '@/lib/pageSeo';
 
 export default function FAQ() {
   const { language, t } = useLanguage();
+  const seo = getPageSeo('faq', language);
 
-  useSEO({
-    title: t.nav.faq,
-  });
+  useSEO({ title: seo.title, description: seo.description, ogTitle: seo.title, ogDescription: seo.description });
 
   const groupedFaqs = faqs.reduce((acc, faq) => {
     if (!acc[faq.category]) acc[faq.category] = [];

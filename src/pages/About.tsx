@@ -3,13 +3,13 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
+import { getPageSeo } from '@/lib/pageSeo';
 
 export default function About() {
   const { language, t } = useLanguage();
+  const seo = getPageSeo('about', language);
 
-  useSEO({
-    title: t.about.title,
-  });
+  useSEO({ title: seo.title, description: seo.description, ogTitle: seo.title, ogDescription: seo.description });
 
   const stats = [
     { icon: Award, value: '10+', label: t.about.stats.years, valueKey: 'about_stat_years_value', labelKey: 'about_stat_years_label' },

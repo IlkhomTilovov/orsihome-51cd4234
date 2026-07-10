@@ -395,7 +395,8 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
 
 export default function Index() {
   const { language } = useLanguage();
-  useSEO({});
+  const homeSeo = getPageSeo('home', language);
+  useSEO({ title: homeSeo.title, description: homeSeo.description, ogTitle: homeSeo.title, ogDescription: homeSeo.description });
 
   const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
   const { settings } = useSystemSettings();
