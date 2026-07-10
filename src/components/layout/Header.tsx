@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Heart, Info, Shield, Truck, RotateCcw, Mail, Send, Instagram } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
@@ -202,127 +202,232 @@ export function Header() {
             </Button>
           </div>
         </div>
-
-        {/* Mobile Nav */}
-        {isOpen && (
-          <nav className="lg:hidden py-6 border-t border-border/30 mt-4 animate-fade-in">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => {
-                if (link.href === '/catalog') {
-                  return (
-                    <div key={link.href}>
-                      <button
-                        onClick={() => setMobileCatalogOpen(v => !v)}
-                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
-                          isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        <span>{link.label}</span>
-                        <ChevronDown className={`w-4 h-4 transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
-                      </button>
-                      {mobileCatalogOpen && (
-                        <div className="pl-6 pb-2 flex flex-col gap-1 border-l border-border/30 ml-4">
-                          <Link
-                            to="/catalog"
-                            onClick={() => setIsOpen(false)}
-                            className="px-4 py-2 text-sm text-muted-foreground hover:text-primary"
-                          >
-                            {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
-                          </Link>
-                          {sections.map((section) => {
-                            const sectionParents = categories.filter(
-                              (c) => !c.parent_id && c.section_id === section.id
-                            );
-                            if (sectionParents.length === 0) return null;
-                            return (
-                              <div key={section.id}>
-                                <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                  {language === 'ru' ? section.name_ru : section.name_uz}
-                                </p>
-                                {sectionParents.map((parent) => {
-                                  const subs = categories.filter((c) => c.parent_id === parent.id);
-                                  return (
-                                    <div key={parent.id}>
-                                      <Link
-                                        to={`/catalog?category=${parent.slug}`}
-                                        onClick={() => setIsOpen(false)}
-                                        className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
-                                      >
-                                        {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                      </Link>
-                                      {subs.map((sub) => (
-                                        <Link
-                                          key={sub.id}
-                                          to={`/catalog?category=${sub.slug}`}
-                                          onClick={() => setIsOpen(false)}
-                                          className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
-                                        >
-                                          — {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          })}
-                          {categories.filter((c) => !c.parent_id && !c.section_id).length > 0 && (
-                            <div>
-                              <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                                {language === 'ru' ? 'Другое' : 'Boshqa'}
-                              </p>
-                              {categories.filter((c) => !c.parent_id && !c.section_id).map((parent) => {
-                                const subs = categories.filter((c) => c.parent_id === parent.id);
-                                return (
-                                  <div key={parent.id}>
-                                    <Link
-                                      to={`/catalog?category=${parent.slug}`}
-                                      onClick={() => setIsOpen(false)}
-                                      className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary block"
-                                    >
-                                      {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                    </Link>
-                                    {subs.map((sub) => (
-                                      <Link
-                                        key={sub.id}
-                                        to={`/catalog?category=${sub.slug}`}
-                                        onClick={() => setIsOpen(false)}
-                                        className="pl-8 pr-4 py-2 text-sm text-muted-foreground hover:text-primary block"
-                                      >
-                                        — {language === 'ru' ? sub.name_ru : sub.name_uz}
-                                      </Link>
-                                    ))}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-                return (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`px-4 py-3 text-sm font-medium tracking-widest uppercase transition-colors ${
-                      isActive(link.href) ? 'text-primary bg-primary/5' : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-
-              <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="px-4 py-3 flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4" /> {contactPhone}
-              </a>
-            </div>
-          </nav>
-        )}
       </div>
+
+
+
+      {/* Mobile Drawer - left slide-in */}
+      {createPortal(
+        <>
+          {/* Backdrop */}
+          <div
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-[80] lg:hidden transition-opacity duration-300 ${
+              isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+            onClick={() => setIsOpen(false)}
+          />
+          {/* Drawer */}
+          <aside
+            className={`fixed top-0 left-0 h-full w-[86%] max-w-[360px] bg-background z-[90] lg:hidden shadow-2xl flex flex-col transition-transform duration-300 ease-luxe ${
+              isOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+            aria-hidden={!isOpen}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
+              <h2 className="text-base font-semibold text-foreground">
+                {language === 'ru' ? 'Меню' : 'Menyu'}
+              </h2>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground"
+                aria-label="close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              {/* Search */}
+              <div className="px-5 pt-4 pb-2">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.currentTarget as HTMLFormElement;
+                    const input = form.elements.namedItem('q') as HTMLInputElement;
+                    const q = input?.value.trim();
+                    setIsOpen(false);
+                    window.location.href = q ? `/catalog?search=${encodeURIComponent(q)}` : '/catalog';
+                  }}
+                  className="relative"
+                >
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <input
+                    name="q"
+                    type="text"
+                    placeholder={language === 'ru' ? 'Поиск мебели...' : 'Mebel qidirish...'}
+                    className="w-full h-11 pl-10 pr-4 rounded-full bg-muted/60 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                </form>
+              </div>
+
+              {/* Primary items */}
+              <div className="px-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setMobileCatalogOpen(v => !v)}
+                  className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
+                >
+                  <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
+                    <LayoutGrid className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                    {language === 'ru' ? 'Каталог' : 'Katalog'}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${mobileCatalogOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {mobileCatalogOpen && (
+                  <div className="pl-10 pr-2 pb-2 flex flex-col animate-fade-in">
+                    <Link
+                      to="/catalog"
+                      onClick={() => setIsOpen(false)}
+                      className="px-3 py-2 text-[13.5px] text-muted-foreground hover:text-primary"
+                    >
+                      {language === 'ru' ? 'Все товары' : 'Barcha tovarlar'}
+                    </Link>
+                    {sections.map((section) => {
+                      const sectionParents = categories.filter(
+                        (c) => !c.parent_id && c.section_id === section.id
+                      );
+                      if (sectionParents.length === 0) return null;
+                      return (
+                        <div key={section.id} className="mt-2">
+                          <p className="px-3 py-1 text-[10.5px] font-bold uppercase tracking-[0.14em] text-primary/80">
+                            {language === 'ru' ? section.name_ru : section.name_uz}
+                          </p>
+                          {sectionParents.map((parent) => (
+                            <Link
+                              key={parent.id}
+                              to={`/catalog?category=${parent.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="px-3 py-2 text-[13.5px] text-foreground hover:text-primary block"
+                            >
+                              {language === 'ru' ? parent.name_ru : parent.name_uz}
+                            </Link>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <Link
+                  to="/catalog"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground"
+                >
+                  <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'Купить онлайн / В наличии' : 'Onlayn sotib olish / Mavjud'}
+                </Link>
+                <Link
+                  to="/cart"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground"
+                >
+                  <Heart className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'Избранное' : 'Sevimlilar'}
+                </Link>
+                <button
+                  onClick={() => { setIsOpen(false); setCartOpen(true); }}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted transition-colors text-[14.5px] font-medium text-foreground text-left"
+                >
+                  <ShoppingBag className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  <span className="flex-1">{language === 'ru' ? 'Корзина' : 'Savat'}</span>
+                  {totalItems > 0 && (
+                    <span className="min-w-[22px] h-[22px] px-1.5 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold flex items-center justify-center">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Kompaniya */}
+              <div className="px-3 pt-5">
+                <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+                  {language === 'ru' ? 'Компания' : 'Kompaniya'}
+                </p>
+                <Link
+                  to="/about"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                >
+                  <Info className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'О нас' : 'Biz haqimizda'}
+                </Link>
+                <Link
+                  to="/faq"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                >
+                  <Shield className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'Гарантия' : 'Kafolat'}
+                </Link>
+              </div>
+
+              {/* Foydali ma'lumot */}
+              <div className="px-3 pt-5">
+                <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+                  {language === 'ru' ? 'Полезная информация' : "Foydali ma'lumot"}
+                </p>
+                <Link
+                  to="/faq"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                >
+                  <Truck className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'Доставка' : 'Yetkazib berish'}
+                </Link>
+                <Link
+                  to="/faq"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                >
+                  <RotateCcw className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                  {language === 'ru' ? 'Возврат' : 'Qaytarish'}
+                </Link>
+              </div>
+
+              {/* Biz bilan bog'laning */}
+              <div className="px-3 pt-5 pb-6">
+                <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
+                  {language === 'ru' ? 'Свяжитесь с нами' : "Biz bilan bog'laning"}
+                </p>
+                {contactPhone && (
+                  <a
+                    href={`tel:${contactPhone.replace(/\s/g, '')}`}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                  >
+                    <Phone className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                    {contactPhone}
+                  </a>
+                )}
+                {settings?.social_telegram && (
+                  <a
+                    href={settings.social_telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                  >
+                    <Send className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                    Telegram
+                  </a>
+                )}
+                {settings?.social_instagram && (
+                  <a
+                    href={settings.social_instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-muted text-[14px] text-foreground"
+                  >
+                    <Instagram className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.75} />
+                    Instagram
+                  </a>
+                )}
+              </div>
+            </div>
+          </aside>
+        </>,
+        document.body
+      )}
+
 
       {/* Floating Mega Menu */}
       {catalogOpen && createPortal(
