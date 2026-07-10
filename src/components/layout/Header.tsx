@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
+import { Menu, X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
