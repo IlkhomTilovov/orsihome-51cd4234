@@ -22,6 +22,7 @@ export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [catalogDrawerOpen, setCatalogDrawerOpen] = useState(false);
+  const [drawerSectionId, setDrawerSectionId] = useState<string | null>(null);
   const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({});
   
   const initialCategoryParam = searchParams.get('category') || 'all';
