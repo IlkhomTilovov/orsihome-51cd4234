@@ -353,27 +353,32 @@ export default function Catalog() {
                   {language === 'uz' ? 'Katalog' : 'Каталог'}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[340px] sm:w-[380px] p-0 flex flex-col">
-                <SheetHeader className="px-5 py-4 border-b">
-                  <SheetTitle className="text-lg flex items-center gap-2">
-                    {drawerSectionId && (
+              <SheetContent side="left" className="w-[340px] sm:w-[360px] p-0 flex flex-col [&>button]:hidden">
+                <SheetHeader className="px-5 pt-6 pb-4 space-y-0">
+                  <SheetTitle className="text-lg flex items-center gap-3">
+                    {drawerSectionId ? (
                       <button
                         onClick={() => setDrawerSectionId(null)}
-                        className="p-1 -ml-1 rounded-md hover:bg-neutral-100"
+                        className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center hover:bg-neutral-200"
                         aria-label="back"
                       >
-                        <ChevronLeft className="w-5 h-5" />
+                        <ChevronLeft className="w-4 h-4" />
                       </button>
+                    ) : (
+                      <span className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center">
+                        <LayoutGrid className="w-4 h-4" />
+                      </span>
                     )}
-                    <LayoutGrid className="w-5 h-5" />
-                    {drawerSectionId
-                      ? (language === 'uz'
-                          ? sections.find(s => s.id === drawerSectionId)?.name_uz
-                          : sections.find(s => s.id === drawerSectionId)?.name_ru)
-                      : (language === 'uz' ? 'Katalog' : 'Каталог')}
+                    <span className="font-semibold">
+                      {drawerSectionId
+                        ? (language === 'uz'
+                            ? sections.find(s => s.id === drawerSectionId)?.name_uz
+                            : sections.find(s => s.id === drawerSectionId)?.name_ru)
+                        : (language === 'uz' ? 'Katalog' : 'Каталог')}
+                    </span>
                   </SheetTitle>
                 </SheetHeader>
-                <div className="flex-1 overflow-y-auto p-3">
+                <div className="flex-1 overflow-y-auto px-3 pb-3">
                   {!drawerSectionId ? (
                     <>
                       <button
@@ -387,13 +392,15 @@ export default function Catalog() {
                           });
                           setCatalogDrawerOpen(false);
                         }}
-                        className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-colors mb-3 hover:bg-neutral-100 text-neutral-900"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-colors hover:bg-neutral-100 text-neutral-900"
                       >
                         <LayoutGrid className="w-[18px] h-[18px]" strokeWidth={1.75} />
-                        <span className="text-sm font-semibold">
+                        <span className="text-sm font-medium">
                           {language === 'uz' ? 'Barcha tovarlar' : 'Все товары'}
                         </span>
                       </button>
+
+                      <div className="my-3 border-t border-neutral-200" />
 
                       <p className="px-3 mb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-neutral-400">
                         {language === 'uz' ? "Bo'limlar" : 'Разделы'}
@@ -416,7 +423,7 @@ export default function Catalog() {
                             <li key={section.id}>
                               <button
                                 onClick={() => setDrawerSectionId(section.id)}
-                                className="w-full flex items-center justify-between px-3 py-3 rounded-xl text-left hover:bg-neutral-100 text-neutral-900"
+                                className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-neutral-100 text-neutral-900"
                               >
                                 <span className="text-sm font-medium">{section.name}</span>
                                 <ChevronRight className="w-4 h-4 text-neutral-400" />
@@ -510,6 +517,9 @@ export default function Catalog() {
                       })}
                     </ul>
                   )}
+                </div>
+                <div className="px-5 py-4 border-t border-neutral-200 text-[11px] uppercase tracking-[0.14em] text-neutral-400">
+                  ORSI HOME · Mebel
                 </div>
               </SheetContent>
             </Sheet>
