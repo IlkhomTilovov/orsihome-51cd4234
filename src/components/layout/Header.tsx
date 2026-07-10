@@ -30,7 +30,7 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
-  const [mobileDrillCategoryId, setMobileDrillCategoryId] = useState<string | null>(null);
+  
   
   const [activeSectionId, setActiveSectionId] = useState<string | null | undefined>(undefined);
   const [promoProducts, setPromoProducts] = useState<Product[]>([]);
@@ -266,7 +266,7 @@ export function Header() {
               <div className="px-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => { setMobileCatalogOpen(v => !v); setMobileDrillCategoryId(null); }}
+                  onClick={() => { setMobileCatalogOpen(v => !v); }}
                   className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-muted transition-colors"
                 >
                   <span className="flex items-center gap-3 text-[14.5px] font-medium text-foreground">
@@ -278,87 +278,18 @@ export function Header() {
 
                 {mobileCatalogOpen && (
                   <div className="ml-[26px] mt-1 mb-2 pl-4 border-l border-border/60">
-                    {mobileDrillCategoryId ? (
-                      (() => {
-                        const parent = categories.find(c => c.id === mobileDrillCategoryId);
-                        if (!parent) return null;
-                        const children = categories.filter(c => c.parent_id === parent.id);
-                        const parentName = language === 'ru' ? parent.name_ru : parent.name_uz;
-                        return (
-                          <div className="flex flex-col">
-                            <button
-                              type="button"
-                              onClick={() => setMobileDrillCategoryId(null)}
-                              className="flex items-center gap-1.5 px-3 py-2 text-[13px] font-medium text-primary hover:opacity-80 transition-opacity self-start"
-                            >
-                              <ChevronRight className="w-4 h-4 rotate-180" />
-                              {language === 'ru' ? 'Назад' : 'Orqaga'}
-                            </button>
-                            <Link
-                              to={`/catalog?category=${parent.slug}`}
-                              onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); setMobileDrillCategoryId(null); }}
-                              className="px-3 py-2.5 text-[13.5px] font-medium text-primary hover:opacity-80 transition-opacity"
-                            >
-                              {language === 'ru'
-                                ? `Показать все в «${parentName}»`
-                                : `«${parentName}» da hammasini ko'rish`}
-                            </Link>
-                            {children.map((child) => (
-                              <Link
-                                key={child.id}
-                                to={`/catalog?category=${child.slug}`}
-                                onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); setMobileDrillCategoryId(null); }}
-                                className="px-3 py-2.5 text-[13.5px] text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
-                              >
-                                {language === 'ru' ? child.name_ru : child.name_uz}
-                              </Link>
-                            ))}
-                          </div>
-                        );
-                      })()
-                    ) : (
-                      <div className="flex flex-col">
-                        {sections.map((section) => {
-                          const sectionParents = categories.filter(
-                            (c) => !c.parent_id && c.section_id === section.id
-                          );
-                          if (sectionParents.length === 0) return null;
-                          return (
-                            <div key={section.id} className="mt-2">
-                              <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-                                {language === 'ru' ? section.name_ru : section.name_uz}
-                              </p>
-                              {sectionParents.map((parent) => {
-                                const hasChildren = categories.some(c => c.parent_id === parent.id);
-                                if (hasChildren) {
-                                  return (
-                                    <button
-                                      key={parent.id}
-                                      type="button"
-                                      onClick={() => setMobileDrillCategoryId(parent.id)}
-                                      className="w-full flex items-center justify-between px-3 py-2.5 text-[13.5px] text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg transition-colors text-left"
-                                    >
-                                      <span>{language === 'ru' ? parent.name_ru : parent.name_uz}</span>
-                                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                                    </button>
-                                  );
-                                }
-                                return (
-                                  <Link
-                                    key={parent.id}
-                                    to={`/catalog?category=${parent.slug}`}
-                                    onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); }}
-                                    className="px-3 py-2.5 text-[13.5px] text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
-                                  >
-                                    {language === 'ru' ? parent.name_ru : parent.name_uz}
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <div className="flex flex-col">
+                      {sections.map((section) => (
+                        <Link
+                          key={section.id}
+                          to={`/catalog?section=${section.slug}`}
+                          onClick={() => { setIsOpen(false); setMobileCatalogOpen(false); }}
+                          className="px-3 py-2.5 text-[13.5px] font-medium text-foreground/90 hover:text-primary hover:bg-muted/60 rounded-lg block transition-colors"
+                        >
+                          {language === 'ru' ? section.name_ru : section.name_uz}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
 

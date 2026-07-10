@@ -28,6 +28,7 @@ export default function Catalog() {
   const promoTileId = searchParams.get('promo') || '';
   const setId = searchParams.get('set') || '';
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const sectionParam = searchParams.get('section') || '';
 
   const [setProductIds, setSetProductIds] = useState<string[] | null>(null);
   const [setTitle, setSetTitle] = useState<{ uz: string; ru: string } | null>(null);
@@ -47,6 +48,28 @@ export default function Catalog() {
     const found = categories.find(c => c.slug === initialCategoryParam || c.id === initialCategoryParam);
     return found ? found.id : null; // null means still resolving
   }, [initialCategoryParam, categories]);
+
+  // Resolve section slug to section ID for filtering
+  const resolvedSectionId = useMemo(() => {
+    if (!sectionParam || !sections.length) return null;
+    const found = sections.find(s => s.slug === sectionParam || s.id === sectionParam);
+    return found ? found.id : null;
+  }, [sectionParam, sections]);
+
+  const selectedSection = useMemo(() => sections.find(s => s.id === resolvedSectionId), [resolvedSectionId, sections]);
+  const sectionName = selectedSection ? (language === 'uz' ? selectedSection.name_uz : selectedSection.name_ru) : null;
+
+  // All category IDs belonging to the selected section (including descendants)
+  const sectionCategoryIds = useMemo(() => {
+    if (!resolvedSectionId) return [];
+    const ids = new Set<string>();
+    const walk = (id: string) => {
+      ids.add(id);
+      categories.filter(c => c.parent_id === id).forEach(child => walk(child.id));
+    };
+    categories.filter(c => c.section_id === resolvedSectionId).forEach(c => walk(c.id));
+    return Array.from(ids);
+  }, [resolvedSectionId, categories]);
 
   const [priceTouched, setPriceTouched] = useState(false);
   const [sidebarFilters, setSidebarFilters] = useState<SidebarFilters>({
@@ -123,7 +146,15 @@ export default function Catalog() {
     if (debouncedSearch) f.search = debouncedSearch;
     // Only pass category if it's a valid UUID. If the selected category has
     // subcategories, include all descendants so parent view shows every product.
-    if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
+    // A section filter takes precedence and includes all categories in that section.
+    if (resolvedSectionId) {
+      if (sectionCategoryIds.length > 0) {
+        f.categoryIds = sectionCategoryIds;
+      } else {
+        // Section has no categories — force empty result
+        f.categoryIds = ['00000000-0000-0000-0000-000000000000'];
+      }
+    } else if (sidebarFilters.categoryId !== 'all' && isUUID(sidebarFilters.categoryId)) {
       const selectedId = sidebarFilters.categoryId;
       const childIds = categories.filter(c => c.parent_id === selectedId).map(c => c.id);
       if (childIds.length > 0) {
@@ -142,14 +173,14 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched, categories]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched, categories, resolvedSectionId, sectionCategoryIds]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
 
   // Show the catalog sections overview when no filters/search/set are active and sections exist.
   const showSectionsOverview =
-    !setTitle && !promoTileId && !debouncedSearch && sidebarFilters.categoryId === 'all' && sections.length > 0;
+    !setTitle && !promoTileId && !debouncedSearch && !sectionParam && sidebarFilters.categoryId === 'all' && sections.length > 0;
 
   // Treat as loading while the URL category slug hasn't synced into local filters yet
   // to avoid showing stale products from the previous category.
@@ -160,13 +191,13 @@ export default function Catalog() {
   const selectedCategory = categories?.find(c => c.slug === sidebarFilters.categoryId || c.id === sidebarFilters.categoryId);
   const categoryName = selectedCategory
     ? (language === 'uz' ? selectedCategory.name_uz : selectedCategory.name_ru)
-    : null;
+    : sectionName;
 
   useSEO({
     title: categoryName || t.catalog.title,
     description: selectedCategory
       ? (language === 'uz' ? selectedCategory.meta_description_uz : selectedCategory.meta_description_ru) || categoryName || undefined
-      : undefined,
+      : sectionName || undefined,
     keywords: selectedCategory?.meta_keywords || undefined,
     canonical: currentPage > 1 ? '/catalog' : undefined,
   });
@@ -179,6 +210,9 @@ export default function Catalog() {
     if (resolvedCategoryId !== sidebarFilters.categoryId) return;
 
     const params = new URLSearchParams();
+
+    // Preserve section navigation while other filters change
+    if (sectionParam) params.set('section', sectionParam);
 
     // When a set is active, only keep the set param (drop stale filters)
     if (setId) {
@@ -204,7 +238,7 @@ export default function Catalog() {
     if (promoTileId) params.set('promo', promoTileId);
     if (currentPage > 1) params.set('page', currentPage.toString());
     setSearchParams(params, { replace: true });
-  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId, priceTouched]);
+  }, [sidebarFilters, currentPage, setSearchParams, filterOptions.maxPrice, resolvedCategoryId, promoTileId, setId, priceTouched, sectionParam]);
 
 
 
