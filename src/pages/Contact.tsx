@@ -52,6 +52,11 @@ export default function Contact() {
     })();
   }, []);
 
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor;
+    setIsMobile(/android|iphone|ipad|ipod/i.test(userAgent.toLowerCase()));
+  }, []);
+
   const selectedBranch = branches.find((b) => b.id === selectedBranchId) || branches[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
