@@ -8,6 +8,7 @@ import { ProductCard } from '@/components/ProductCard';
 import { useProducts, useCategories, useProductFilterOptions, useSections, ProductFilters } from '@/hooks/useProducts';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
+import { getPageSeo } from '@/lib/pageSeo';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useAuth } from '@/hooks/useAuth';
 import { CatalogFilterSidebar, SidebarFilters } from '@/components/CatalogFilterSidebar';
