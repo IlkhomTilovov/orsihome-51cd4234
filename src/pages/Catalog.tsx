@@ -191,6 +191,40 @@ export default function Catalog() {
     resolvedCategoryId === null || resolvedCategoryId !== sidebarFilters.categoryId;
   const loading = productsLoading || categorySyncing;
 
+  // --- Scroll position preservation across product detail navigation ---
+  const location = useLocation();
+  const navigationType = useNavigationType();
+  const scrollKey = `catalog-scroll:${location.pathname}${location.search}`;
+  const restoredRef = useRef(false);
+
+  // Continuously persist scroll position for this catalog URL
+  useEffect(() => {
+    restoredRef.current = false;
+    const save = () => {
+      sessionStorage.setItem(scrollKey, String(window.scrollY));
+    };
+    window.addEventListener('scroll', save, { passive: true });
+    return () => {
+      save();
+      window.removeEventListener('scroll', save);
+    };
+  }, [scrollKey]);
+
+  // Restore scroll on back/forward once products have finished loading
+  useEffect(() => {
+    if (navigationType !== 'POP') return;
+    if (loading) return;
+    if (restoredRef.current) return;
+    const stored = sessionStorage.getItem(scrollKey);
+    if (stored == null) return;
+    restoredRef.current = true;
+    const y = parseInt(stored, 10);
+    if (Number.isNaN(y)) return;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: y, behavior: 'auto' });
+    });
+  }, [navigationType, loading, scrollKey, products.length]);
+
   const selectedCategory = categories?.find(c => c.slug === sidebarFilters.categoryId || c.id === sidebarFilters.categoryId);
   const categoryName = selectedCategory
     ? (language === 'uz' ? selectedCategory.name_uz : selectedCategory.name_ru)
