@@ -211,6 +211,9 @@ export default function Catalog() {
 
     const params = new URLSearchParams();
 
+    // Preserve section navigation while other filters change
+    if (sectionParam) params.set('section', sectionParam);
+
     // When a set is active, only keep the set param (drop stale filters)
     if (setId) {
       params.set('set', setId);
