@@ -30,6 +30,7 @@ export function Header() {
   const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+  const [mobileSectionId, setMobileSectionId] = useState<string | null>(null);
   
   
   const [activeSectionId, setActiveSectionId] = useState<string | null | undefined>(undefined);
