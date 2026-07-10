@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { Home, ShoppingBag, Phone, Menu, Search } from 'lucide-react';
+import { Home, ShoppingBag, Phone, Menu, LayoutGrid } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { cn } from '@/lib/utils';
 
@@ -14,7 +14,7 @@ type NavItem = {
 
 const items: NavItem[] = [
   { to: '/', icon: Home, label: 'Asosiy' },
-  { to: '/catalog', icon: Search, label: 'Katalog' },
+  { to: '/catalog', icon: LayoutGrid, label: 'Katalog' },
   { to: '/cart', icon: ShoppingBag, label: 'Savat', isCart: true },
   { to: '/contact', icon: Phone, label: 'Aloqa' },
   { to: '/about', icon: Menu, label: 'Menyu' },
