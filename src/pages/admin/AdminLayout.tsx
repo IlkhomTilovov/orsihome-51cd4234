@@ -13,6 +13,7 @@ import {
   Bell,
   Palette,
   FolderTree,
+  MapPin,
   Users,
   Shield,
   FileText,
