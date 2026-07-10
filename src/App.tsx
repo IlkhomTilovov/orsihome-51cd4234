@@ -16,6 +16,7 @@ import { TelegramShell } from "@/components/telegram/TelegramShell";
 import { ThemeLoader } from "@/components/ThemeLoader";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
 import { EditModeToggle } from "@/components/EditModeToggle";
 import { EditorPanel } from "@/components/editor/EditorPanel";
@@ -178,7 +179,7 @@ const App = () => (
                       {/* Public Routes */}
                       <Route path="*" element={
                         <TelegramShell>
-                        <div className="flex flex-col min-h-screen">
+                        <div className="flex flex-col min-h-screen pb-20 md:pb-0">
                           <Header />
                           <main className="flex-1">
                             <Suspense fallback={<RouteFallback />}>
@@ -197,7 +198,7 @@ const App = () => (
                             </Suspense>
                           </main>
                           <Footer />
-                          
+                          <MobileBottomNav />
                           <EditModeToggle />
                           <EditorPanel />
                         </div>
