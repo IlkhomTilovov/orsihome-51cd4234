@@ -43,6 +43,7 @@ export const adminTranslations = {
       navPromoTiles: 'Promo kartochkalar',
       navSets: "Setlar to'plami",
       navSiteContent: 'Sayt kontenti',
+      navBranches: 'Filiallar',
       navCheckoutForm: 'Checkout formasi',
       navThemes: 'Mavzular',
       navAdmins: 'Adminlar',
