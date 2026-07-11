@@ -368,6 +368,10 @@ export default function Checkout() {
                       <img
                         src={image}
                         alt={name}
+                        width={56}
+                        height={56}
+                        loading="lazy"
+                        decoding="async"
                         className="w-14 h-14 rounded-lg object-cover"
                       />
                       <div className="flex-1 min-w-0">
