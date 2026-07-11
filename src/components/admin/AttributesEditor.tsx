@@ -166,7 +166,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       return;
     }
     if (value.length === 0) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Kamida bitta xususiyat qo\'shing' });
+      toast({ variant: 'destructive', title: L.error, description: L.addOne });
       return;
     }
     const tpl: AttributeTemplate = {
