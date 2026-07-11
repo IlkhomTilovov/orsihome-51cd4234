@@ -180,7 +180,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
     saveTemplates(next);
     setSaveOpen(false);
     setSaveName('');
-    toast({ title: 'Saqlandi', description: `"${tpl.name}" shabloni saqlandi` });
+    toast({ title: L.saved, description: L.savedDesc(tpl.name) });
   };
 
   return (
