@@ -1352,7 +1352,7 @@ export default function ProductsNew() {
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">RU</Badge>
-                      Основное ключевое слово
+                      {L.keywordLabelRu}
                     </Label>
                     <Input
                       value={formData.keyword_ru}
