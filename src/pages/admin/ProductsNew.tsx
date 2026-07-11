@@ -1627,9 +1627,9 @@ export default function ProductsNew() {
           </Tabs>
 
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Bekor qilish</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>{L.cancel}</Button>
             <Button onClick={handleSubmit} disabled={!!slugError}>
-              {selectedProduct ? 'Saqlash' : 'Yaratish'}
+              {selectedProduct ? L.save : L.create}
             </Button>
           </DialogFooter>
         </DialogContent>
