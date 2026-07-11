@@ -340,10 +340,13 @@ function AttributeRow({
   onDragStart,
   onDragOver,
   onDrop,
+  language,
 }: RowProps) {
   const [iconOpen, setIconOpen] = useState(false);
   const [iconQuery, setIconQuery] = useState('');
-  const [langTab, setLangTab] = useState<'uz' | 'ru'>('uz');
+  const [langTab, setLangTab] = useState<'uz' | 'ru'>(language);
+  const dragTitle = language === 'ru' ? 'Перетащите' : "Sudrab olib qo'ying";
+  const iconSearchPh = language === 'ru' ? 'Поиск иконки...' : 'Ikonka qidirish...';
 
   const Icon = getAttributeIcon(row.icon);
   const currentIconLabel = useMemo(
