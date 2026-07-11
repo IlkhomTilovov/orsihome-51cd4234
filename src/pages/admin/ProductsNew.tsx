@@ -1290,10 +1290,10 @@ export default function ProductsNew() {
               {mediaItems.length > 0 && (
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>
-                    Jami: {mediaItems.length} ta media 
-                    ({mediaItems.filter(m => m.type === 'image').length} rasm, {mediaItems.filter(m => m.type === 'video').length} video)
+                    {L.total} {L.mediaCount(mediaItems.length)}
+                    {' '}({L.imagesLabel(mediaItems.filter(m => m.type === 'image').length)}, {L.videosLabel(mediaItems.filter(m => m.type === 'video').length)})
                   </span>
-                  <span>Birinchi media asosiy rasm sifatida ko'rsatiladi</span>
+                  <span>{L.firstIsMain}</span>
                 </div>
               )}
             </TabsContent>
