@@ -1033,10 +1033,10 @@ export default function ProductsNew() {
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="basic">Asosiy</TabsTrigger>
-              <TabsTrigger value="description">Tavsif</TabsTrigger>
-              <TabsTrigger value="images">Rasmlar</TabsTrigger>
-              <TabsTrigger value="attributes">Xususiyatlar</TabsTrigger>
+              <TabsTrigger value="basic">{L.tabBasic}</TabsTrigger>
+              <TabsTrigger value="description">{L.tabDescription}</TabsTrigger>
+              <TabsTrigger value="images">{L.tabImages}</TabsTrigger>
+              <TabsTrigger value="attributes">{L.tabAttributes}</TabsTrigger>
               <TabsTrigger value="seo" className="gap-1">
                 <Globe className="h-3 w-3" />
                 SEO
