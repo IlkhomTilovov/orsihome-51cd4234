@@ -269,13 +269,13 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
                   <div className="min-w-0">
                     <p className="font-medium truncate">{t.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.items.length} ta xususiyat
+                      {L.itemsCount(t.items.length)}
                     </p>
                   </div>
                   <div className="flex gap-1 shrink-0">
                     <Button size="sm" onClick={() => applyTemplate(t)} className="gap-1">
                       <Check className="w-3.5 h-3.5" />
-                      Qo'llash
+                      {L.apply}
                     </Button>
                     <Button
                       size="sm"
