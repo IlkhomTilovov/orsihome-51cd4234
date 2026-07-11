@@ -55,9 +55,29 @@ export const notifyIframeRefresh = () => {
   }
 };
 
+const CACHE_KEY = 'site-content-cache-v1';
+
+function readCache(): Record<string, ContentItem> {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeCache(map: Record<string, ContentItem>) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(map));
+  } catch {}
+}
+
 export function SiteContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<Record<string, ContentItem>>({});
-  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<Record<string, ContentItem>>(() => readCache());
+  // If cache exists, we're not "loading" from the UI's perspective — content is already available.
+  const [loading, setLoading] = useState(() => Object.keys(readCache()).length === 0);
   const [lastUpdate, setLastUpdate] = useState<ContentUpdateEvent | null>(null);
   const { toast } = useToast();
 
@@ -74,6 +94,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
         contentMap[item.key] = item;
       });
       setContent(contentMap);
+      writeCache(contentMap);
     } catch (error) {
       console.error('Error fetching site content:', error);
     } finally {
