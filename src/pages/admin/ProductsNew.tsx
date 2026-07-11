@@ -1571,7 +1571,7 @@ export default function ProductsNew() {
                           mirmexa.com.uz/product/{formData.slug || 'slug'}
                         </p>
                         <p className="text-sm text-muted-foreground line-clamp-2">
-                          {formData.meta_description_uz || formData.description_uz || 'Meta tavsif...'}
+                          {formData.meta_description_uz || formData.description_uz || L.metaFallback}
                         </p>
                       </div>
                     </div>
