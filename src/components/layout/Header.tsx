@@ -460,7 +460,10 @@ export function Header() {
                   <img
                     src={p.images[0]}
                     alt={p.name_uz}
+                    width={80}
+                    height={80}
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}
