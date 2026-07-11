@@ -1558,7 +1558,7 @@ export default function ProductsNew() {
               {/* SEO Preview - Both languages */}
               {(formData.keyword_uz || formData.meta_title_uz || formData.keyword_ru || formData.meta_title_ru) && (
                 <div className="space-y-4">
-                  <h3 className="font-medium text-base">📋 Google qidiruv ko'rinishi</h3>
+                  <h3 className="font-medium text-base">{L.googlePreview}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* UZ Preview */}
                     <div className="space-y-1">
