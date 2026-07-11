@@ -629,6 +629,9 @@ export default function Index() {
                           src={img}
                           alt={name}
                           loading="lazy"
+                          decoding="async"
+                          width={400}
+                          height={500}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
                         />
                       ) : FallbackIcon ? (
