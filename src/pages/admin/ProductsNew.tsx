@@ -1443,7 +1443,7 @@ export default function ProductsNew() {
                         className="gap-1 h-7 text-xs"
                       >
                         <Plus className="h-3 w-3" />
-                        Добавить
+                        {L.addBtn}
                       </Button>
                     </div>
                     {(formData.variants_ru || []).map((v, i) => (
