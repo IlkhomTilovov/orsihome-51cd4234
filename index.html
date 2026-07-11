@@ -27,12 +27,13 @@
       crossorigin
     />
 
-    <!-- Preload LCP hero image (mobile hero) -->
+    <!-- Preload LCP hero image (WebP, ~80KB) -->
     <link
       rel="preload"
       as="image"
-      href="/__l5e/assets-v1/fc93020f-b11d-465e-8fdb-ac6b17b635e8/hero-sofa-mobile.png"
+      href="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
       fetchpriority="high"
+      type="image/webp"
     />
     <script>
       (function () {
@@ -126,6 +127,10 @@
           }
         } catch (e) {}
       })();
+      // Safety: never keep the page hidden longer than 600ms, even if theme is missing
+      setTimeout(function () {
+        document.documentElement.setAttribute('data-theme-loaded', 'true');
+      }, 600);
     </script>
     <style>
       html:not([data-theme-loaded]) body > #root { visibility: hidden; }
