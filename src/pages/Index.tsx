@@ -264,9 +264,10 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
             <img
               src={s.image || fallbackImage}
               alt={title}
-              loading="eager"
-              decoding="sync"
-              fetchPriority="high"
+              loading="lazy"
+              decoding="async"
+              width={800}
+              height={500}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
 
