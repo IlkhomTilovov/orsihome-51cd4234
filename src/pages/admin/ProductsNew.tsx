@@ -582,11 +582,11 @@ export default function ProductsNew() {
 
     try {
       if (selectedProduct) {
-        const { error } = await supabase.from('products').update(productData).eq('id', selectedProduct.id);
+        const { error } = await supabase.from('products').update(productData as any).eq('id', selectedProduct.id);
         if (error) throw error;
         toast({ title: 'Muvaffaqiyat', description: 'Mahsulot yangilandi' });
       } else {
-        const { error } = await supabase.from('products').insert([productData]);
+        const { error } = await supabase.from('products').insert([productData as any]);
         if (error) throw error;
         toast({ title: 'Muvaffaqiyat', description: 'Mahsulot yaratildi' });
       }
