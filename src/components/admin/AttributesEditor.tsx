@@ -253,11 +253,11 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       <Dialog open={templatesOpen} onOpenChange={setTemplatesOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Shablonlar</DialogTitle>
+            <DialogTitle>{L.templatesDialog}</DialogTitle>
           </DialogHeader>
           {templates.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">
-              Hozircha shablonlar yo'q. Xususiyatlarni to'ldirib, "Shablon sifatida saqlash" tugmasini bosing.
+              {L.noTemplates}
             </p>
           ) : (
             <div className="space-y-2 max-h-[60vh] overflow-y-auto">
