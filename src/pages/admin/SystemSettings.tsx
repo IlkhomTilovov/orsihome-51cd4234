@@ -398,6 +398,10 @@ export default function SystemSettings() {
                       <img
                         src={logoPreview}
                         alt="Logo"
+                        width={200}
+                        height={80}
+                        loading="lazy"
+                        decoding="async"
                         className="max-h-20 max-w-[200px] object-contain"
                         onError={() => setLogoPreview(null)}
                       />
@@ -431,6 +435,10 @@ export default function SystemSettings() {
                       <img
                         src={faviconPreview}
                         alt="Favicon"
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
                         className="max-h-12 max-w-12 object-contain"
                         onError={() => setFaviconPreview(null)}
                       />

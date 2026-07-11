@@ -546,6 +546,10 @@ export default function Categories() {
                         <img
                           src={category.image}
                           alt={category.name_uz}
+                          width={48}
+                          height={48}
+                          loading="lazy"
+                          decoding="async"
                           className="h-12 w-12 object-cover rounded-lg border"
                         />
                       ) : (
@@ -766,6 +770,10 @@ export default function Categories() {
                     <img 
                       src={formData.image} 
                       alt="Preview" 
+                      width={128}
+                      height={128}
+                      loading="lazy"
+                      decoding="async"
                       className="h-32 w-32 object-cover rounded-lg border"
                       onError={(e) => (e.currentTarget.src = '/placeholder.svg')}
                     />

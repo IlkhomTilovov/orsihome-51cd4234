@@ -903,7 +903,7 @@ export default function ProductsNew() {
                   <TableRow key={product.id}>
                     <TableCell>
                       {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.name_uz} className="h-12 w-12 object-cover rounded-lg border" />
+                        <img src={product.images[0]} alt={product.name_uz} width={48} height={48} loading="lazy" decoding="async" className="h-12 w-12 object-cover rounded-lg border" />
                       ) : (
                         <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
                           <ImageIcon className="h-5 w-5 text-muted-foreground" />
@@ -1647,6 +1647,10 @@ export default function ProductsNew() {
                 <img 
                   src={selectedProduct.images[0]} 
                   alt={selectedProduct.name_uz} 
+                  width={768}
+                  height={256}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-64 object-cover rounded-lg"
                 />
               )}

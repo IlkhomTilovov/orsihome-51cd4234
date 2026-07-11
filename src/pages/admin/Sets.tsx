@@ -187,7 +187,7 @@ export default function SetsAdmin() {
               <Label>{t.mainImage}</Label>
               {form.image ? (
                 <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden mt-2 bg-muted">
-                  <img src={form.image} alt="" className="w-full h-full object-cover" />
+                  <img src={form.image} alt="" width={640} height={480} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   <Button variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => setForm({ ...form, image: '' })}>
                     <X className="w-4 h-4" />
                   </Button>
@@ -236,7 +236,7 @@ export default function SetsAdmin() {
                       className={`w-full flex items-center gap-3 p-2 hover:bg-muted/50 text-left ${selected ? 'bg-primary/5' : ''}`}
                     >
                       <div className="w-10 h-10 rounded bg-muted overflow-hidden shrink-0">
-                        {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-cover" />}
+                        {p.images?.[0] && <img src={p.images[0]} alt="" width={40} height={40} loading="lazy" decoding="async" className="w-full h-full object-cover" />}
                       </div>
                       <span className="flex-1 text-sm truncate">{productName}</span>
                       {selected && <Check className="w-4 h-4 text-primary shrink-0" />}
