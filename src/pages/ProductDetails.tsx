@@ -12,6 +12,7 @@ import { useSEO } from '@/hooks/useSEO';
 import { useCart } from '@/hooks/useCart';
 import { useProductById, useProducts, useCategories, Product } from '@/hooks/useProducts';
 import { useAuth } from '@/hooks/useAuth';
+import { getAttributeIcon } from '@/lib/attributeIcons';
 
 interface MediaItem {
   type: 'image' | 'video';
@@ -369,9 +370,37 @@ export default function ProductDetails() {
               </a>
             </Button>
 
+            {/* Attributes / Specifications */}
+            {Array.isArray((product as any).attributes) && (product as any).attributes.length > 0 && (
+              <div className="mt-8">
+                <h4 className="font-medium mb-3">
+                  {language === 'uz' ? 'Xususiyatlari' : 'Характеристики'}
+                </h4>
+                <div className="grid sm:grid-cols-2 gap-2">
+                  {(product as any).attributes.map((attr: any, idx: number) => {
+                    const Icon = getAttributeIcon(attr.icon);
+                    const label = (language === 'uz' ? attr.label_uz : attr.label_ru) || attr.label_uz || attr.label_ru;
+                    const val = (language === 'uz' ? attr.value_uz : attr.value_ru) || attr.value_uz || attr.value_ru;
+                    if (!label && !val) return null;
+                    return (
+                      <div key={idx} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                        <span className="w-8 h-8 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                          <Icon className="w-4 h-4" />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs text-muted-foreground truncate">{label}</p>
+                          <p className="text-sm font-medium truncate">{val}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Materials */}
             {materials.length > 0 && (
-              <div className="mt-8 p-4 bg-muted rounded-xl">
+              <div className="mt-6 p-4 bg-muted rounded-xl">
                 <h4 className="font-medium mb-2">{t.products.materials}</h4>
                 <div className="flex flex-wrap gap-2">
                   {materials.map(mat => (

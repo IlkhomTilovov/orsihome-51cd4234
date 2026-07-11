@@ -1,0 +1,428 @@
+import { useState, useMemo, useRef } from 'react';
+import { Plus, Trash2, GripVertical, FolderOpen, Save, Search, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { ATTRIBUTE_ICONS, getAttributeIcon } from '@/lib/attributeIcons';
+import { cn } from '@/lib/utils';
+
+export interface ProductAttribute {
+  id: string;
+  icon: string; // icon key
+  label_uz: string;
+  label_ru: string;
+  value_uz: string;
+  value_ru: string;
+}
+
+interface AttributeTemplate {
+  id: string;
+  name: string;
+  items: Omit<ProductAttribute, 'id'>[];
+  created_at: number;
+}
+
+const TEMPLATES_KEY = 'orsi:attribute-templates:v1';
+
+function loadTemplates(): AttributeTemplate[] {
+  try {
+    const raw = localStorage.getItem(TEMPLATES_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as AttributeTemplate[];
+  } catch {
+    return [];
+  }
+}
+
+function saveTemplates(items: AttributeTemplate[]) {
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(items));
+}
+
+function uid() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+interface Props {
+  value: ProductAttribute[];
+  onChange: (v: ProductAttribute[]) => void;
+  language?: 'uz' | 'ru';
+}
+
+export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
+  const { toast } = useToast();
+  const [templates, setTemplates] = useState<AttributeTemplate[]>(() => loadTemplates());
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [saveName, setSaveName] = useState('');
+  const dragIndexRef = useRef<number | null>(null);
+
+  const addRow = () => {
+    onChange([
+      ...value,
+      { id: uid(), icon: 'star', label_uz: '', label_ru: '', value_uz: '', value_ru: '' },
+    ]);
+  };
+
+  const updateRow = (id: string, patch: Partial<ProductAttribute>) => {
+    onChange(value.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
+
+  const removeRow = (id: string) => {
+    onChange(value.filter((r) => r.id !== id));
+  };
+
+  const onDragStart = (i: number) => {
+    dragIndexRef.current = i;
+  };
+  const onDragOver = (e: React.DragEvent) => e.preventDefault();
+  const onDrop = (i: number) => {
+    const from = dragIndexRef.current;
+    dragIndexRef.current = null;
+    if (from === null || from === i) return;
+    const next = [...value];
+    const [item] = next.splice(from, 1);
+    next.splice(i, 0, item);
+    onChange(next);
+  };
+
+  const applyTemplate = (t: AttributeTemplate) => {
+    onChange([...value, ...t.items.map((i) => ({ ...i, id: uid() }))]);
+    setTemplatesOpen(false);
+    toast({ title: 'Shablon qo\'shildi', description: t.name });
+  };
+
+  const deleteTemplate = (id: string) => {
+    const next = templates.filter((t) => t.id !== id);
+    setTemplates(next);
+    saveTemplates(next);
+  };
+
+  const commitSaveTemplate = () => {
+    if (!saveName.trim()) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: 'Shablon nomini kiriting' });
+      return;
+    }
+    if (value.length === 0) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: 'Kamida bitta xususiyat qo\'shing' });
+      return;
+    }
+    const tpl: AttributeTemplate = {
+      id: uid(),
+      name: saveName.trim(),
+      created_at: Date.now(),
+      items: value.map(({ id, ...rest }) => rest),
+    };
+    const next = [tpl, ...templates];
+    setTemplates(next);
+    saveTemplates(next);
+    setSaveOpen(false);
+    setSaveName('');
+    toast({ title: 'Saqlandi', description: `"${tpl.name}" shabloni saqlandi` });
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold">Xususiyatlar</h3>
+          <p className="text-sm text-muted-foreground">
+            Mahsulot uchun texnik ma'lumotlarni qo'shing
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setTemplatesOpen(true)}
+            className="gap-2"
+          >
+            <FolderOpen className="w-4 h-4" />
+            Shablonlar ({templates.length})
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setSaveOpen(true)}
+            className="gap-2"
+          >
+            <Save className="w-4 h-4" />
+            Shablon sifatida saqlash
+          </Button>
+          <Button type="button" size="sm" onClick={addRow} className="gap-2">
+            <Plus className="w-4 h-4" />
+            Qo'shish
+          </Button>
+        </div>
+      </div>
+
+      {/* Rows */}
+      {value.length === 0 ? (
+        <div className="border-2 border-dashed rounded-xl p-10 text-center">
+          <p className="text-sm text-muted-foreground mb-3">
+            Hali xususiyatlar qo'shilmagan. Boshlash uchun "Qo'shish" tugmasini bosing yoki shablondan foydalaning.
+          </p>
+          <Button type="button" variant="outline" size="sm" onClick={addRow} className="gap-2">
+            <Plus className="w-4 h-4" /> Birinchi xususiyatni qo'shish
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {value.map((row, i) => (
+            <AttributeRow
+              key={row.id}
+              row={row}
+              index={i}
+              language={language}
+              onUpdate={(p) => updateRow(row.id, p)}
+              onRemove={() => removeRow(row.id)}
+              onDragStart={() => onDragStart(i)}
+              onDragOver={onDragOver}
+              onDrop={() => onDrop(i)}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Templates dialog */}
+      <Dialog open={templatesOpen} onOpenChange={setTemplatesOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Shablonlar</DialogTitle>
+          </DialogHeader>
+          {templates.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              Hozircha shablonlar yo'q. Xususiyatlarni to'ldirib, "Shablon sifatida saqlash" tugmasini bosing.
+            </p>
+          ) : (
+            <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+              {templates.map((t) => (
+                <div
+                  key={t.id}
+                  className="flex items-center justify-between border rounded-lg p-3 hover:bg-muted/40"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t.items.length} ta xususiyat
+                    </p>
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <Button size="sm" onClick={() => applyTemplate(t)} className="gap-1">
+                      <Check className="w-3.5 h-3.5" />
+                      Qo'llash
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => deleteTemplate(t.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Save template dialog */}
+      <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Shablon sifatida saqlash</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2">
+            <Label>Shablon nomi</Label>
+            <Input
+              value={saveName}
+              onChange={(e) => setSaveName(e.target.value)}
+              placeholder="Masalan: Yumshoq divan"
+              autoFocus
+            />
+            <p className="text-xs text-muted-foreground">
+              Hozirgi {value.length} ta xususiyat shu nom bilan saqlanadi.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setSaveOpen(false)}>
+              Bekor qilish
+            </Button>
+            <Button onClick={commitSaveTemplate}>Saqlash</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+interface RowProps {
+  row: ProductAttribute;
+  index: number;
+  language: 'uz' | 'ru';
+  onUpdate: (p: Partial<ProductAttribute>) => void;
+  onRemove: () => void;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: () => void;
+}
+
+function AttributeRow({
+  row,
+  onUpdate,
+  onRemove,
+  onDragStart,
+  onDragOver,
+  onDrop,
+}: RowProps) {
+  const [iconOpen, setIconOpen] = useState(false);
+  const [iconQuery, setIconQuery] = useState('');
+  const [langTab, setLangTab] = useState<'uz' | 'ru'>('uz');
+
+  const Icon = getAttributeIcon(row.icon);
+  const currentIconLabel = useMemo(
+    () => ATTRIBUTE_ICONS.find((i) => i.key === row.icon)?.label || 'Ikonka',
+    [row.icon]
+  );
+
+  const filteredIcons = useMemo(() => {
+    const q = iconQuery.trim().toLowerCase();
+    if (!q) return ATTRIBUTE_ICONS;
+    return ATTRIBUTE_ICONS.filter(
+      (i) => i.label.toLowerCase().includes(q) || i.key.toLowerCase().includes(q)
+    );
+  }, [iconQuery]);
+
+  return (
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      className="group flex items-center gap-2 border rounded-xl bg-card p-2 hover:shadow-sm transition-shadow"
+    >
+      <button
+        type="button"
+        className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
+        title="Sudrab olib qo'ying"
+      >
+        <GripVertical className="w-4 h-4" />
+      </button>
+
+      {/* Icon selector */}
+      <Popover open={iconOpen} onOpenChange={setIconOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className="flex items-center gap-2 px-2.5 py-2 border rounded-lg hover:bg-muted/50 min-w-[140px]"
+          >
+            <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary">
+              <Icon className="w-4 h-4" />
+            </span>
+            <span className="text-sm flex-1 text-left truncate">{currentIconLabel}</span>
+            <svg width="10" height="10" viewBox="0 0 10 10" className="text-muted-foreground">
+              <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            </svg>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-72 p-2" align="start">
+          <div className="relative mb-2">
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={iconQuery}
+              onChange={(e) => setIconQuery(e.target.value)}
+              placeholder="Ikonka qidirish..."
+              className="pl-8 h-8 text-sm"
+            />
+          </div>
+          <div className="grid grid-cols-6 gap-1 max-h-56 overflow-y-auto">
+            {filteredIcons.map((i) => {
+              const I = i.Icon;
+              const active = i.key === row.icon;
+              return (
+                <button
+                  key={i.key}
+                  type="button"
+                  title={i.label}
+                  onClick={() => {
+                    onUpdate({ icon: i.key });
+                    setIconOpen(false);
+                  }}
+                  className={cn(
+                    'aspect-square rounded-md flex items-center justify-center hover:bg-muted transition-colors',
+                    active && 'bg-primary/10 text-primary ring-1 ring-primary'
+                  )}
+                >
+                  <I className="w-4 h-4" />
+                </button>
+              );
+            })}
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* Language tab pill */}
+      <div className="hidden md:flex items-center gap-0.5 rounded-md bg-muted p-0.5">
+        {(['uz', 'ru'] as const).map((l) => (
+          <button
+            key={l}
+            type="button"
+            onClick={() => setLangTab(l)}
+            className={cn(
+              'text-[10px] uppercase font-medium px-2 py-1 rounded',
+              langTab === l ? 'bg-background shadow-sm' : 'text-muted-foreground'
+            )}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
+
+      {/* Name */}
+      <Input
+        value={langTab === 'uz' ? row.label_uz : row.label_ru}
+        onChange={(e) =>
+          onUpdate(langTab === 'uz' ? { label_uz: e.target.value } : { label_ru: e.target.value })
+        }
+        placeholder={langTab === 'uz' ? "Xususiyat nomi" : 'Название'}
+        className="flex-1 min-w-0"
+      />
+
+      {/* Value */}
+      <Input
+        value={langTab === 'uz' ? row.value_uz : row.value_ru}
+        onChange={(e) =>
+          onUpdate(langTab === 'uz' ? { value_uz: e.target.value } : { value_ru: e.target.value })
+        }
+        placeholder={langTab === 'uz' ? 'Qiymati' : 'Значение'}
+        className="flex-1 min-w-0"
+      />
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={onRemove}
+        className="text-muted-foreground hover:text-destructive shrink-0"
+      >
+        <Trash2 className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+}
