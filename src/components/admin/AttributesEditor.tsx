@@ -151,7 +151,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
   const applyTemplate = (t: AttributeTemplate) => {
     onChange([...value, ...t.items.map((i) => ({ ...i, id: uid() }))]);
     setTemplatesOpen(false);
-    toast({ title: 'Shablon qo\'shildi', description: t.name });
+    toast({ title: L.templateAdded, description: t.name });
   };
 
   const deleteTemplate = (id: string) => {
