@@ -114,7 +114,7 @@ export function Header() {
               alt="ORSI HOME"
               width={140}
               height={40}
-              fetchPriority="high"
+              fetchpriority="high"
               decoding="async"
               className="h-8 md:h-10 w-auto object-contain"
             />
