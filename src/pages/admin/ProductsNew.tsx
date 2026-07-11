@@ -1065,11 +1065,11 @@ export default function ProductsNew() {
               </div>
 
               <div className="space-y-2">
-                <Label>Slug (URL)</Label>
+                <Label>{L.slug}</Label>
                 <Input
                   value={formData.slug}
                   onChange={(e) => handleSlugChange(e.target.value)}
-                  placeholder="avtomatik yaratiladi"
+                  placeholder={L.slugAuto}
                   className={slugError ? 'border-destructive' : ''}
                 />
                 {slugError ? (
