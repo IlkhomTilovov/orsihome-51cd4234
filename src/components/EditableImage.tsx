@@ -16,6 +16,10 @@ interface EditableImageProps {
   priority?: boolean;
   width?: number;
   height?: number;
+  /** Optional mobile-specific source served via <picture> for viewports ≤ 640px. */
+  mobileSrc?: string;
+  /** Media query used with mobileSrc. Defaults to `(max-width: 640px)`. */
+  mobileMedia?: string;
 }
 
 export function EditableImage({
@@ -29,6 +33,8 @@ export function EditableImage({
   priority = false,
   width,
   height,
+  mobileSrc,
+  mobileMedia = '(max-width: 640px)',
 }: EditableImageProps) {
   const { isEditMode, canEdit, selectElement, selectedElement } = useEditMode();
   const { getContent, loading: contentLoading } = useSiteContent();
@@ -41,6 +47,11 @@ export function EditableImage({
   // for above-the-fold images like the hero.
   const currentSrc = getContent(contentKey, 'uz', '') || fallbackSrc;
   const isSelected = selectedElement?.contentKey === contentKey;
+
+  // If the CMS value matches the desktop fallback, we can safely also serve the
+  // mobile variant. If the user replaced the hero via CMS, mobileSrc no longer
+  // applies (would show stale mobile image), so skip <picture>.
+  const canUseMobileVariant = !!mobileSrc && currentSrc === fallbackSrc;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,18 +85,28 @@ export function EditableImage({
 
   // Not in edit mode - render normally
   if (!isEditMode || !canEdit) {
+    const imgEl = (
+      <img
+        src={currentSrc}
+        alt={alt}
+        className={className}
+        width={width}
+        height={height}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchPriority={priority ? 'high' : 'auto'}
+      />
+    );
     return (
       <div className={cn(wrapperClassName, getAspectRatioClass())}>
-        <img
-          src={currentSrc}
-          alt={alt}
-          className={className}
-          width={width}
-          height={height}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding={priority ? 'sync' : 'async'}
-          fetchPriority={priority ? 'high' : 'auto'}
-        />
+        {canUseMobileVariant ? (
+          <picture>
+            <source media={mobileMedia} srcSet={mobileSrc} type="image/webp" />
+            {imgEl}
+          </picture>
+        ) : (
+          imgEl
+        )}
       </div>
     );
   }

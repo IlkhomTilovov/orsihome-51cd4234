@@ -68,10 +68,20 @@
       crossorigin
     />
 
-    <!-- Preload LCP hero image (WebP, ~80KB) -->
+    <!-- Preload LCP hero image — responsive:
+         mobile (≤640px) loads the 12KB 768px WebP, larger viewports load the 79KB 1536px WebP. -->
     <link
       rel="preload"
       as="image"
+      media="(max-width: 640px)"
+      href="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp"
+      fetchpriority="high"
+      type="image/webp"
+    />
+    <link
+      rel="preload"
+      as="image"
+      media="(min-width: 641px)"
       href="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
       fetchpriority="high"
       type="image/webp"
