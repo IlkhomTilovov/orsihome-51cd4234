@@ -1257,15 +1257,15 @@ export default function ProductsNew() {
                 <div>
                   <h3 className="font-medium flex items-center gap-2">
                     <ImageIcon className="w-4 h-4" />
-                    Media fayllari
+                    {L.mediaFiles}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Rasmlar va videolarni qo'shing
+                    {L.mediaHint}
                   </p>
                 </div>
                 <Button onClick={() => setMediaModalOpen(true)} className="gap-2">
                   <Plus className="w-4 h-4" />
-                  Media qo'shish
+                  {L.addMedia}
                 </Button>
               </div>
 
