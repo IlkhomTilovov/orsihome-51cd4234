@@ -21,6 +21,40 @@
     --font-sans: 'Manrope', system-ui, sans-serif;
     --font-serif: 'Manrope', system-ui, sans-serif;
     --font-heading: 'Manrope', system-ui, sans-serif;
+    --background: 0 0% 98%;
+    --foreground: 210 20% 15%;
+    --card: 0 0% 98%;
+    --card-foreground: 210 20% 15%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 210 20% 15%;
+    --primary: 210 20% 20%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 16% 93%;
+    --secondary-foreground: 210 20% 15%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 210 20% 15%;
+    --accent: 215 25% 35%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 16% 93%;
+    --input: 210 16% 93%;
+    --ring: 210 20% 20%;
+    --warm-cream: 0 0% 98%;
+    --warm-beige: 210 16% 93%;
+    --warm-brown: 210 20% 20%;
+    --dark-wood: 210 20% 15%;
+    --gold-accent: 45 93% 47%;
+    --sage-green: 142 76% 36%;
+    --radius: 0.5rem;
+    --button-radius: 0.5rem;
+    --card-radius: 0.5rem;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --container-max-width: 1280px;
+    --section-spacing: 4rem;
+    --card-padding: 1.5rem;
   }
 
   body {

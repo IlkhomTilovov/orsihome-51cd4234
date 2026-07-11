@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Sparkles, Flame, Star, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Sparkles, Flame, Star, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
 import { useActiveSets } from '@/hooks/useSets';
@@ -9,7 +8,6 @@ import { usePromoTiles } from '@/hooks/usePromoTiles';
 import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
-import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
@@ -211,7 +209,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         <>
           {items.map((p, i) => (
             <div key={(p?.id || 'e') + '-' + i} className="h-full">
-              <ProductCard product={p} eager />
+              <ProductCard product={p} />
             </div>
           ))}
           {items.length === 1 && <EmptyCard />}
@@ -382,12 +380,15 @@ export default function Index() {
   const homeSeo = getPageSeo('home', language);
   useSEO({ title: homeSeo.title, description: homeSeo.description, ogTitle: homeSeo.title, ogDescription: homeSeo.description });
 
-  const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
-  const { settings } = useSystemSettings();
-  const { categories } = useCategories();
+  const sec1 = useInView();
+  const sec2 = useInView();
+  const sec3 = useInView();
+
+  const shouldLoadBelowFoldData = sec2.isVisible;
+  const { products: featuredProducts } = useFeaturedProducts(4, shouldLoadBelowFoldData);
+  const { categories } = useCategories(shouldLoadBelowFoldData);
   const { data: dbPromoTiles = [] } = usePromoTiles();
-  const { sets, productsBySet, loading: setsLoading } = useActiveSets();
-  const contactPhone = settings?.contact_phone || '';
+  const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
   const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
 
@@ -397,12 +398,6 @@ export default function Index() {
     { key: 'insp_3', fallback: fallbackImages[2] },
     { key: 'insp_4', fallback: fallbackImages[3] },
   ];
-
-
-  const sec1 = useInView();
-  const sec2 = useInView();
-  const sec3 = useInView();
-  const sec4 = useInView();
 
   // Toifalar carousel — one-at-a-time autoplay with seamless infinite loop
   const [catPerPage, setCatPerPage] = useState(4);
@@ -513,6 +508,7 @@ export default function Index() {
               priority
               width={1600}
               height={900}
+              sizes="(max-width: 640px) 100vw, 100vw"
             />
 
 
@@ -539,7 +535,7 @@ export default function Index() {
 
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
-        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0">
+        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0 min-h-[118px] sm:min-h-[142px] md:min-h-[130px] lg:min-h-[190px]">
           <div className="flex gap-3 lg:gap-4 px-4 lg:px-0 snap-x snap-mandatory">
             {dbPromoTiles.map((tile, i) => {
               const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;

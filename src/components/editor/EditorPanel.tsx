@@ -261,6 +261,10 @@ export function EditorPanel() {
                       <img 
                         src={editValue || selectedElement.fallback} 
                         alt="Preview"
+                        width={640}
+                        height={360}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     </div>

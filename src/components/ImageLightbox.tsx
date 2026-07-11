@@ -150,6 +150,10 @@ export function ImageLightbox({ images, initialIndex = 0, isOpen, onClose }: Ima
         <img
           src={images[currentIndex]}
           alt=""
+          width={1200}
+          height={1200}
+          loading="eager"
+          decoding="async"
           className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg select-none"
           draggable={false}
         />
@@ -186,7 +190,7 @@ export function ImageLightbox({ images, initialIndex = 0, isOpen, onClose }: Ima
                   : "border-transparent opacity-60 hover:opacity-100"
               )}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={img} alt="" width={96} height={96} loading="lazy" decoding="async" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { X, ShoppingBag, Phone, ChevronDown, ChevronRight, LayoutGrid, Tag, Sparkles, Search, Info, Shield, Mail, Send, Instagram } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -8,8 +8,9 @@ import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useCategories, useSections, type Product } from '@/hooks/useProducts';
 import { supabase } from '@/integrations/supabase/client';
-import { CartDrawer } from '@/components/CartDrawer';
 import logoAsset from '@/assets/orsi-logo.svg.asset.json';
+
+const CartDrawer = lazy(() => import('@/components/CartDrawer').then((m) => ({ default: m.CartDrawer })));
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,10 +33,11 @@ export function Header() {
     return () => window.removeEventListener('open-mobile-menu', openHandler);
   }, []);
 
-  const { categories } = useCategories();
-  const { sections } = useSections();
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
+  const shouldLoadCatalogData = catalogOpen || mobileCatalogOpen;
+  const { categories } = useCategories(shouldLoadCatalogData);
+  const { sections } = useSections(shouldLoadCatalogData);
   const [mobileSectionId, setMobileSectionId] = useState<string | null>(null);
   
   
@@ -718,8 +720,10 @@ export function Header() {
 
 
 
-      {createPortal(
-        <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />,
+      {cartOpen && createPortal(
+        <Suspense fallback={null}>
+          <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+        </Suspense>,
         document.body
       )}
     </header>

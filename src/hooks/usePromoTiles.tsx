@@ -13,7 +13,7 @@ export interface PromoTile {
   is_active: boolean;
 }
 
-export function usePromoTiles() {
+export function usePromoTiles(enabled = true) {
   return useQuery({
     queryKey: ['promo_tiles'],
     queryFn: async (): Promise<PromoTile[]> => {
@@ -25,6 +25,7 @@ export function usePromoTiles() {
       if (error) throw error;
       return (data || []) as PromoTile[];
     },
+    enabled,
   });
 }
 
