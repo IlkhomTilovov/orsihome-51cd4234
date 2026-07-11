@@ -188,9 +188,9 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold">Xususiyatlar</h3>
+          <h3 className="text-lg font-semibold">{L.title}</h3>
           <p className="text-sm text-muted-foreground">
-            Mahsulot uchun texnik ma'lumotlarni qo'shing
+            {L.subtitle}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -202,7 +202,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
             className="gap-2"
           >
             <FolderOpen className="w-4 h-4" />
-            Shablonlar ({templates.length})
+            {L.templates} ({templates.length})
           </Button>
           <Button
             type="button"
@@ -212,11 +212,11 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
             className="gap-2"
           >
             <Save className="w-4 h-4" />
-            Shablon sifatida saqlash
+            {L.saveAsTemplate}
           </Button>
           <Button type="button" size="sm" onClick={addRow} className="gap-2">
             <Plus className="w-4 h-4" />
-            Qo'shish
+            {L.add}
           </Button>
         </div>
       </div>
