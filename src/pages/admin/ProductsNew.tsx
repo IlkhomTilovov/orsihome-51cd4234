@@ -1380,9 +1380,9 @@ export default function ProductsNew() {
 
               {/* Keyword Variants - Bilingual */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">🔄 Kalit so'z variantlari</h3>
+                <h3 className="font-medium text-base">{L.variantsTitle}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Variantlar tavsif va rasm alt teglarida tabiiy ravishda ishlatiladi
+                  {L.variantsHint}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* UZ Variants */}
