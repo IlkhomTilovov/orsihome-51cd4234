@@ -1506,7 +1506,7 @@ export default function ProductsNew() {
                       maxLength={60}
                     />
                     <p className={`text-xs ${formData.meta_title_ru.length > 55 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_title_ru.length}/60 символов
+                      {L.charsRu(formData.meta_title_ru.length)}
                     </p>
                   </div>
                 </div>
