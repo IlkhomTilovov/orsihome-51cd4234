@@ -1390,7 +1390,7 @@ export default function ProductsNew() {
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">UZ</Badge>
-                        Variantlar
+                        {L.variantsUz}
                       </Label>
                       <Button
                         type="button"
