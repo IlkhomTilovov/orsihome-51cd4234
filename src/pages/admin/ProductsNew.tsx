@@ -1199,21 +1199,21 @@ export default function ProductsNew() {
             <TabsContent value="description" className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (UZ)</Label>
+                  <Label>{L.shortDescUz}</Label>
                   <Textarea
                     value={formData.description_uz}
                     onChange={(e) => setFormData({ ...formData, description_uz: e.target.value })}
                     rows={3}
-                    placeholder="Mahsulot haqida qisqacha..."
+                    placeholder={L.shortDescPhUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (RU)</Label>
+                  <Label>{L.shortDescRu}</Label>
                   <Textarea
                     value={formData.description_ru}
                     onChange={(e) => setFormData({ ...formData, description_ru: e.target.value })}
                     rows={3}
-                    placeholder="Краткое описание..."
+                    placeholder={L.shortDescPhRu}
                   />
                 </div>
               </div>
