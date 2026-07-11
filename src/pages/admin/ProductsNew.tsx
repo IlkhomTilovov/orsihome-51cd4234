@@ -38,6 +38,7 @@ import { MediaGrid } from '@/components/admin/MediaGrid';
 import { useAllPromoTiles } from '@/hooks/usePromoTiles';
 import { PROMO_ICONS } from '@/lib/promoIcons';
 import { Checkbox } from '@/components/ui/checkbox';
+import { AttributesEditor, ProductAttribute } from '@/components/admin/AttributesEditor';
 
 interface Category {
   id: string;
@@ -83,6 +84,7 @@ interface Product {
   variants_uz: string[] | null;
   variants_ru: string[] | null;
   promo_tile_ids: string[] | null;
+  attributes?: ProductAttribute[] | null;
 }
 
 interface FormData {
@@ -121,6 +123,7 @@ interface FormData {
   variants_uz: string[];
   variants_ru: string[];
   promo_tile_ids: string[];
+  attributes: ProductAttribute[];
 }
 
 const emptyForm: FormData = {
@@ -159,6 +162,7 @@ const emptyForm: FormData = {
   variants_uz: [],
   variants_ru: [],
   promo_tile_ids: [],
+  attributes: [],
 };
 
 const ADMIN_PAGE_SIZE = 20;
@@ -418,6 +422,7 @@ export default function ProductsNew() {
       variants_uz: (product as any).variants_uz || product.keyword_variations || [],
       variants_ru: (product as any).variants_ru || [],
       promo_tile_ids: (product as any).promo_tile_ids || [],
+      attributes: Array.isArray((product as any).attributes) ? (product as any).attributes : [],
     });
     setSlugError('');
     setActiveTab('basic');
@@ -572,6 +577,7 @@ export default function ProductsNew() {
       variants_uz: (formData.variants_uz || []).length > 0 ? formData.variants_uz : [],
       variants_ru: (formData.variants_ru || []).length > 0 ? formData.variants_ru : [],
       promo_tile_ids: formData.promo_tile_ids || [],
+      attributes: formData.attributes || [],
     };
 
     try {
@@ -1139,82 +1145,11 @@ export default function ProductsNew() {
 
             {/* Attributes Tab */}
             <TabsContent value="attributes" className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>O'lchamlar (UZ)</Label>
-                  <Input
-                    value={formData.sizes}
-                    onChange={(e) => setFormData({ ...formData, sizes: e.target.value })}
-                    placeholder="Masalan: 200x100x80, 180x90x75"
-                  />
-                  <p className="text-xs text-muted-foreground">Vergul bilan ajrating</p>
-                </div>
-                <div className="space-y-2">
-                  <Label>Размеры (RU)</Label>
-                  <Input
-                    value={formData.sizes_ru}
-                    onChange={(e) => setFormData({ ...formData, sizes_ru: e.target.value })}
-                    placeholder="Например: 200x100x80, 180x90x75"
-                  />
-                  <p className="text-xs text-muted-foreground">Разделяйте запятыми</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Ranglar (UZ)</Label>
-                  <Input
-                    value={formData.colors}
-                    onChange={(e) => setFormData({ ...formData, colors: e.target.value })}
-                    placeholder="Masalan: Oq, Qora, Jigarrang"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Цвета (RU)</Label>
-                  <Input
-                    value={formData.colors_ru}
-                    onChange={(e) => setFormData({ ...formData, colors_ru: e.target.value })}
-                    placeholder="Например: Белый, Чёрный, Коричневый"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Materiallar (UZ)</Label>
-                  <Input
-                    value={formData.materials}
-                    onChange={(e) => setFormData({ ...formData, materials: e.target.value })}
-                    placeholder="Masalan: Yog'och, Temir, Mato"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Материалы (RU)</Label>
-                  <Input
-                    value={formData.materials_ru}
-                    onChange={(e) => setFormData({ ...formData, materials_ru: e.target.value })}
-                    placeholder="Например: Дерево, Металл, Ткань"
-                  />
-                </div>
-              </div>
-
-              {/* Preview */}
-              {(formData.sizes || formData.colors || formData.materials) && (
-                <div className="mt-4 p-4 bg-muted rounded-lg">
-                  <p className="text-sm font-medium mb-2">Ko'rinishi:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {formData.sizes && formData.sizes.split(',').filter(Boolean).map((size, i) => (
-                      <Badge key={`size-${i}`} variant="outline">{size.trim()}</Badge>
-                    ))}
-                    {formData.colors && formData.colors.split(',').filter(Boolean).map((color, i) => (
-                      <Badge key={`color-${i}`} variant="secondary">{color.trim()}</Badge>
-                    ))}
-                    {formData.materials && formData.materials.split(',').filter(Boolean).map((material, i) => (
-                      <Badge key={`material-${i}`}>{material.trim()}</Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <AttributesEditor
+                value={formData.attributes}
+                onChange={(v) => setFormData({ ...formData, attributes: v })}
+                language={language as 'uz' | 'ru'}
+              />
             </TabsContent>
 
             {/* SEO Tab */}
