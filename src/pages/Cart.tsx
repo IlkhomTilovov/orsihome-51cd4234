@@ -60,7 +60,7 @@ export default function Cart() {
               return (
                 <div key={item.product.id} className="flex gap-3 md:gap-4 p-3 md:p-4 bg-card rounded-xl md:rounded-2xl shadow-warm">
                   <Link to={`/product/${item.product.id}`} className="w-20 h-20 md:w-24 md:h-24 flex-shrink-0 rounded-lg overflow-hidden">
-                    <img src={item.product.images[0]} alt={name} className="w-full h-full object-cover" />
+                    <img src={item.product.images[0]} alt={name} width={96} height={96} loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   </Link>
                   <div className="flex-1 min-w-0">
                     <Link to={`/product/${item.product.id}`} className="font-medium text-sm md:text-base hover:text-primary transition-colors line-clamp-2">
