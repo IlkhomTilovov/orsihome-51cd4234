@@ -166,7 +166,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ImageIcon className="w-5 h-5" />
-            Media qo'shish
+            {L.title}
           </DialogTitle>
         </DialogHeader>
 
@@ -174,11 +174,11 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="image" className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
-              Rasm
+              {L.image}
             </TabsTrigger>
             <TabsTrigger value="video" className="flex items-center gap-2">
               <Video className="w-4 h-4" />
-              Video
+              {L.video}
             </TabsTrigger>
           </TabsList>
 
@@ -186,7 +186,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
             {/* Upload option */}
             <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
               <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground mb-3">Rasmlarni kompyuterdan yuklang</p>
+              <p className="text-sm text-muted-foreground mb-3">{L.uploadHint}</p>
               <Button 
                 variant="outline" 
                 onClick={() => {
@@ -195,7 +195,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
                 }}
                 disabled={uploading}
               >
-                {uploading ? 'Yuklanmoqda...' : 'Rasm tanlash'}
+                {uploading ? L.uploading : L.selectImage}
               </Button>
             </div>
 
@@ -204,7 +204,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">yoki</span>
+                <span className="bg-background px-2 text-muted-foreground">{L.or}</span>
               </div>
             </div>
 
@@ -212,7 +212,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Link2 className="w-4 h-4" />
-                Rasm URL
+                {L.imageUrl}
               </Label>
               <div className="flex gap-2">
                 <Input
@@ -222,7 +222,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
                   className="flex-1"
                 />
                 <Button onClick={handleAddImageUrl} disabled={!imageUrl.trim()}>
-                  Qo'shish
+                  {L.add}
                 </Button>
               </div>
             </div>
@@ -231,7 +231,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
           <TabsContent value="video" className="space-y-4 mt-4">
             <div className="bg-muted/50 rounded-lg p-4">
               <p className="text-sm text-muted-foreground">
-                Qo'llab-quvvatlanadigan platformalar:
+                {L.supportedPlatforms}
               </p>
               <div className="flex flex-wrap gap-2 mt-2">
                 <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-500/10 text-red-600 rounded-md text-xs font-medium">
