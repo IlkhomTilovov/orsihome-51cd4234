@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Sparkles, Flame, Star, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Crown, Percent, Sparkles, Star, Tag, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
 import { useActiveSets } from '@/hooks/useSets';
 import { usePromoTiles } from '@/hooks/usePromoTiles';
-import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
@@ -29,59 +28,7 @@ const defaultServiceImages: Record<string, string> = {
 
 const fallbackImages = [serviceBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
 
-// Promo tiles (Woodline-style colorful cards)
-const promoTiles = [
-  {
-    key: 'tile_hit',
-    titleUz: 'Hit sotuv', titleRu: 'Хит продаж',
-    icon: Zap,
-    bg: 'bg-gradient-to-br from-[hsl(150_30%_92%)] to-[hsl(150_25%_85%)]',
-    iconColor: 'text-primary',
-    href: '/catalog?sort=popular',
-  },
-  {
-    key: 'tile_popular',
-    titleUz: 'Mashhur mahsulot', titleRu: 'Популярный товар',
-    icon: Star,
-    bg: 'bg-gradient-to-br from-[hsl(35_45%_92%)] to-[hsl(35_38%_82%)]',
-    iconColor: 'text-[hsl(33_50%_45%)]',
-    href: '/catalog?featured=1',
-  },
-  {
-    key: 'tile_discount',
-    titleUz: 'Extra Chegirma', titleRu: 'Extra Скидка',
-    icon: Flame,
-    bg: 'bg-gradient-to-br from-[hsl(15_60%_90%)] to-[hsl(10_55%_82%)]',
-    iconColor: 'text-[hsl(10_60%_45%)]',
-    href: '/catalog?discounted=1',
-  },
-  {
-    key: 'tile_office',
-    titleUz: 'Ofis mebellari', titleRu: 'Мебель для офиса',
-    icon: Briefcase,
-    bg: 'bg-gradient-to-br from-primary to-[hsl(150_35%_25%)]',
-    iconColor: 'text-secondary',
-    textLight: true,
-    href: '/catalog?category=office',
-  },
-  {
-    key: 'tile_living',
-    titleUz: 'Mehmonxona uchun', titleRu: 'Мебель для гостиной',
-    icon: Sofa,
-    bg: 'bg-gradient-to-br from-[hsl(150_40%_22%)] to-[hsl(150_45%_15%)]',
-    iconColor: 'text-secondary',
-    textLight: true,
-    href: '/catalog?category=living',
-  },
-  {
-    key: 'tile_universal',
-    titleUz: 'Universal yechim', titleRu: 'Универсальное решение',
-    icon: Sparkles,
-    bg: 'bg-gradient-to-br from-[hsl(35_38%_85%)] to-[hsl(33_36%_70%)]',
-    iconColor: 'text-primary',
-    href: '/catalog',
-  },
-];
+const HOME_PROMO_ICONS: Record<string, LucideIcon> = { Crown, Percent, Sparkles, Star, Tag };
 
 // Fallback categories when DB is empty
 const fallbackCategories = [
@@ -538,7 +485,7 @@ export default function Index() {
         <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0 min-h-[118px] sm:min-h-[142px] md:min-h-[130px] lg:min-h-[190px]">
           <div className="flex gap-3 lg:gap-4 px-4 lg:px-0 snap-x snap-mandatory">
             {dbPromoTiles.map((tile, i) => {
-              const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+              const Icon = HOME_PROMO_ICONS[tile.icon] || Sparkles;
               const title = language === 'uz' ? tile.title_uz : tile.title_ru;
               return (
                 <Link
