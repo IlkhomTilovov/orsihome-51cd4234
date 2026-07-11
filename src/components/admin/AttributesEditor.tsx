@@ -225,10 +225,10 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       {value.length === 0 ? (
         <div className="border-2 border-dashed rounded-xl p-10 text-center">
           <p className="text-sm text-muted-foreground mb-3">
-            Hali xususiyatlar qo'shilmagan. Boshlash uchun "Qo'shish" tugmasini bosing yoki shablondan foydalaning.
+            {L.empty}
           </p>
           <Button type="button" variant="outline" size="sm" onClick={addRow} className="gap-2">
-            <Plus className="w-4 h-4" /> Birinchi xususiyatni qo'shish
+            <Plus className="w-4 h-4" /> {L.addFirst}
           </Button>
         </div>
       ) : (
