@@ -65,6 +65,26 @@ const parseInstagramUrl = (url: string): { id: string; embedUrl: string; thumbna
 };
 
 export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, uploading }: AddMediaModalProps) {
+  const { language } = useLanguage();
+  const isRu = language === 'ru';
+  const L = {
+    title: isRu ? 'Добавить медиа' : "Media qo'shish",
+    image: isRu ? 'Изображение' : 'Rasm',
+    video: 'Video',
+    uploadHint: isRu ? 'Загрузите изображения с компьютера' : 'Rasmlarni kompyuterdan yuklang',
+    selectImage: isRu ? 'Выбрать изображение' : 'Rasm tanlash',
+    uploading: isRu ? 'Загрузка...' : 'Yuklanmoqda...',
+    or: isRu ? 'или' : 'yoki',
+    imageUrl: isRu ? 'URL изображения' : 'Rasm URL',
+    add: isRu ? 'Добавить' : "Qo'shish",
+    videoUrl: isRu ? 'URL видео' : 'Video URL',
+    supportedPlatforms: isRu ? 'Поддерживаемые платформы:' : "Qo'llab-quvvatlanadigan platformalar:",
+    videoHint: isRu ? 'Введите ссылку на YouTube или Instagram видео/reel' : "YouTube yoki Instagram video/reel havolasini kiriting",
+    errUrl: isRu ? 'Введите URL' : 'URL kiriting',
+    errFormat: isRu ? 'Неверный формат URL' : "Noto'g'ri URL format",
+    errVideoUrl: isRu ? 'Введите URL видео' : 'Video URL kiriting',
+    errVideoPlatform: isRu ? 'Принимаются только ссылки YouTube или Instagram' : 'Faqat YouTube yoki Instagram URL qabul qilinadi',
+  };
   const [activeTab, setActiveTab] = useState<'image' | 'video'>('image');
   const [imageUrl, setImageUrl] = useState('');
   const [videoUrl, setVideoUrl] = useState('');
