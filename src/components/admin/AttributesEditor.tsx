@@ -296,25 +296,25 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Shablon sifatida saqlash</DialogTitle>
+            <DialogTitle>{L.saveTemplateTitle}</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Shablon nomi</Label>
+            <Label>{L.templateName}</Label>
             <Input
               value={saveName}
               onChange={(e) => setSaveName(e.target.value)}
-              placeholder="Masalan: Yumshoq divan"
+              placeholder={L.templateNamePh}
               autoFocus
             />
             <p className="text-xs text-muted-foreground">
-              Hozirgi {value.length} ta xususiyat shu nom bilan saqlanadi.
+              {L.templateSaveHint(value.length)}
             </p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setSaveOpen(false)}>
-              Bekor qilish
+              {L.cancel}
             </Button>
-            <Button onClick={commitSaveTemplate}>Saqlash</Button>
+            <Button onClick={commitSaveTemplate}>{L.save}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
