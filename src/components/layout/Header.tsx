@@ -598,6 +598,10 @@ export function Header() {
                                     <img
                                       src={parent.image}
                                       alt=""
+                                      width={44}
+                                      height={44}
+                                      loading="lazy"
+                                      decoding="async"
                                       className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-border"
                                     />
                                   ) : (
