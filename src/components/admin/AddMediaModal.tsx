@@ -252,7 +252,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <Video className="w-4 h-4" />
-                Video URL
+                {L.videoUrl}
               </Label>
               <div className="flex gap-2">
                 <Input
@@ -262,11 +262,11 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
                   className="flex-1"
                 />
                 <Button onClick={handleAddVideoUrl} disabled={!videoUrl.trim()}>
-                  Qo'shish
+                  {L.add}
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                YouTube yoki Instagram video/reel havolasini kiriting
+                {L.videoHint}
               </p>
             </div>
           </TabsContent>
