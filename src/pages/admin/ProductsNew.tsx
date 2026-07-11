@@ -1604,9 +1604,9 @@ export default function ProductsNew() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_indexed: checked })}
                   />
                   <div>
-                    <Label>Indexlash</Label>
+                    <Label>{L.indexing}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_indexed ? 'Google indeksida' : 'Noindex'}
+                      {formData.is_indexed ? L.indexOn : L.indexOff}
                     </p>
                   </div>
                 </div>
@@ -1616,9 +1616,9 @@ export default function ProductsNew() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_followed: checked })}
                   />
                   <div>
-                    <Label>Follow</Label>
+                    <Label>{L.follow}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_followed ? 'Havolalar kuzatiladi' : 'Nofollow'}
+                      {formData.is_followed ? L.followOn : L.followOff}
                     </p>
                   </div>
                 </div>
