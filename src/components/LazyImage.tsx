@@ -83,6 +83,8 @@ export const LazyImage = memo(function LazyImage({
           decoding="async"
           fetchPriority={priority ? 'high' : 'auto'}
           sizes={finalSizes}
+          width={props.width ?? 600}
+          height={props.height ?? 625}
           className={cn(
             priority ? 'opacity-100' : 'transition-opacity duration-300',
             !priority && (isLoaded ? 'opacity-100' : 'opacity-0'),

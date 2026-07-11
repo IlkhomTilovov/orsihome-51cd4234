@@ -13,6 +13,9 @@ interface EditableImageProps {
   wrapperClassName?: string;
   section?: string;
   aspectRatio?: 'auto' | 'square' | 'video' | 'wide';
+  priority?: boolean;
+  width?: number;
+  height?: number;
 }
 
 export function EditableImage({
@@ -23,13 +26,19 @@ export function EditableImage({
   wrapperClassName = '',
   section,
   aspectRatio = 'auto',
+  priority = false,
+  width,
+  height,
 }: EditableImageProps) {
   const { isEditMode, canEdit, selectElement, selectedElement } = useEditMode();
   const { getContent, loading: contentLoading } = useSiteContent();
   
   const [isHovered, setIsHovered] = useState(false);
 
-  // Get image URL from content or use fallback
+  // Get image URL from content or use fallback.
+  // IMPORTANT for LCP: while content is loading, render fallback immediately
+  // (do NOT block on Supabase content query) — this drops LCP dramatically
+  // for above-the-fold images like the hero.
   const currentSrc = getContent(contentKey, 'uz', '') || fallbackSrc;
   const isSelected = selectedElement?.contentKey === contentKey;
 
@@ -53,8 +62,9 @@ export function EditableImage({
     }
   };
 
-  // Show skeleton while content is loading
-  if (contentLoading) {
+  // In edit mode we still show skeleton until real content loads so admins
+  // don't accidentally edit a fallback. In view mode we render immediately.
+  if (contentLoading && isEditMode && canEdit) {
     return (
       <div className={cn(wrapperClassName, getAspectRatioClass())}>
         <Skeleton className={cn(className, 'w-full h-full')} />
@@ -66,10 +76,15 @@ export function EditableImage({
   if (!isEditMode || !canEdit) {
     return (
       <div className={cn(wrapperClassName, getAspectRatioClass())}>
-        <img 
-          src={currentSrc} 
-          alt={alt} 
+        <img
+          src={currentSrc}
+          alt={alt}
           className={className}
+          width={width}
+          height={height}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding={priority ? 'sync' : 'async'}
+          fetchPriority={priority ? 'high' : 'auto'}
         />
       </div>
     );
