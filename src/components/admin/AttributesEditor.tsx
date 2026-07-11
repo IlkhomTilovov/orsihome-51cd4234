@@ -162,7 +162,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
 
   const commitSaveTemplate = () => {
     if (!saveName.trim()) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Shablon nomini kiriting' });
+      toast({ variant: 'destructive', title: L.error, description: L.enterName });
       return;
     }
     if (value.length === 0) {
