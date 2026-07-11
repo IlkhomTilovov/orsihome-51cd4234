@@ -1169,28 +1169,28 @@ export default function ProductsNew() {
                     checked={formData.is_negotiable}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_negotiable: checked })}
                   />
-                  <Label>Kelishiladi</Label>
+                  <Label>{L.negotiable}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.in_stock}
                     onCheckedChange={(checked) => setFormData({ ...formData, in_stock: checked })}
                   />
-                  <Label>Mavjud</Label>
+                  <Label>{L.inStock}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.is_featured}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                   />
-                  <Label>Tanlangan</Label>
+                  <Label>{L.featured}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.is_active}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
-                  <Label>Faol</Label>
+                  <Label>{L.active}</Label>
                 </div>
               </div>
             </TabsContent>
