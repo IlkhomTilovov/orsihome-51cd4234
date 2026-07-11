@@ -1142,7 +1142,7 @@ export default function ProductsNew() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Narxi</Label>
+                  <Label>{L.price}</Label>
                   <Input
                     type="number"
                     value={formData.price}
@@ -1151,7 +1151,7 @@ export default function ProductsNew() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Eski narxi</Label>
+                  <Label>{L.oldPrice}</Label>
                   <Input
                     type="number"
                     value={formData.original_price}
