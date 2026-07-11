@@ -1516,7 +1516,7 @@ export default function ProductsNew() {
 
               {/* Meta Description */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">📄 Meta Description</h3>
+                <h3 className="font-medium text-base">{L.metaDesc}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
@@ -1526,12 +1526,12 @@ export default function ProductsNew() {
                     <Textarea
                       value={formData.meta_description_uz}
                       onChange={(e) => setFormData({ ...formData, meta_description_uz: e.target.value.slice(0, 160) })}
-                      placeholder="Mahsulot haqida qisqa tavsif..."
+                      placeholder={L.metaDescPh}
                       maxLength={160}
                       rows={3}
                     />
                     <p className={`text-xs ${formData.meta_description_uz.length > 150 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_description_uz.length}/160 belgi
+                      {L.charsDescUz(formData.meta_description_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
