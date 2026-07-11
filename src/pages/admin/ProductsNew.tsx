@@ -1130,7 +1130,7 @@ export default function ProductsNew() {
                           <span className="text-sm truncate">
                             {language === 'uz' ? tile.title_uz : tile.title_ru}
                             {!tile.is_active && (
-                              <span className="ml-1 text-xs text-muted-foreground">(nofaol)</span>
+                              <span className="ml-1 text-xs text-muted-foreground">{L.inactive}</span>
                             )}
                           </span>
                         </label>
