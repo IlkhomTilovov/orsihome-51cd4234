@@ -1047,19 +1047,19 @@ export default function ProductsNew() {
             <TabsContent value="basic" className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nomi (UZ) *</Label>
+                  <Label>{L.nameUz}</Label>
                   <Input
                     value={formData.name_uz}
                     onChange={(e) => handleNameChange(e.target.value, 'name_uz')}
-                    placeholder="O'zbek tilida"
+                    placeholder={L.phUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Nomi (RU) *</Label>
+                  <Label>{L.nameRu}</Label>
                   <Input
                     value={formData.name_ru}
                     onChange={(e) => handleNameChange(e.target.value, 'name_ru')}
-                    placeholder="На русском"
+                    placeholder={L.phRu}
                   />
                 </div>
               </div>
