@@ -400,7 +400,7 @@ function AttributeRow({
             <Input
               value={iconQuery}
               onChange={(e) => setIconQuery(e.target.value)}
-              placeholder="Ikonka qidirish..."
+              placeholder={iconSearchPh}
               className="pl-8 h-8 text-sm"
             />
           </div>
