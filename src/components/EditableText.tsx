@@ -96,9 +96,12 @@ export function EditableText({
     }
   }, [multiline]);
 
-  // Show skeleton while content is loading to prevent flash of default text
+  // Show skeleton while content is loading to prevent flash of default text.
+  // BUT: if we already have a cached/fetched value for this key, render it immediately —
+  // this avoids a jarring skeleton→text swap for returning visitors.
   // Use a <span> so it can safely live inside <p> / inline parents (no DOM nesting warnings).
-  if (contentLoading) {
+  const hasContent = getContent(contentKey, language, '') !== '';
+  if (contentLoading && !hasContent) {
     return (
       <span
         className={cn(
