@@ -69,6 +69,56 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
   const [saveName, setSaveName] = useState('');
   const dragIndexRef = useRef<number | null>(null);
 
+  const L = language === 'ru' ? {
+    title: 'Характеристики',
+    subtitle: 'Добавьте технические характеристики товара',
+    templates: 'Шаблоны',
+    saveAsTemplate: 'Сохранить как шаблон',
+    add: 'Добавить',
+    empty: 'Характеристик пока нет. Нажмите «Добавить» или воспользуйтесь шаблоном.',
+    addFirst: 'Добавить первую характеристику',
+    templatesDialog: 'Шаблоны',
+    noTemplates: 'Пока нет шаблонов. Заполните характеристики и нажмите «Сохранить как шаблон».',
+    itemsCount: (n: number) => `${n} характеристик`,
+    apply: 'Применить',
+    saveTemplateTitle: 'Сохранить как шаблон',
+    templateName: 'Название шаблона',
+    templateNamePh: 'Например: Мягкий диван',
+    templateSaveHint: (n: number) => `Текущие ${n} характеристик будут сохранены под этим именем.`,
+    cancel: 'Отмена',
+    save: 'Сохранить',
+    templateAdded: 'Шаблон добавлен',
+    error: 'Ошибка',
+    enterName: 'Введите название шаблона',
+    addOne: 'Добавьте хотя бы одну характеристику',
+    saved: 'Сохранено',
+    savedDesc: (name: string) => `Шаблон «${name}» сохранён`,
+  } : {
+    title: 'Xususiyatlar',
+    subtitle: "Mahsulot uchun texnik ma'lumotlarni qo'shing",
+    templates: 'Shablonlar',
+    saveAsTemplate: 'Shablon sifatida saqlash',
+    add: "Qo'shish",
+    empty: "Hali xususiyatlar qo'shilmagan. Boshlash uchun \"Qo'shish\" tugmasini bosing yoki shablondan foydalaning.",
+    addFirst: "Birinchi xususiyatni qo'shish",
+    templatesDialog: 'Shablonlar',
+    noTemplates: "Hozircha shablonlar yo'q. Xususiyatlarni to'ldirib, \"Shablon sifatida saqlash\" tugmasini bosing.",
+    itemsCount: (n: number) => `${n} ta xususiyat`,
+    apply: "Qo'llash",
+    saveTemplateTitle: 'Shablon sifatida saqlash',
+    templateName: 'Shablon nomi',
+    templateNamePh: 'Masalan: Yumshoq divan',
+    templateSaveHint: (n: number) => `Hozirgi ${n} ta xususiyat shu nom bilan saqlanadi.`,
+    cancel: 'Bekor qilish',
+    save: 'Saqlash',
+    templateAdded: "Shablon qo'shildi",
+    error: 'Xatolik',
+    enterName: 'Shablon nomini kiriting',
+    addOne: "Kamida bitta xususiyat qo'shing",
+    saved: 'Saqlandi',
+    savedDesc: (name: string) => `"${name}" shabloni saqlandi`,
+  };
+
   const addRow = () => {
     onChange([
       ...value,
@@ -101,7 +151,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
   const applyTemplate = (t: AttributeTemplate) => {
     onChange([...value, ...t.items.map((i) => ({ ...i, id: uid() }))]);
     setTemplatesOpen(false);
-    toast({ title: 'Shablon qo\'shildi', description: t.name });
+    toast({ title: L.templateAdded, description: t.name });
   };
 
   const deleteTemplate = (id: string) => {
@@ -112,11 +162,11 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
 
   const commitSaveTemplate = () => {
     if (!saveName.trim()) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Shablon nomini kiriting' });
+      toast({ variant: 'destructive', title: L.error, description: L.enterName });
       return;
     }
     if (value.length === 0) {
-      toast({ variant: 'destructive', title: 'Xatolik', description: 'Kamida bitta xususiyat qo\'shing' });
+      toast({ variant: 'destructive', title: L.error, description: L.addOne });
       return;
     }
     const tpl: AttributeTemplate = {
@@ -130,7 +180,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
     saveTemplates(next);
     setSaveOpen(false);
     setSaveName('');
-    toast({ title: 'Saqlandi', description: `"${tpl.name}" shabloni saqlandi` });
+    toast({ title: L.saved, description: L.savedDesc(tpl.name) });
   };
 
   return (
@@ -138,9 +188,9 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-lg font-semibold">Xususiyatlar</h3>
+          <h3 className="text-lg font-semibold">{L.title}</h3>
           <p className="text-sm text-muted-foreground">
-            Mahsulot uchun texnik ma'lumotlarni qo'shing
+            {L.subtitle}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -152,7 +202,7 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
             className="gap-2"
           >
             <FolderOpen className="w-4 h-4" />
-            Shablonlar ({templates.length})
+            {L.templates} ({templates.length})
           </Button>
           <Button
             type="button"
@@ -162,11 +212,11 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
             className="gap-2"
           >
             <Save className="w-4 h-4" />
-            Shablon sifatida saqlash
+            {L.saveAsTemplate}
           </Button>
           <Button type="button" size="sm" onClick={addRow} className="gap-2">
             <Plus className="w-4 h-4" />
-            Qo'shish
+            {L.add}
           </Button>
         </div>
       </div>
@@ -175,10 +225,10 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       {value.length === 0 ? (
         <div className="border-2 border-dashed rounded-xl p-10 text-center">
           <p className="text-sm text-muted-foreground mb-3">
-            Hali xususiyatlar qo'shilmagan. Boshlash uchun "Qo'shish" tugmasini bosing yoki shablondan foydalaning.
+            {L.empty}
           </p>
           <Button type="button" variant="outline" size="sm" onClick={addRow} className="gap-2">
-            <Plus className="w-4 h-4" /> Birinchi xususiyatni qo'shish
+            <Plus className="w-4 h-4" /> {L.addFirst}
           </Button>
         </div>
       ) : (
@@ -203,11 +253,11 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       <Dialog open={templatesOpen} onOpenChange={setTemplatesOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Shablonlar</DialogTitle>
+            <DialogTitle>{L.templatesDialog}</DialogTitle>
           </DialogHeader>
           {templates.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">
-              Hozircha shablonlar yo'q. Xususiyatlarni to'ldirib, "Shablon sifatida saqlash" tugmasini bosing.
+              {L.noTemplates}
             </p>
           ) : (
             <div className="space-y-2 max-h-[60vh] overflow-y-auto">
@@ -219,13 +269,13 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
                   <div className="min-w-0">
                     <p className="font-medium truncate">{t.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {t.items.length} ta xususiyat
+                      {L.itemsCount(t.items.length)}
                     </p>
                   </div>
                   <div className="flex gap-1 shrink-0">
                     <Button size="sm" onClick={() => applyTemplate(t)} className="gap-1">
                       <Check className="w-3.5 h-3.5" />
-                      Qo'llash
+                      {L.apply}
                     </Button>
                     <Button
                       size="sm"
@@ -246,25 +296,25 @@ export function AttributesEditor({ value, onChange, language = 'uz' }: Props) {
       <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Shablon sifatida saqlash</DialogTitle>
+            <DialogTitle>{L.saveTemplateTitle}</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <Label>Shablon nomi</Label>
+            <Label>{L.templateName}</Label>
             <Input
               value={saveName}
               onChange={(e) => setSaveName(e.target.value)}
-              placeholder="Masalan: Yumshoq divan"
+              placeholder={L.templateNamePh}
               autoFocus
             />
             <p className="text-xs text-muted-foreground">
-              Hozirgi {value.length} ta xususiyat shu nom bilan saqlanadi.
+              {L.templateSaveHint(value.length)}
             </p>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setSaveOpen(false)}>
-              Bekor qilish
+              {L.cancel}
             </Button>
-            <Button onClick={commitSaveTemplate}>Saqlash</Button>
+            <Button onClick={commitSaveTemplate}>{L.save}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -290,10 +340,13 @@ function AttributeRow({
   onDragStart,
   onDragOver,
   onDrop,
+  language,
 }: RowProps) {
   const [iconOpen, setIconOpen] = useState(false);
   const [iconQuery, setIconQuery] = useState('');
-  const [langTab, setLangTab] = useState<'uz' | 'ru'>('uz');
+  const [langTab, setLangTab] = useState<'uz' | 'ru'>(language);
+  const dragTitle = language === 'ru' ? 'Перетащите' : "Sudrab olib qo'ying";
+  const iconSearchPh = language === 'ru' ? 'Поиск иконки...' : 'Ikonka qidirish...';
 
   const Icon = getAttributeIcon(row.icon);
   const currentIconLabel = useMemo(
@@ -320,7 +373,7 @@ function AttributeRow({
       <button
         type="button"
         className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
-        title="Sudrab olib qo'ying"
+        title={dragTitle}
       >
         <GripVertical className="w-4 h-4" />
       </button>
@@ -347,7 +400,7 @@ function AttributeRow({
             <Input
               value={iconQuery}
               onChange={(e) => setIconQuery(e.target.value)}
-              placeholder="Ikonka qidirish..."
+              placeholder={iconSearchPh}
               className="pl-8 h-8 text-sm"
             />
           </div>

@@ -194,6 +194,161 @@ export default function ProductsNew() {
   const { language } = useLanguage();
   const t = useAdminT();
 
+  // Modal-specific bilingual labels
+  const L = language === 'ru' ? {
+    editTitle: 'Редактировать товар',
+    newTitle: 'Новый товар',
+    tabBasic: 'Основное',
+    tabDescription: 'Описание',
+    tabImages: 'Изображения',
+    tabAttributes: 'Характеристики',
+    nameUz: 'Название (UZ) *',
+    nameRu: 'Название (RU) *',
+    phUz: "На узбекском",
+    phRu: 'На русском',
+    slug: 'Slug (URL)',
+    slugAuto: 'создаётся автоматически',
+    slugTaken: 'Этот slug уже занят',
+    category: 'Категория',
+    pickCategory: 'Выберите категорию',
+    promoTiles: 'Промо-карточки',
+    promoHint: 'Выберите, под фильтром какой промо-карточки будет показан товар (можно несколько).',
+    noPromo: 'Промо-карточек нет.',
+    inactive: '(неактивна)',
+    price: 'Цена',
+    oldPrice: 'Старая цена',
+    negotiable: 'Договорная',
+    inStock: 'В наличии',
+    featured: 'Избранный',
+    active: 'Активный',
+    shortDescUz: 'Краткое описание (UZ)',
+    shortDescRu: 'Краткое описание (RU)',
+    shortDescPhUz: 'Кратко о товаре...',
+    shortDescPhRu: 'Краткое описание...',
+    fullDescUz: 'Полное описание (UZ)',
+    fullDescRu: 'Полное описание (RU)',
+    fullDescPhUz: 'Подробное описание...',
+    fullDescPhRu: 'Подробное описание...',
+    mediaFiles: 'Медиафайлы',
+    mediaHint: 'Добавьте изображения и видео',
+    addMedia: 'Добавить медиа',
+    uploadingImages: 'Загрузка изображений...',
+    total: 'Всего:',
+    mediaCount: (n: number) => `${n} медиа`,
+    imagesLabel: (n: number) => `${n} изображений`,
+    videosLabel: (n: number) => `${n} видео`,
+    firstIsMain: 'Первое медиа используется как главное изображение',
+    seoHint: '💡 На основе основного ключевого слова автоматически создаются SEO Title, H1 и Slug. Для каждого языка укажите отдельное ключевое слово и его варианты.',
+    mainKeyword: '🎯 Основное ключевое слово',
+    mainKeywordHint: 'Это слово используется для SEO Title, H1 и URL slug',
+    keywordLabelUz: 'Ключевое слово',
+    keywordLabelRu: 'Основное ключевое слово',
+    keywordPhUz: 'Например: шкаф на заказ',
+    keywordPhRu: 'Например: шкаф на заказ',
+    variantsTitle: '🔄 Варианты ключевого слова',
+    variantsHint: 'Варианты естественно используются в описании и alt-тегах изображений',
+    variantsUz: 'Варианты',
+    variantsRu: 'Варианты',
+    addBtn: 'Добавить',
+    noVariantsUz: 'Вариантов пока нет',
+    noVariantsRu: 'Вариантов пока нет',
+    metaTitle: '📝 Meta Title',
+    metaTitlePh: 'Название товара',
+    charsUz: (n: number) => `${n}/60 символов`,
+    charsRu: (n: number) => `${n}/60 символов`,
+    metaDesc: '📄 Meta Description',
+    metaDescPh: 'Краткое описание товара...',
+    charsDescUz: (n: number) => `${n}/160 символов`,
+    charsDescRu: (n: number) => `${n}/160 символов`,
+    googlePreview: '📋 Вид в поиске Google',
+    metaFallback: 'Мета описание...',
+    indexing: 'Индексация',
+    indexOn: 'В индексе Google',
+    indexOff: 'Noindex',
+    follow: 'Follow',
+    followOn: 'Ссылки отслеживаются',
+    followOff: 'Nofollow',
+    cancel: 'Отмена',
+    save: 'Сохранить',
+    create: 'Создать',
+  } : {
+    editTitle: 'Mahsulotni tahrirlash',
+    newTitle: 'Yangi mahsulot',
+    tabBasic: 'Asosiy',
+    tabDescription: 'Tavsif',
+    tabImages: 'Rasmlar',
+    tabAttributes: 'Xususiyatlar',
+    nameUz: 'Nomi (UZ) *',
+    nameRu: 'Nomi (RU) *',
+    phUz: "O'zbek tilida",
+    phRu: 'На русском',
+    slug: 'Slug (URL)',
+    slugAuto: 'avtomatik yaratiladi',
+    slugTaken: 'Bu slug allaqachon mavjud',
+    category: 'Toifa',
+    pickCategory: 'Toifani tanlang',
+    promoTiles: 'Promo kartochkalar',
+    promoHint: "Mahsulot qaysi promo kartochka filtri ostida ko'rinishini tanlang (bir nechta tanlash mumkin).",
+    noPromo: 'Promo kartochkalar mavjud emas.',
+    inactive: '(nofaol)',
+    price: 'Narxi',
+    oldPrice: 'Eski narxi',
+    negotiable: 'Kelishiladi',
+    inStock: 'Mavjud',
+    featured: 'Tanlangan',
+    active: 'Faol',
+    shortDescUz: 'Qisqa tavsif (UZ)',
+    shortDescRu: 'Qisqa tavsif (RU)',
+    shortDescPhUz: 'Mahsulot haqida qisqacha...',
+    shortDescPhRu: 'Краткое описание...',
+    fullDescUz: "To'liq tavsif (UZ)",
+    fullDescRu: "To'liq tavsif (RU)",
+    fullDescPhUz: 'Batafsil tavsif...',
+    fullDescPhRu: 'Подробное описание...',
+    mediaFiles: 'Media fayllari',
+    mediaHint: "Rasmlar va videolarni qo'shing",
+    addMedia: "Media qo'shish",
+    uploadingImages: 'Rasmlar yuklanmoqda...',
+    total: 'Jami:',
+    mediaCount: (n: number) => `${n} ta media`,
+    imagesLabel: (n: number) => `${n} rasm`,
+    videosLabel: (n: number) => `${n} video`,
+    firstIsMain: "Birinchi media asosiy rasm sifatida ko'rsatiladi",
+    seoHint: "💡 Asosiy kalit so'z asosida SEO Title, H1 va Slug avtomatik yaratiladi. Har bir til uchun alohida kalit so'z va variantlarini kiriting.",
+    mainKeyword: "🎯 Asosiy kalit so'z",
+    mainKeywordHint: "Bu so'z SEO Title, H1 sarlavha va URL slug uchun ishlatiladi",
+    keywordLabelUz: "Asosiy kalit so'z",
+    keywordLabelRu: 'Основное ключевое слово',
+    keywordPhUz: 'Masalan: shkaf buyurtma asosida',
+    keywordPhRu: 'Например: шкаф на заказ',
+    variantsTitle: "🔄 Kalit so'z variantlari",
+    variantsHint: 'Variantlar tavsif va rasm alt teglarida tabiiy ravishda ishlatiladi',
+    variantsUz: 'Variantlar',
+    variantsRu: 'Варианты',
+    addBtn: "Qo'shish",
+    noVariantsUz: "Hali variant qo'shilmagan",
+    noVariantsRu: 'Вариантов пока нет',
+    metaTitle: '📝 Meta Title',
+    metaTitlePh: 'Mahsulot nomi',
+    charsUz: (n: number) => `${n}/60 belgi`,
+    charsRu: (n: number) => `${n}/60 символов`,
+    metaDesc: '📄 Meta Description',
+    metaDescPh: 'Mahsulot haqida qisqa tavsif...',
+    charsDescUz: (n: number) => `${n}/160 belgi`,
+    charsDescRu: (n: number) => `${n}/160 символов`,
+    googlePreview: "📋 Google qidiruv ko'rinishi",
+    metaFallback: 'Meta tavsif...',
+    indexing: 'Indexlash',
+    indexOn: 'Google indeksida',
+    indexOff: 'Noindex',
+    follow: 'Follow',
+    followOn: 'Havolalar kuzatiladi',
+    followOff: 'Nofollow',
+    cancel: 'Bekor qilish',
+    save: 'Saqlash',
+    create: 'Yaratish',
+  };
+
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -873,15 +1028,15 @@ export default function ProductsNew() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{selectedProduct ? 'Mahsulotni tahrirlash' : 'Yangi mahsulot'}</DialogTitle>
+            <DialogTitle>{selectedProduct ? L.editTitle : L.newTitle}</DialogTitle>
           </DialogHeader>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="basic">Asosiy</TabsTrigger>
-              <TabsTrigger value="description">Tavsif</TabsTrigger>
-              <TabsTrigger value="images">Rasmlar</TabsTrigger>
-              <TabsTrigger value="attributes">Xususiyatlar</TabsTrigger>
+              <TabsTrigger value="basic">{L.tabBasic}</TabsTrigger>
+              <TabsTrigger value="description">{L.tabDescription}</TabsTrigger>
+              <TabsTrigger value="images">{L.tabImages}</TabsTrigger>
+              <TabsTrigger value="attributes">{L.tabAttributes}</TabsTrigger>
               <TabsTrigger value="seo" className="gap-1">
                 <Globe className="h-3 w-3" />
                 SEO
@@ -892,29 +1047,29 @@ export default function ProductsNew() {
             <TabsContent value="basic" className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Nomi (UZ) *</Label>
+                  <Label>{L.nameUz}</Label>
                   <Input
                     value={formData.name_uz}
                     onChange={(e) => handleNameChange(e.target.value, 'name_uz')}
-                    placeholder="O'zbek tilida"
+                    placeholder={L.phUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Nomi (RU) *</Label>
+                  <Label>{L.nameRu}</Label>
                   <Input
                     value={formData.name_ru}
                     onChange={(e) => handleNameChange(e.target.value, 'name_ru')}
-                    placeholder="На русском"
+                    placeholder={L.phRu}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Slug (URL)</Label>
+                <Label>{L.slug}</Label>
                 <Input
                   value={formData.slug}
                   onChange={(e) => handleSlugChange(e.target.value)}
-                  placeholder="avtomatik yaratiladi"
+                  placeholder={L.slugAuto}
                   className={slugError ? 'border-destructive' : ''}
                 />
                 {slugError ? (
@@ -927,13 +1082,13 @@ export default function ProductsNew() {
               </div>
 
               <div className="space-y-2">
-                <Label>Toifa</Label>
+                <Label>{L.category}</Label>
                 <Select 
                   value={formData.category_id} 
                   onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Toifani tanlang" />
+                    <SelectValue placeholder={L.pickCategory} />
                   </SelectTrigger>
                   <SelectContent>
                     {orderedCategories.map((cat) => (
@@ -946,12 +1101,12 @@ export default function ProductsNew() {
               </div>
 
               <div className="space-y-2">
-                <Label>Promo kartochkalar</Label>
+                <Label>{L.promoTiles}</Label>
                 <p className="text-xs text-muted-foreground">
-                  Mahsulot qaysi promo kartochka filtri ostida ko'rinishini tanlang (bir nechta tanlash mumkin).
+                  {L.promoHint}
                 </p>
                 {promoTilesList.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">Promo kartochkalar mavjud emas.</p>
+                  <p className="text-sm text-muted-foreground italic">{L.noPromo}</p>
                 ) : (
                   <div className="grid grid-cols-2 gap-2 rounded-md border p-3">
                     {promoTilesList.map((tile) => {
@@ -975,7 +1130,7 @@ export default function ProductsNew() {
                           <span className="text-sm truncate">
                             {language === 'uz' ? tile.title_uz : tile.title_ru}
                             {!tile.is_active && (
-                              <span className="ml-1 text-xs text-muted-foreground">(nofaol)</span>
+                              <span className="ml-1 text-xs text-muted-foreground">{L.inactive}</span>
                             )}
                           </span>
                         </label>
@@ -987,7 +1142,7 @@ export default function ProductsNew() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Narxi</Label>
+                  <Label>{L.price}</Label>
                   <Input
                     type="number"
                     value={formData.price}
@@ -996,7 +1151,7 @@ export default function ProductsNew() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Eski narxi</Label>
+                  <Label>{L.oldPrice}</Label>
                   <Input
                     type="number"
                     value={formData.original_price}
@@ -1014,28 +1169,28 @@ export default function ProductsNew() {
                     checked={formData.is_negotiable}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_negotiable: checked })}
                   />
-                  <Label>Kelishiladi</Label>
+                  <Label>{L.negotiable}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.in_stock}
                     onCheckedChange={(checked) => setFormData({ ...formData, in_stock: checked })}
                   />
-                  <Label>Mavjud</Label>
+                  <Label>{L.inStock}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.is_featured}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
                   />
-                  <Label>Tanlangan</Label>
+                  <Label>{L.featured}</Label>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={formData.is_active}
                     onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                   />
-                  <Label>Faol</Label>
+                  <Label>{L.active}</Label>
                 </div>
               </div>
             </TabsContent>
@@ -1044,42 +1199,42 @@ export default function ProductsNew() {
             <TabsContent value="description" className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (UZ)</Label>
+                  <Label>{L.shortDescUz}</Label>
                   <Textarea
                     value={formData.description_uz}
                     onChange={(e) => setFormData({ ...formData, description_uz: e.target.value })}
                     rows={3}
-                    placeholder="Mahsulot haqida qisqacha..."
+                    placeholder={L.shortDescPhUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Qisqa tavsif (RU)</Label>
+                  <Label>{L.shortDescRu}</Label>
                   <Textarea
                     value={formData.description_ru}
                     onChange={(e) => setFormData({ ...formData, description_ru: e.target.value })}
                     rows={3}
-                    placeholder="Краткое описание..."
+                    placeholder={L.shortDescPhRu}
                   />
                 </div>
               </div>
               <Separator />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>To'liq tavsif (UZ)</Label>
+                  <Label>{L.fullDescUz}</Label>
                   <Textarea
                     value={formData.full_description_uz}
                     onChange={(e) => setFormData({ ...formData, full_description_uz: e.target.value })}
                     rows={6}
-                    placeholder="Batafsil tavsif..."
+                    placeholder={L.fullDescPhUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>To'liq tavsif (RU)</Label>
+                  <Label>{L.fullDescRu}</Label>
                   <Textarea
                     value={formData.full_description_ru}
                     onChange={(e) => setFormData({ ...formData, full_description_ru: e.target.value })}
                     rows={6}
-                    placeholder="Подробное описание..."
+                    placeholder={L.fullDescPhRu}
                   />
                 </div>
               </div>
@@ -1102,15 +1257,15 @@ export default function ProductsNew() {
                 <div>
                   <h3 className="font-medium flex items-center gap-2">
                     <ImageIcon className="w-4 h-4" />
-                    Media fayllari
+                    {L.mediaFiles}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Rasmlar va videolarni qo'shing
+                    {L.mediaHint}
                   </p>
                 </div>
                 <Button onClick={() => setMediaModalOpen(true)} className="gap-2">
                   <Plus className="w-4 h-4" />
-                  Media qo'shish
+                  {L.addMedia}
                 </Button>
               </div>
 
@@ -1119,7 +1274,7 @@ export default function ProductsNew() {
                 <div className="p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     <RefreshCw className="w-4 h-4 animate-spin text-primary" />
-                    <span>Rasmlar yuklanmoqda...</span>
+                    <span>{L.uploadingImages}</span>
                   </div>
                 </div>
               )}
@@ -1135,10 +1290,10 @@ export default function ProductsNew() {
               {mediaItems.length > 0 && (
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>
-                    Jami: {mediaItems.length} ta media 
-                    ({mediaItems.filter(m => m.type === 'image').length} rasm, {mediaItems.filter(m => m.type === 'video').length} video)
+                    {L.total} {L.mediaCount(mediaItems.length)}
+                    {' '}({L.imagesLabel(mediaItems.filter(m => m.type === 'image').length)}, {L.videosLabel(mediaItems.filter(m => m.type === 'video').length)})
                   </span>
-                  <span>Birinchi media asosiy rasm sifatida ko'rsatiladi</span>
+                  <span>{L.firstIsMain}</span>
                 </div>
               )}
             </TabsContent>
@@ -1156,22 +1311,21 @@ export default function ProductsNew() {
             <TabsContent value="seo" className="space-y-6 mt-4">
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  💡 Asosiy kalit so'z asosida SEO Title, H1 va Slug avtomatik yaratiladi. 
-                  Har bir til uchun alohida kalit so'z va variantlarini kiriting.
+                  {L.seoHint}
                 </p>
               </div>
 
               {/* Target Keywords - Bilingual */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">🎯 Asosiy kalit so'z</h3>
+                <h3 className="font-medium text-base">{L.mainKeyword}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Bu so'z SEO Title, H1 sarlavha va URL slug uchun ishlatiladi
+                  {L.mainKeywordHint}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">UZ</Badge>
-                      Asosiy kalit so'z
+                      {L.keywordLabelUz}
                     </Label>
                     <Input
                       value={formData.keyword_uz}
@@ -1192,13 +1346,13 @@ export default function ProductsNew() {
                         }
                         setFormData(newFormData);
                       }}
-                      placeholder="Masalan: shkaf buyurtma asosida"
+                      placeholder={L.keywordPhUz}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">RU</Badge>
-                      Основное ключевое слово
+                      {L.keywordLabelRu}
                     </Label>
                     <Input
                       value={formData.keyword_ru}
@@ -1216,7 +1370,7 @@ export default function ProductsNew() {
                         }
                         setFormData(newFormData);
                       }}
-                      placeholder="Например: шкаф на заказ"
+                      placeholder={L.keywordPhRu}
                     />
                   </div>
                 </div>
@@ -1226,9 +1380,9 @@ export default function ProductsNew() {
 
               {/* Keyword Variants - Bilingual */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">🔄 Kalit so'z variantlari</h3>
+                <h3 className="font-medium text-base">{L.variantsTitle}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Variantlar tavsif va rasm alt teglarida tabiiy ravishda ishlatiladi
+                  {L.variantsHint}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* UZ Variants */}
@@ -1236,7 +1390,7 @@ export default function ProductsNew() {
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">UZ</Badge>
-                        Variantlar
+                        {L.variantsUz}
                       </Label>
                       <Button
                         type="button"
@@ -1246,7 +1400,7 @@ export default function ProductsNew() {
                         className="gap-1 h-7 text-xs"
                       >
                         <Plus className="h-3 w-3" />
-                        Qo'shish
+                        {L.addBtn}
                       </Button>
                     </div>
                     {(formData.variants_uz || []).map((v, i) => (
@@ -1270,7 +1424,7 @@ export default function ProductsNew() {
                       </div>
                     ))}
                     {(formData.variants_uz || []).length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Hali variant qo'shilmagan</p>
+                      <p className="text-xs text-muted-foreground italic">{L.noVariantsUz}</p>
                     )}
                   </div>
 
@@ -1279,7 +1433,7 @@ export default function ProductsNew() {
                     <div className="flex items-center justify-between">
                       <Label className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">RU</Badge>
-                        Варианты
+                        {L.variantsRu}
                       </Label>
                       <Button
                         type="button"
@@ -1289,7 +1443,7 @@ export default function ProductsNew() {
                         className="gap-1 h-7 text-xs"
                       >
                         <Plus className="h-3 w-3" />
-                        Добавить
+                        {L.addBtn}
                       </Button>
                     </div>
                     {(formData.variants_ru || []).map((v, i) => (
@@ -1313,7 +1467,7 @@ export default function ProductsNew() {
                       </div>
                     ))}
                     {(formData.variants_ru || []).length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Вариантов пока нет</p>
+                      <p className="text-xs text-muted-foreground italic">{L.noVariantsRu}</p>
                     )}
                   </div>
                 </div>
@@ -1323,7 +1477,7 @@ export default function ProductsNew() {
 
               {/* Meta Title */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">📝 Meta Title</h3>
+                <h3 className="font-medium text-base">{L.metaTitle}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
@@ -1333,11 +1487,11 @@ export default function ProductsNew() {
                     <Input
                       value={formData.meta_title_uz}
                       onChange={(e) => setFormData({ ...formData, meta_title_uz: e.target.value.slice(0, 60) })}
-                      placeholder={formData.keyword_uz || formData.name_uz || 'Mahsulot nomi'}
+                      placeholder={formData.keyword_uz || formData.name_uz || L.metaTitlePh}
                       maxLength={60}
                     />
                     <p className={`text-xs ${formData.meta_title_uz.length > 55 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_title_uz.length}/60 belgi
+                      {L.charsUz(formData.meta_title_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -1352,7 +1506,7 @@ export default function ProductsNew() {
                       maxLength={60}
                     />
                     <p className={`text-xs ${formData.meta_title_ru.length > 55 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_title_ru.length}/60 символов
+                      {L.charsRu(formData.meta_title_ru.length)}
                     </p>
                   </div>
                 </div>
@@ -1362,7 +1516,7 @@ export default function ProductsNew() {
 
               {/* Meta Description */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">📄 Meta Description</h3>
+                <h3 className="font-medium text-base">{L.metaDesc}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
@@ -1372,12 +1526,12 @@ export default function ProductsNew() {
                     <Textarea
                       value={formData.meta_description_uz}
                       onChange={(e) => setFormData({ ...formData, meta_description_uz: e.target.value.slice(0, 160) })}
-                      placeholder="Mahsulot haqida qisqa tavsif..."
+                      placeholder={L.metaDescPh}
                       maxLength={160}
                       rows={3}
                     />
                     <p className={`text-xs ${formData.meta_description_uz.length > 150 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_description_uz.length}/160 belgi
+                      {L.charsDescUz(formData.meta_description_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
@@ -1393,7 +1547,7 @@ export default function ProductsNew() {
                       rows={3}
                     />
                     <p className={`text-xs ${formData.meta_description_ru.length > 150 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_description_ru.length}/160 символов
+                      {L.charsDescRu(formData.meta_description_ru.length)}
                     </p>
                   </div>
                 </div>
@@ -1404,7 +1558,7 @@ export default function ProductsNew() {
               {/* SEO Preview - Both languages */}
               {(formData.keyword_uz || formData.meta_title_uz || formData.keyword_ru || formData.meta_title_ru) && (
                 <div className="space-y-4">
-                  <h3 className="font-medium text-base">📋 Google qidiruv ko'rinishi</h3>
+                  <h3 className="font-medium text-base">{L.googlePreview}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* UZ Preview */}
                     <div className="space-y-1">
@@ -1417,7 +1571,7 @@ export default function ProductsNew() {
                           mirmexa.com.uz/product/{formData.slug || 'slug'}
                         </p>
                         <p className="text-sm text-muted-foreground line-clamp-2">
-                          {formData.meta_description_uz || formData.description_uz || 'Meta tavsif...'}
+                          {formData.meta_description_uz || formData.description_uz || L.metaFallback}
                         </p>
                       </div>
                     </div>
@@ -1450,9 +1604,9 @@ export default function ProductsNew() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_indexed: checked })}
                   />
                   <div>
-                    <Label>Indexlash</Label>
+                    <Label>{L.indexing}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_indexed ? 'Google indeksida' : 'Noindex'}
+                      {formData.is_indexed ? L.indexOn : L.indexOff}
                     </p>
                   </div>
                 </div>
@@ -1462,9 +1616,9 @@ export default function ProductsNew() {
                     onCheckedChange={(checked) => setFormData({ ...formData, is_followed: checked })}
                   />
                   <div>
-                    <Label>Follow</Label>
+                    <Label>{L.follow}</Label>
                     <p className="text-xs text-muted-foreground">
-                      {formData.is_followed ? 'Havolalar kuzatiladi' : 'Nofollow'}
+                      {formData.is_followed ? L.followOn : L.followOff}
                     </p>
                   </div>
                 </div>
@@ -1473,9 +1627,9 @@ export default function ProductsNew() {
           </Tabs>
 
           <DialogFooter className="mt-6">
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>Bekor qilish</Button>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>{L.cancel}</Button>
             <Button onClick={handleSubmit} disabled={!!slugError}>
-              {selectedProduct ? 'Saqlash' : 'Yaratish'}
+              {selectedProduct ? L.save : L.create}
             </Button>
           </DialogFooter>
         </DialogContent>
