@@ -1082,13 +1082,13 @@ export default function ProductsNew() {
               </div>
 
               <div className="space-y-2">
-                <Label>Toifa</Label>
+                <Label>{L.category}</Label>
                 <Select 
                   value={formData.category_id} 
                   onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Toifani tanlang" />
+                    <SelectValue placeholder={L.pickCategory} />
                   </SelectTrigger>
                   <SelectContent>
                     {orderedCategories.map((cat) => (
