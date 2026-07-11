@@ -1274,7 +1274,7 @@ export default function ProductsNew() {
                 <div className="p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-2 text-sm">
                     <RefreshCw className="w-4 h-4 animate-spin text-primary" />
-                    <span>Rasmlar yuklanmoqda...</span>
+                    <span>{L.uploadingImages}</span>
                   </div>
                 </div>
               )}
