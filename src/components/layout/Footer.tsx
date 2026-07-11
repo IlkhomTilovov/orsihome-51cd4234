@@ -47,6 +47,10 @@ export function Footer() {
                   <img
                     src={logoAsset.url}
                     alt="ORSI HOME"
+                    width={140}
+                    height={48}
+                    loading="lazy"
+                    decoding="async"
                     className="h-10 md:h-12 w-auto object-contain"
                   />
                 </Link>

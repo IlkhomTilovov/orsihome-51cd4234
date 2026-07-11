@@ -49,6 +49,10 @@ export function MobileBottomNav() {
                   <img
                     src={image}
                     alt=""
+                    width={20}
+                    height={20}
+                    loading="lazy"
+                    decoding="async"
                     className={cn(
                       'h-5 w-5 object-contain transition-all',
                       active && 'invert'

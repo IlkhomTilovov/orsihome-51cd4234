@@ -110,6 +110,10 @@ export function Header() {
             <img
               src={logoAsset.url}
               alt="ORSI HOME"
+              width={140}
+              height={40}
+              fetchPriority="high"
+              decoding="async"
               className="h-8 md:h-10 w-auto object-contain"
             />
           </Link>
@@ -456,7 +460,10 @@ export function Header() {
                   <img
                     src={p.images[0]}
                     alt={p.name_uz}
+                    width={80}
+                    height={80}
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 )}
@@ -591,6 +598,10 @@ export function Header() {
                                     <img
                                       src={parent.image}
                                       alt=""
+                                      width={44}
+                                      height={44}
+                                      loading="lazy"
+                                      decoding="async"
                                       className="w-11 h-11 rounded-xl object-cover shrink-0 ring-1 ring-border"
                                     />
                                   ) : (
