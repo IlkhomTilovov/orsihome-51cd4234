@@ -92,7 +92,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
 
   const handleAddImageUrl = () => {
     if (!imageUrl.trim()) {
-      setError('URL kiriting');
+      setError(L.errUrl);
       return;
     }
     
@@ -100,7 +100,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
     try {
       new URL(imageUrl);
     } catch {
-      setError('Noto\'g\'ri URL format');
+      setError(L.errFormat);
       return;
     }
 
@@ -116,7 +116,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
 
   const handleAddVideoUrl = () => {
     if (!videoUrl.trim()) {
-      setError('Video URL kiriting');
+      setError(L.errVideoUrl);
       return;
     }
 
@@ -150,7 +150,7 @@ export function AddMediaModal({ isOpen, onClose, onAddMedia, onUploadImages, upl
       return;
     }
 
-    setError('Faqat YouTube yoki Instagram URL qabul qilinadi');
+    setError(L.errVideoPlatform);
   };
 
   const handleClose = () => {
