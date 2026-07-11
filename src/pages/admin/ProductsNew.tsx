@@ -1370,7 +1370,7 @@ export default function ProductsNew() {
                         }
                         setFormData(newFormData);
                       }}
-                      placeholder="Например: шкаф на заказ"
+                      placeholder={L.keywordPhRu}
                     />
                   </div>
                 </div>
