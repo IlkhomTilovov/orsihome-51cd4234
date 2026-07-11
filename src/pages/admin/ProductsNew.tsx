@@ -1477,7 +1477,7 @@ export default function ProductsNew() {
 
               {/* Meta Title */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">📝 Meta Title</h3>
+                <h3 className="font-medium text-base">{L.metaTitle}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
@@ -1487,11 +1487,11 @@ export default function ProductsNew() {
                     <Input
                       value={formData.meta_title_uz}
                       onChange={(e) => setFormData({ ...formData, meta_title_uz: e.target.value.slice(0, 60) })}
-                      placeholder={formData.keyword_uz || formData.name_uz || 'Mahsulot nomi'}
+                      placeholder={formData.keyword_uz || formData.name_uz || L.metaTitlePh}
                       maxLength={60}
                     />
                     <p className={`text-xs ${formData.meta_title_uz.length > 55 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_title_uz.length}/60 belgi
+                      {L.charsUz(formData.meta_title_uz.length)}
                     </p>
                   </div>
                   <div className="space-y-2">
