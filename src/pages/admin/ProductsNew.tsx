@@ -1424,7 +1424,7 @@ export default function ProductsNew() {
                       </div>
                     ))}
                     {(formData.variants_uz || []).length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Hali variant qo'shilmagan</p>
+                      <p className="text-xs text-muted-foreground italic">{L.noVariantsUz}</p>
                     )}
                   </div>
 
