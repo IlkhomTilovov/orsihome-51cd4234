@@ -278,7 +278,7 @@ export default function ProductsNew() {
 
       if (error) throw error;
 
-      setProducts(data || []);
+      setProducts((data as any) || []);
       setTotalCount(count || 0);
     } catch (error) {
       console.error('Error:', error);
