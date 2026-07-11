@@ -134,29 +134,11 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   const [pausedUntil, setPausedUntil] = useState(0);
   const pauseAutoplay = (ms = 6000) => setPausedUntil(Date.now() + ms);
 
-  useEffect(() => {
-    sets.forEach((item) => {
-      const src = item.image || fallbackImage;
-      if (!src) return;
-      const image = new Image();
-      image.src = src;
-    });
-  }, [sets, fallbackImage]);
+  // NOTE: previously we eagerly preloaded every set image AND every product
+  // image using `new Image()`. That fired dozens of requests during initial
+  // page load and starved the LCP hero image of bandwidth. Removed — images
+  // now load naturally via <img loading="lazy"> when the carousel slides.
 
-  useEffect(() => {
-    const productImages = new Set<string>();
-    Object.values(productsBySet).forEach((products) => {
-      products.forEach((product) => {
-        const src = product.images?.[0];
-        if (src) productImages.add(src);
-      });
-    });
-
-    productImages.forEach((src) => {
-      const image = new Image();
-      image.src = src;
-    });
-  }, [productsBySet]);
 
   const productsOf = (s: (typeof sets)[number]) => productsBySet[s.id] || [];
 
@@ -523,6 +505,9 @@ export default function Index() {
               className="absolute inset-0 w-full h-full object-cover object-center"
               wrapperClassName="absolute inset-0 w-full h-full"
               section="hero"
+              priority
+              width={1600}
+              height={900}
             />
 
 
