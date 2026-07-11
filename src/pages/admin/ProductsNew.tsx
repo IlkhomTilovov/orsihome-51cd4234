@@ -1101,12 +1101,12 @@ export default function ProductsNew() {
               </div>
 
               <div className="space-y-2">
-                <Label>Promo kartochkalar</Label>
+                <Label>{L.promoTiles}</Label>
                 <p className="text-xs text-muted-foreground">
-                  Mahsulot qaysi promo kartochka filtri ostida ko'rinishini tanlang (bir nechta tanlash mumkin).
+                  {L.promoHint}
                 </p>
                 {promoTilesList.length === 0 ? (
-                  <p className="text-sm text-muted-foreground italic">Promo kartochkalar mavjud emas.</p>
+                  <p className="text-sm text-muted-foreground italic">{L.noPromo}</p>
                 ) : (
                   <div className="grid grid-cols-2 gap-2 rounded-md border p-3">
                     {promoTilesList.map((tile) => {
