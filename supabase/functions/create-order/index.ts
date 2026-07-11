@@ -207,6 +207,9 @@ Deno.serve(async (req) => {
 
     console.log('Order completed successfully:', orderData.order_number);
 
+    // Telegram notification temporarily disabled by admin request.
+    // To re-enable, uncomment the block below.
+    /*
     // Send Telegram notification (async, don't wait for it)
     try {
       const telegramPayload = {
@@ -242,6 +245,7 @@ Deno.serve(async (req) => {
       // Don't fail the order if Telegram fails
       console.error('Telegram notification error (non-blocking):', telegramError);
     }
+    */
 
     return new Response(
       JSON.stringify({
