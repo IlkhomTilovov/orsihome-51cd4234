@@ -172,6 +172,8 @@
             }
             if (theme.isDark) root.classList.add('dark');
             root.setAttribute('data-theme-loaded', 'true');
+          } else {
+            document.documentElement.setAttribute('data-theme-loaded', 'true');
           }
         } catch (e) {}
       })();
