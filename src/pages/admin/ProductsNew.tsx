@@ -1220,21 +1220,21 @@ export default function ProductsNew() {
               <Separator />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>To'liq tavsif (UZ)</Label>
+                  <Label>{L.fullDescUz}</Label>
                   <Textarea
                     value={formData.full_description_uz}
                     onChange={(e) => setFormData({ ...formData, full_description_uz: e.target.value })}
                     rows={6}
-                    placeholder="Batafsil tavsif..."
+                    placeholder={L.fullDescPhUz}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>To'liq tavsif (RU)</Label>
+                  <Label>{L.fullDescRu}</Label>
                   <Textarea
                     value={formData.full_description_ru}
                     onChange={(e) => setFormData({ ...formData, full_description_ru: e.target.value })}
                     rows={6}
-                    placeholder="Подробное описание..."
+                    placeholder={L.fullDescPhRu}
                   />
                 </div>
               </div>
