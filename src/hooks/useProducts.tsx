@@ -223,11 +223,16 @@ export function useProducts(
   return { ...data, loading: loading || loadedRequestKey !== requestKey, error, refetch: fetchProducts };
 }
 
-export function useFeaturedProducts(limit: number = 8) {
+export function useFeaturedProducts(limit: number = 8, enabled = true) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+
     const fetchFeatured = async () => {
       try {
         // First try featured products
@@ -263,16 +268,21 @@ export function useFeaturedProducts(limit: number = 8) {
     };
 
     fetchFeatured();
-  }, [limit]);
+  }, [limit, enabled]);
 
   return { products, loading };
 }
 
-export function useCategories() {
+export function useCategories(enabled = true) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+
     const fetchCategories = async () => {
       try {
         const { data, error } = await supabase
@@ -291,16 +301,21 @@ export function useCategories() {
     };
 
     fetchCategories();
-  }, []);
+  }, [enabled]);
 
   return { categories, loading };
 }
 
-export function useSections() {
+export function useSections(enabled = true) {
   const [sections, setSections] = useState<Array<{ id: string; name_uz: string; name_ru: string; slug: string; sort_order: number; is_active: boolean }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+
     const fetchSections = async () => {
       try {
         const { data, error } = await supabase
@@ -319,7 +334,7 @@ export function useSections() {
     };
 
     fetchSections();
-  }, []);
+  }, [enabled]);
 
   return { sections, loading };
 }

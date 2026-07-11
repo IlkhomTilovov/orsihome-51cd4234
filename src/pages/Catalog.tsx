@@ -318,7 +318,7 @@ export default function Catalog() {
       <div className="container mx-auto px-4">
         {setTitle && setImage ? (
           <div className="mb-8 relative rounded-[2rem] overflow-hidden aspect-[21/8] md:aspect-[21/7]">
-            <img src={setImage} alt={language === 'uz' ? setTitle.uz : setTitle.ru} width={1600} height={533} fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+            <img src={setImage} alt={language === 'uz' ? setTitle.uz : setTitle.ru} width={1600} height={533} fetchpriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
             <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12">
               <p className="text-white/80 text-sm md:text-base mb-2">

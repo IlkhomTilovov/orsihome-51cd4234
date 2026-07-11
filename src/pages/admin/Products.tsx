@@ -61,6 +61,10 @@ export default function Products() {
                       <img 
                         src={product.images[0]} 
                         alt={product.name_uz}
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
                         className="w-12 h-12 object-cover rounded-lg"
                       />
                     </TableCell>

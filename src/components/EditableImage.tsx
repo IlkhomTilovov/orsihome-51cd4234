@@ -20,6 +20,7 @@ interface EditableImageProps {
   mobileSrc?: string;
   /** Media query used with mobileSrc. Defaults to `(max-width: 640px)`. */
   mobileMedia?: string;
+  sizes?: string;
 }
 
 export function EditableImage({
@@ -35,6 +36,7 @@ export function EditableImage({
   height,
   mobileSrc,
   mobileMedia = '(max-width: 640px)',
+  sizes = '100vw',
 }: EditableImageProps) {
   const { isEditMode, canEdit, selectElement, selectedElement } = useEditMode();
   const { getContent, loading: contentLoading } = useSiteContent();
@@ -51,7 +53,8 @@ export function EditableImage({
   // If the CMS value matches the desktop fallback, we can safely also serve the
   // mobile variant. If the user replaced the hero via CMS, mobileSrc no longer
   // applies (would show stale mobile image), so skip <picture>.
-  const canUseMobileVariant = !!mobileSrc && currentSrc === fallbackSrc;
+  const cleanUrl = (url: string) => String(url).split('#')[0].split('?')[0];
+  const canUseMobileVariant = !!mobileSrc && cleanUrl(currentSrc) === cleanUrl(fallbackSrc);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -94,14 +97,15 @@ export function EditableImage({
         height={height}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
-        fetchPriority={priority ? 'high' : 'auto'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        sizes={sizes}
       />
     );
     return (
       <div className={cn(wrapperClassName, getAspectRatioClass())}>
         {canUseMobileVariant ? (
           <picture>
-            <source media={mobileMedia} srcSet={mobileSrc} type="image/webp" />
+            <source media={mobileMedia} srcSet={`${mobileSrc} 768w`} sizes={sizes} type="image/webp" />
             {imgEl}
           </picture>
         ) : (
@@ -130,6 +134,12 @@ export function EditableImage({
       <img 
         src={currentSrc} 
         alt={alt} 
+        width={width}
+        height={height}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        sizes={sizes}
         className={cn(
           className,
           'transition-all duration-200',

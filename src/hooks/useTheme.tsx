@@ -5,6 +5,60 @@ import { Theme } from '@/lib/themes';
 const THEME_CACHE_KEY = 'furniture-active-theme';
 const THEME_READY_KEY = 'furniture-theme-ready';
 
+// Current live theme inlined as a first-paint fallback so mobile users do not
+// wait for a backend round-trip before the LCP hero can render.
+const DEFAULT_ACTIVE_THEME: Theme = {
+  name: 'Mirmexa Default',
+  slug: 'mirmexa-default',
+  colorPalette: {
+    background: '0 0% 98%',
+    foreground: '210 20% 15%',
+    card: '0 0% 98%',
+    cardForeground: '210 20% 15%',
+    popover: '0 0% 98%',
+    popoverForeground: '210 20% 15%',
+    primary: '210 20% 20%',
+    primaryForeground: '0 0% 98%',
+    secondary: '210 16% 93%',
+    secondaryForeground: '210 20% 15%',
+    muted: '210 16% 93%',
+    mutedForeground: '210 20% 15%',
+    accent: '215 25% 35%',
+    accentForeground: '0 0% 98%',
+    destructive: '0 84% 60%',
+    destructiveForeground: '0 0% 100%',
+    border: '210 16% 93%',
+    input: '210 16% 93%',
+    ring: '210 20% 20%',
+    warmCream: '0 0% 98%',
+    warmBeige: '210 16% 93%',
+    warmBrown: '210 20% 20%',
+    darkWood: '210 20% 15%',
+    goldAccent: '45 93% 47%',
+    sageGreen: '142 76% 36%',
+  },
+  typography: {
+    fontSans: 'Manrope, system-ui, sans-serif',
+    fontSerif: 'Manrope, system-ui, sans-serif',
+    fontHeading: 'Manrope, system-ui, sans-serif',
+  },
+  componentStyles: {
+    borderRadius: '0.5rem',
+    buttonRadius: '0.5rem',
+    cardRadius: '0.5rem',
+    shadowSm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+    shadowMd: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+    shadowLg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+  },
+  layoutSettings: {
+    containerMaxWidth: '1280px',
+    sectionSpacing: '4rem',
+    cardPadding: '1.5rem',
+  },
+  isActive: true,
+  isDark: false,
+};
+
 interface ThemeContextType {
   currentTheme: Theme | null;
   themes: Theme[];
@@ -86,15 +140,16 @@ export const initializeTheme = (): Theme | null => {
     applyThemeToDocument(cached);
     return cached;
   }
-  return null;
+  applyThemeToDocument(DEFAULT_ACTIVE_THEME);
+  return DEFAULT_ACTIVE_THEME;
 };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [themes, setThemes] = useState<Theme[]>([]);
-  const [currentTheme, setCurrentTheme] = useState<Theme | null>(() => getCachedTheme());
+  const [currentTheme, setCurrentTheme] = useState<Theme | null>(() => getCachedTheme() ?? DEFAULT_ACTIVE_THEME);
   const [savedTheme, setSavedTheme] = useState<Theme | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isThemeReady, setIsThemeReady] = useState(() => hasThemeBeenLoaded() && getCachedTheme() !== null);
+  const [isThemeReady, setIsThemeReady] = useState(true);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const applyTheme = useCallback((theme: Theme) => {

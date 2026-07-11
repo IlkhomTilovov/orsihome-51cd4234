@@ -1,15 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Heart, Headphones, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Sparkles, Flame, Star, Zap } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Crown, Percent, Sparkles, Star, Tag, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
 import { useActiveSets } from '@/hooks/useSets';
 import { usePromoTiles } from '@/hooks/usePromoTiles';
-import { PROMO_ICONS } from '@/lib/promoIcons';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
-import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
 import { useState, useRef, useEffect } from 'react';
@@ -31,59 +28,7 @@ const defaultServiceImages: Record<string, string> = {
 
 const fallbackImages = [serviceBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
 
-// Promo tiles (Woodline-style colorful cards)
-const promoTiles = [
-  {
-    key: 'tile_hit',
-    titleUz: 'Hit sotuv', titleRu: 'Хит продаж',
-    icon: Zap,
-    bg: 'bg-gradient-to-br from-[hsl(150_30%_92%)] to-[hsl(150_25%_85%)]',
-    iconColor: 'text-primary',
-    href: '/catalog?sort=popular',
-  },
-  {
-    key: 'tile_popular',
-    titleUz: 'Mashhur mahsulot', titleRu: 'Популярный товар',
-    icon: Star,
-    bg: 'bg-gradient-to-br from-[hsl(35_45%_92%)] to-[hsl(35_38%_82%)]',
-    iconColor: 'text-[hsl(33_50%_45%)]',
-    href: '/catalog?featured=1',
-  },
-  {
-    key: 'tile_discount',
-    titleUz: 'Extra Chegirma', titleRu: 'Extra Скидка',
-    icon: Flame,
-    bg: 'bg-gradient-to-br from-[hsl(15_60%_90%)] to-[hsl(10_55%_82%)]',
-    iconColor: 'text-[hsl(10_60%_45%)]',
-    href: '/catalog?discounted=1',
-  },
-  {
-    key: 'tile_office',
-    titleUz: 'Ofis mebellari', titleRu: 'Мебель для офиса',
-    icon: Briefcase,
-    bg: 'bg-gradient-to-br from-primary to-[hsl(150_35%_25%)]',
-    iconColor: 'text-secondary',
-    textLight: true,
-    href: '/catalog?category=office',
-  },
-  {
-    key: 'tile_living',
-    titleUz: 'Mehmonxona uchun', titleRu: 'Мебель для гостиной',
-    icon: Sofa,
-    bg: 'bg-gradient-to-br from-[hsl(150_40%_22%)] to-[hsl(150_45%_15%)]',
-    iconColor: 'text-secondary',
-    textLight: true,
-    href: '/catalog?category=living',
-  },
-  {
-    key: 'tile_universal',
-    titleUz: 'Universal yechim', titleRu: 'Универсальное решение',
-    icon: Sparkles,
-    bg: 'bg-gradient-to-br from-[hsl(35_38%_85%)] to-[hsl(33_36%_70%)]',
-    iconColor: 'text-primary',
-    href: '/catalog',
-  },
-];
+const HOME_PROMO_ICONS: Record<string, LucideIcon> = { Crown, Percent, Sparkles, Star, Tag };
 
 // Fallback categories when DB is empty
 const fallbackCategories = [
@@ -211,7 +156,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
         <>
           {items.map((p, i) => (
             <div key={(p?.id || 'e') + '-' + i} className="h-full">
-              <ProductCard product={p} eager />
+              <ProductCard product={p} />
             </div>
           ))}
           {items.length === 1 && <EmptyCard />}
@@ -382,12 +327,15 @@ export default function Index() {
   const homeSeo = getPageSeo('home', language);
   useSEO({ title: homeSeo.title, description: homeSeo.description, ogTitle: homeSeo.title, ogDescription: homeSeo.description });
 
-  const { products: featuredProducts, loading: productsLoading } = useFeaturedProducts(4);
-  const { settings } = useSystemSettings();
-  const { categories } = useCategories();
+  const sec1 = useInView();
+  const sec2 = useInView();
+  const sec3 = useInView();
+
+  const shouldLoadBelowFoldData = sec2.isVisible;
+  const { products: featuredProducts } = useFeaturedProducts(4, shouldLoadBelowFoldData);
+  const { categories } = useCategories(shouldLoadBelowFoldData);
   const { data: dbPromoTiles = [] } = usePromoTiles();
-  const { sets, productsBySet, loading: setsLoading } = useActiveSets();
-  const contactPhone = settings?.contact_phone || '';
+  const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
   const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
 
@@ -397,12 +345,6 @@ export default function Index() {
     { key: 'insp_3', fallback: fallbackImages[2] },
     { key: 'insp_4', fallback: fallbackImages[3] },
   ];
-
-
-  const sec1 = useInView();
-  const sec2 = useInView();
-  const sec3 = useInView();
-  const sec4 = useInView();
 
   // Toifalar carousel — one-at-a-time autoplay with seamless infinite loop
   const [catPerPage, setCatPerPage] = useState(4);
@@ -513,6 +455,7 @@ export default function Index() {
               priority
               width={1600}
               height={900}
+              sizes="(max-width: 640px) 100vw, 100vw"
             />
 
 
@@ -539,10 +482,10 @@ export default function Index() {
 
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
-        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0">
+        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0 min-h-[118px] sm:min-h-[142px] md:min-h-[130px] lg:min-h-[190px]">
           <div className="flex gap-3 lg:gap-4 px-4 lg:px-0 snap-x snap-mandatory">
             {dbPromoTiles.map((tile, i) => {
-              const Icon = PROMO_ICONS[tile.icon] || PROMO_ICONS.Sparkles;
+              const Icon = HOME_PROMO_ICONS[tile.icon] || Sparkles;
               const title = language === 'uz' ? tile.title_uz : tile.title_ru;
               return (
                 <Link

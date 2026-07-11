@@ -380,7 +380,7 @@ export function CreateOrderModal({ open, onOpenChange, onOrderCreated }: CreateO
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           {product.images && product.images[0] ? (
-                            <img src={product.images[0]} className="h-10 w-10 rounded object-cover" alt="" />
+                            <img src={product.images[0]} width={40} height={40} loading="lazy" decoding="async" className="h-10 w-10 rounded object-cover" alt="" />
                           ) : (
                             <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
                               <Package className="h-5 w-5 text-muted-foreground" />

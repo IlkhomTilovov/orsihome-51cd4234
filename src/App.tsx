@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,18 +9,15 @@ import { CartProvider } from "@/hooks/useCart";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { AuthProvider } from "@/hooks/useAuth";
 import { EditModeProvider } from "@/hooks/useEditMode";
+import { useEditMode } from "@/hooks/useEditMode";
 import { SiteContentProvider } from "@/hooks/useSiteContent";
 import { SystemSettingsProvider } from "@/hooks/useSystemSettings";
 import { TelegramProvider } from "@/hooks/useTelegram";
 import { TelegramShell } from "@/components/telegram/TelegramShell";
 import { ThemeLoader } from "@/components/ThemeLoader";
 import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
-import { EditModeToggle } from "@/components/EditModeToggle";
-import { EditorPanel } from "@/components/editor/EditorPanel";
-import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Eager: home page (LCP critical)
@@ -36,6 +33,12 @@ const Cart = lazy(() => import("./pages/Cart"));
 const Checkout = lazy(() => import("./pages/Checkout"));
 const ThankYou = lazy(() => import("./pages/ThankYou"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Below-the-fold/admin-only UI is split out of the mobile homepage bundle.
+const Footer = lazy(() => import("@/components/layout/Footer").then((m) => ({ default: m.Footer })));
+const EditModeToggle = lazy(() => import("@/components/EditModeToggle").then((m) => ({ default: m.EditModeToggle })));
+const EditorPanel = lazy(() => import("@/components/editor/EditorPanel").then((m) => ({ default: m.EditorPanel })));
+const ProtectedRoute = lazy(() => import("@/components/admin/ProtectedRoute").then((m) => ({ default: m.ProtectedRoute })));
 
 // Lazy: admin pages (only loaded for admins)
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
@@ -75,6 +78,50 @@ const RouteFallback = () => (
     <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
   </div>
 );
+
+const DeferredFooter = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: number | undefined;
+    let idleId: number | undefined;
+    const reveal = () => setShow(true);
+    const schedule = () => {
+      const requestIdle = (window as any).requestIdleCallback as undefined | ((cb: () => void, opts?: { timeout: number }) => number);
+      if (requestIdle) idleId = requestIdle(reveal, { timeout: 2500 });
+      else timeoutId = window.setTimeout(reveal, 1200);
+    };
+
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
+
+    return () => {
+      window.removeEventListener("load", schedule);
+      if (timeoutId) window.clearTimeout(timeoutId);
+      const cancelIdle = (window as any).cancelIdleCallback as undefined | ((id: number) => void);
+      if (idleId && cancelIdle) cancelIdle(idleId);
+    };
+  }, []);
+
+  if (!show) return null;
+  return (
+    <Suspense fallback={null}>
+      <Footer />
+    </Suspense>
+  );
+};
+
+const AdminEditorTools = () => {
+  const { canEdit } = useEditMode();
+  if (!canEdit) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <EditModeToggle />
+      <EditorPanel />
+    </Suspense>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -203,10 +250,9 @@ const App = () => (
                               </Routes>
                             </Suspense>
                           </main>
-                          <Footer />
+                          <DeferredFooter />
                           <MobileBottomNav />
-                          <EditModeToggle />
-                          <EditorPanel />
+                          <AdminEditorTools />
                         </div>
                         </TelegramShell>
                         } />

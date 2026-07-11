@@ -14,12 +14,17 @@ export interface ProductSet {
 }
 
 // Public hook: returns first active set + its products (for homepage)
-export function useActiveSets() {
+export function useActiveSets(enabled = true) {
   const [sets, setSets] = useState<ProductSet[]>([]);
   const [productsBySet, setProductsBySet] = useState<Record<string, Product[]>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       try {
         const { data: setsData, error } = await supabase
@@ -53,7 +58,7 @@ export function useActiveSets() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [enabled]);
 
   return { sets, productsBySet, loading };
 }
