@@ -127,6 +127,10 @@
           }
         } catch (e) {}
       })();
+      // Safety: never keep the page hidden longer than 600ms, even if theme is missing
+      setTimeout(function () {
+        document.documentElement.setAttribute('data-theme-loaded', 'true');
+      }, 600);
     </script>
     <style>
       html:not([data-theme-loaded]) body > #root { visibility: hidden; }
