@@ -1467,7 +1467,7 @@ export default function ProductsNew() {
                       </div>
                     ))}
                     {(formData.variants_ru || []).length === 0 && (
-                      <p className="text-xs text-muted-foreground italic">Вариантов пока нет</p>
+                      <p className="text-xs text-muted-foreground italic">{L.noVariantsRu}</p>
                     )}
                   </div>
                 </div>
