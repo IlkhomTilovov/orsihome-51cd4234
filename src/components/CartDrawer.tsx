@@ -161,6 +161,10 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       <img
                         src={image}
                         alt={name}
+                        width={96}
+                        height={96}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     </Link>
