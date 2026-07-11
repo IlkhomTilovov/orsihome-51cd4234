@@ -507,6 +507,10 @@ export default function Catalog() {
                                   <img
                                     src={parent.image}
                                     alt=""
+                                    width={36}
+                                    height={36}
+                                    loading="lazy"
+                                    decoding="async"
                                     className="w-9 h-9 rounded-lg object-cover shrink-0"
                                   />
                                 ) : (
