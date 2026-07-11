@@ -498,10 +498,13 @@ export default function Index() {
         <div className="grid grid-cols-1 gap-6">
           {/* Main hero card */}
           <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px]">
-            {/* Full-bleed background image (admin-managed) */}
+            {/* Full-bleed background image (admin-managed).
+                fallbackSrc matches the actual hero currently in the CMS so first-time visitors
+                (no localStorage cache) don't see a jarring image swap. It is also preloaded
+                with fetchpriority="high" from index.html. */}
             <EditableImage
               contentKey="hero_product_image"
-              fallbackSrc={fallbackImages[0]}
+              fallbackSrc="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
               alt="OrisHome premium furniture"
               className="absolute inset-0 w-full h-full object-cover object-center"
               wrapperClassName="absolute inset-0 w-full h-full"
