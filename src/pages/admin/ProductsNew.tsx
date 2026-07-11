@@ -1346,7 +1346,7 @@ export default function ProductsNew() {
                         }
                         setFormData(newFormData);
                       }}
-                      placeholder="Masalan: shkaf buyurtma asosida"
+                      placeholder={L.keywordPhUz}
                     />
                   </div>
                   <div className="space-y-2">
