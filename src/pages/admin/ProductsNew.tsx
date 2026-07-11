@@ -1311,8 +1311,7 @@ export default function ProductsNew() {
             <TabsContent value="seo" className="space-y-6 mt-4">
               <div className="bg-muted/50 p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  💡 Asosiy kalit so'z asosida SEO Title, H1 va Slug avtomatik yaratiladi. 
-                  Har bir til uchun alohida kalit so'z va variantlarini kiriting.
+                  {L.seoHint}
                 </p>
               </div>
 
