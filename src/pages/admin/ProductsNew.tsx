@@ -1317,15 +1317,15 @@ export default function ProductsNew() {
 
               {/* Target Keywords - Bilingual */}
               <div className="space-y-3">
-                <h3 className="font-medium text-base">🎯 Asosiy kalit so'z</h3>
+                <h3 className="font-medium text-base">{L.mainKeyword}</h3>
                 <p className="text-xs text-muted-foreground">
-                  Bu so'z SEO Title, H1 sarlavha va URL slug uchun ishlatiladi
+                  {L.mainKeywordHint}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="flex items-center gap-2">
                       <Badge variant="outline" className="text-xs">UZ</Badge>
-                      Asosiy kalit so'z
+                      {L.keywordLabelUz}
                     </Label>
                     <Input
                       value={formData.keyword_uz}
