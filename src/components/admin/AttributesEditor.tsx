@@ -373,7 +373,7 @@ function AttributeRow({
       <button
         type="button"
         className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
-        title="Sudrab olib qo'ying"
+        title={dragTitle}
       >
         <GripVertical className="w-4 h-4" />
       </button>
