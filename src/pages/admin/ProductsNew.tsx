@@ -1547,7 +1547,7 @@ export default function ProductsNew() {
                       rows={3}
                     />
                     <p className={`text-xs ${formData.meta_description_ru.length > 150 ? 'text-destructive' : 'text-muted-foreground'}`}>
-                      {formData.meta_description_ru.length}/160 символов
+                      {L.charsDescRu(formData.meta_description_ru.length)}
                     </p>
                   </div>
                 </div>
