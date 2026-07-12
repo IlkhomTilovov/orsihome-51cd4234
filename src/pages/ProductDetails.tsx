@@ -48,7 +48,6 @@ export default function ProductDetails() {
         : ((product as any).keyword_ru || (product as any).target_keyword || ''))
     : '';
   
-  const seoTitle = metaTitle || targetKeyword || productName || undefined;
   const keywordVariations: string[] = (product as any)?.keyword_variations || [];
 
   // Use target keyword for SEO title if available
