@@ -21,6 +21,7 @@ interface ProductCardProps {
     original_price?: number | null;
   };
   eager?: boolean;
+  imageAspect?: string;
 }
 
 export function ProductCard({ product, eager = false }: ProductCardProps) {
