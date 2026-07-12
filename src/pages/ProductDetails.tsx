@@ -42,7 +42,12 @@ export default function ProductDetails() {
   const productDesc = product ? (language === 'uz' ? product.description_uz : product.description_ru) : '';
   const metaTitle = product ? (language === 'uz' ? product.meta_title_uz : product.meta_title_ru) : null;
   const metaDesc = product ? (language === 'uz' ? product.meta_description_uz : product.meta_description_ru) : null;
-  const targetKeyword = (product as any)?.target_keyword || '';
+  const targetKeyword = (product as any)
+    ? (language === 'uz'
+        ? ((product as any).keyword_uz || (product as any).target_keyword || '')
+        : ((product as any).keyword_ru || (product as any).target_keyword || ''))
+    : '';
+  
   const keywordVariations: string[] = (product as any)?.keyword_variations || [];
 
   // Use target keyword for SEO title if available
