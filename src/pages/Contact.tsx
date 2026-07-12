@@ -190,7 +190,7 @@ export default function Contact() {
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       maxLength={255}
                       placeholder="email@example.com"
-                      className="h-12 rounded-lg border-2 border-slate-400 bg-background text-slate-400 focus:border-primary transition-colors"
+                      className="h-12 rounded-lg border-2 border-slate-400 bg-background text-slate-400 placeholder:text-slate-300 focus:border-primary transition-colors"
                     />
                   </div>
                   <div>
