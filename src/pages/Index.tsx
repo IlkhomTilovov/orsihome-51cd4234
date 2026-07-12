@@ -511,7 +511,7 @@ export default function Index() {
       </section>
 
 
-      <section ref={sec2.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
+      <section ref={sec2.ref} className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24 mb-16 lg:mb-24">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
