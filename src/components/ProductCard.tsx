@@ -24,7 +24,7 @@ interface ProductCardProps {
   imageAspect?: string;
 }
 
-export function ProductCard({ product, eager = false, imageAspect = 'aspect-[24/25]' }: ProductCardProps) {
+export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]' }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
