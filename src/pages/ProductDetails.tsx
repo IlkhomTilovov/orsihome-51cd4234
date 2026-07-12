@@ -420,46 +420,13 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        {/* Description Tabs */}
-        {(fullDescription || materials.length > 0) && (
+        {/* Description */}
+        {(fullDescription || description) && (
           <div className="mt-12">
-            <Tabs defaultValue="description">
-              <TabsList>
-                <TabsTrigger value="description">{t.products.description}</TabsTrigger>
-                <TabsTrigger value="details">{t.products.details}</TabsTrigger>
-              </TabsList>
-              <TabsContent value="description" className="mt-4 p-6 bg-card rounded-xl">
-                <div className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {fullDescription || description || (language === 'uz' ? "Ma'lumot mavjud emas" : 'Нет информации')}
-                </div>
-              </TabsContent>
-              <TabsContent value="details" className="mt-4 p-6 bg-card rounded-xl">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <span className="font-medium">{language === 'uz' ? 'Toifa' : 'Категория'}:</span>{' '}
-                    <span className="text-muted-foreground">{categoryName}</span>
-                  </div>
-                  {materials.length > 0 && (
-                    <div>
-                      <span className="font-medium">Material:</span>{' '}
-                      <span className="text-muted-foreground">{materials.join(', ')}</span>
-                    </div>
-                  )}
-                  {sizes.length > 0 && (
-                    <div>
-                      <span className="font-medium">{language === 'uz' ? "O'lchamlar" : 'Размеры'}:</span>{' '}
-                      <span className="text-muted-foreground">{sizes.join(', ')}</span>
-                    </div>
-                  )}
-                  {colors.length > 0 && (
-                    <div>
-                      <span className="font-medium">{language === 'uz' ? 'Ranglar' : 'Цвета'}:</span>{' '}
-                      <span className="text-muted-foreground">{colors.join(', ')}</span>
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
+            <h3 className="font-medium mb-3">{t.products.description}</h3>
+            <div className="p-6 bg-card rounded-xl text-muted-foreground leading-relaxed whitespace-pre-line">
+              {fullDescription || description}
+            </div>
           </div>
         )}
 
