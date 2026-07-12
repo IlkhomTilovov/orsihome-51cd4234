@@ -202,7 +202,7 @@ export default function Contact() {
                       maxLength={1000}
                       rows={5}
                       placeholder="Xabaringizni yozing..."
-                      className="rounded-lg border-2 border-slate-400 bg-background text-slate-400 focus:border-primary transition-colors resize-none"
+                      className="rounded-lg border-2 border-slate-400 bg-background text-slate-400 placeholder:text-slate-300 focus:border-primary transition-colors resize-none"
                     />
                   </div>
                   <Button type="submit" size="lg" className="w-full h-14 rounded-lg text-base font-semibold gap-2 group" disabled={loading}>
