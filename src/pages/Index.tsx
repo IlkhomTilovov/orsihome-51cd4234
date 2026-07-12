@@ -640,7 +640,7 @@ export default function Index() {
 
       {/* ============ FEATURED PRODUCTS GRID (only if we have more) ============ */}
       {featuredProducts.length > 2 && (
-        <section className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24">
+        <section className="container mx-auto px-4 lg:px-8 mt-16 lg:mt-24 pb-16 lg:pb-24">
           <div className="flex items-end justify-between mb-8">
             <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
               {language === 'uz' ? 'Tanlangan' : 'Избранное'}
