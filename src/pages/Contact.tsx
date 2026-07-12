@@ -93,7 +93,7 @@ export default function Contact() {
 
   const contactInfo = [
     { icon: Phone, labelKey: 'contact_phone_label', valueKey: 'contact_phone_value', label: t.contact.info.phone, value: '', href: '#' },
-    { icon: Mail, labelKey: 'contact_email_label', valueKey: 'contact_email_value', label: t.contact.info.email, value: 'info@mebelusta.uz', href: 'mailto:info@mebelusta.uz' },
+    { icon: Mail, labelKey: 'contact_email_label', valueKey: 'contact_email_value', label: t.contact.info.email, value: 'info@orsihome.uz', href: 'mailto:info@orsihome.uz' },
     { icon: Clock, labelKey: 'contact_hours_label', valueKey: 'contact_hours_value', label: t.contact.info.workingHours, value: 'Du-Ju: 9:00-18:00, Sha: 10:00-16:00', href: undefined },
   ];
 
