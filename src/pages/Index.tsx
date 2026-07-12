@@ -213,7 +213,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
               decoding="async"
               width={800}
               height={500}
-              className="absolute inset-0 w-full h-full object-contain bg-card group-hover:scale-105 transition-transform duration-700 ease-luxe"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-luxe"
             />
 
           </Link>
@@ -449,7 +449,7 @@ export default function Index() {
               fallbackSrc="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
               mobileSrc="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp"
               alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-contain bg-card object-center"
+              className="absolute inset-0 w-full h-full object-cover object-center"
               wrapperClassName="absolute inset-0 w-full h-full"
               section="hero"
               priority
