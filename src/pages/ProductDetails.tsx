@@ -357,25 +357,6 @@ export default function ProductDetails() {
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex flex-col gap-3 mb-4">
-              <Button
-                size="lg"
-                className="w-full gap-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                onClick={() => addItem(product as any, 1, selectedSize, selectedColor)}
-                disabled={inCart || !product.in_stock}
-              >
-                {inCart ? <Check className="w-5 h-5" /> : <ShoppingBag className="w-5 h-5" />}
-                {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : t.products.addToCart}
-              </Button>
-            </div>
-
-            <Button asChild variant="ghost" className="w-full gap-2 mb-4">
-              <a href="tel:+998901234567">
-                <Phone className="w-4 h-4" /> {t.products.requestConsultation}
-              </a>
-            </Button>
-
             {/* Attributes / Specifications */}
             {Array.isArray((product as any).attributes) && (product as any).attributes.length > 0 && (
               <div className="mt-8">
@@ -403,6 +384,25 @@ export default function ProductDetails() {
                 </div>
               </div>
             )}
+
+            {/* Actions */}
+            <div className="flex flex-col gap-3 mb-4 mt-8">
+              <Button
+                size="lg"
+                className="w-full gap-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                onClick={() => addItem(product as any, 1, selectedSize, selectedColor)}
+                disabled={inCart || !product.in_stock}
+              >
+                {inCart ? <Check className="w-5 h-5" /> : <ShoppingBag className="w-5 h-5" />}
+                {inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : t.products.addToCart}
+              </Button>
+            </div>
+
+            <Button asChild variant="ghost" className="w-full gap-2 mb-4">
+              <a href="tel:+998901234567">
+                <Phone className="w-4 h-4" /> {t.products.requestConsultation}
+              </a>
+            </Button>
 
             {/* Materials */}
             {materials.length > 0 && (
