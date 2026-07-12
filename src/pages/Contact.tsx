@@ -166,7 +166,7 @@ export default function Contact() {
                         required
                         maxLength={100}
                         placeholder="Ismingizni kiriting"
-                        className="h-12 rounded-lg border-2 border-slate-400 bg-background text-slate-400 focus:border-primary transition-colors"
+                        className="h-12 rounded-lg border-2 border-slate-400 bg-background text-slate-400 placeholder:text-slate-300 focus:border-primary transition-colors"
                       />
                     </div>
                     <div>
