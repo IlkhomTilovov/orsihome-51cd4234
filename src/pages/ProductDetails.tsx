@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, ShoppingBag, MessageCircle, Phone, Check, Loader2, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import { ProductCard } from '@/components/ProductCard';
 import { ImageLightbox } from '@/components/ImageLightbox';
 import { LazyImage } from '@/components/LazyImage';
@@ -236,25 +237,31 @@ export default function ProductDetails() {
               )}
             </div>
             {images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setSelectedImage(i)}
-                    className={`w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-colors ${
-                      selectedImage === i ? 'border-primary' : 'border-transparent'
-                    }`}
-                  >
-                    <LazyImage 
-                      src={img} 
-                      alt="" 
-                      sizes="80px"
-                      className="w-full h-full object-cover" 
-                      wrapperClassName="w-full h-full"
-                    />
-                  </button>
-                ))}
-              </div>
+              <Carousel
+                opts={{ align: 'start', dragFree: false }}
+                className="w-full mt-4"
+              >
+                <CarouselContent className="-ml-2">
+                  {images.map((img, i) => (
+                    <CarouselItem key={i} className="pl-2 basis-1/4 sm:basis-1/5 md:basis-1/6">
+                      <button
+                        onClick={() => setSelectedImage(i)}
+                        className={`w-full aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
+                          selectedImage === i ? 'border-primary' : 'border-transparent'
+                        }`}
+                      >
+                        <LazyImage
+                          src={img}
+                          alt=""
+                          sizes="(max-width: 640px) 25vw, 100px"
+                          className="w-full h-full object-cover"
+                          wrapperClassName="w-full h-full"
+                        />
+                      </button>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
             )}
 
             {/* Image Lightbox */}
