@@ -21,9 +21,10 @@ interface ProductCardProps {
     original_price?: number | null;
   };
   eager?: boolean;
+  imageAspect?: string;
 }
 
-export function ProductCard({ product, eager = false }: ProductCardProps) {
+export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]' }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
@@ -45,7 +46,7 @@ export function ProductCard({ product, eager = false }: ProductCardProps) {
 
   return (
     <article className="group relative h-full flex flex-col bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
-      <Link to={productUrl} className="block relative aspect-[24/25] overflow-hidden bg-background">
+      <Link to={productUrl} className={`block relative ${imageAspect} overflow-hidden bg-background`}>
         {/* Primary image */}
         <LazyImage
           src={images[0] || '/placeholder.svg'}
