@@ -166,7 +166,7 @@ export default function Contact() {
                         required
                         maxLength={100}
                         placeholder="Ismingizni kiriting"
-                        className="h-12 rounded-lg border-2 border-border bg-background focus:border-primary transition-colors"
+                        className="h-12 rounded-lg border-2 border-border bg-background text-slate-400 focus:border-primary transition-colors"
                       />
                     </div>
                     <div>
@@ -178,7 +178,7 @@ export default function Contact() {
                         required
                         maxLength={20}
                         placeholder="+998 90 123 45 67"
-                        className="h-12 rounded-lg border-2 border-border bg-background focus:border-primary transition-colors"
+                        className="h-12 rounded-lg border-2 border-border bg-background text-slate-400 focus:border-primary transition-colors"
                       />
                     </div>
                   </div>
@@ -190,7 +190,7 @@ export default function Contact() {
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       maxLength={255}
                       placeholder="email@example.com"
-                      className="h-12 rounded-lg border-2 border-border bg-background focus:border-primary transition-colors"
+                      className="h-12 rounded-lg border-2 border-border bg-background text-slate-400 focus:border-primary transition-colors"
                     />
                   </div>
                   <div>
@@ -202,7 +202,7 @@ export default function Contact() {
                       maxLength={1000}
                       rows={5}
                       placeholder="Xabaringizni yozing..."
-                      className="rounded-lg border-2 border-border bg-background focus:border-primary transition-colors resize-none"
+                      className="rounded-lg border-2 border-border bg-background text-slate-400 focus:border-primary transition-colors resize-none"
                     />
                   </div>
                   <Button type="submit" size="lg" className="w-full h-14 rounded-lg text-base font-semibold gap-2 group" disabled={loading}>
