@@ -597,13 +597,14 @@ export default function Index() {
 
         {cats.length > catPerPage && (
           <div className="flex justify-center gap-2 mt-6">
-            {cats.map((_, i) => {
-              const active = ((catIndex % cats.length) + cats.length) % cats.length === i;
+            {Array.from({ length: catTotalPages }).map((_, i) => {
+              const currentPage = Math.floor((((catIndex % cats.length) + cats.length) % cats.length) / catPerPage);
+              const active = currentPage === i;
               return (
                 <button
                   key={i}
-                  onClick={() => { setCatAnimate(true); setCatIndex(i); }}
-                  aria-label={`Slide ${i + 1}`}
+                  onClick={() => { setCatAnimate(true); setCatIndex(i * catPerPage); }}
+                  aria-label={`Page ${i + 1}`}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
                     active ? 'w-8 bg-foreground' : 'w-1.5 bg-foreground/30 hover:bg-foreground/50'
                   }`}
