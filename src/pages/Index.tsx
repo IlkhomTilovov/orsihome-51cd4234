@@ -337,7 +337,7 @@ export default function Index() {
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
-  const cats = categories.length > 0 ? categories : fallbackCategories;
+  const cats = categories.length > 0 ? categories.slice(0, 8) : fallbackCategories;
 
   const inspirations = [
     { key: 'insp_1', fallback: fallbackImages[0] },
