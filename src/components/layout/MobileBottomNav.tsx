@@ -32,7 +32,7 @@ export function MobileBottomNav() {
       className="md:hidden fixed left-0 right-0 bottom-0 z-50 px-4 pb-3 pointer-events-none"
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }}
     >
-      <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] ring-1 ring-black/5 px-2 py-2 flex items-center justify-between">
+      <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-background shadow-[0_10px_30px_-10px_hsl(var(--foreground)/0.25)] ring-1 ring-border px-2 py-2 flex items-center justify-between">
         {items.map((item, idx) => {
           const { to, icon: Icon, image, label, isCart, action } = item;
           const labelText = label[language];
@@ -62,7 +62,7 @@ export function MobileBottomNav() {
                   Icon && <Icon className="h-5 w-5" strokeWidth={active ? 2.2 : 1.8} />
                 )}
                 {isCart && totalItems > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-neutral-900 text-white text-[9px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1 ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-2 bg-primary text-primary-foreground text-[9px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1 ring-2 ring-background">
                     {totalItems > 9 ? '9+' : totalItems}
                   </span>
                 )}
@@ -73,7 +73,7 @@ export function MobileBottomNav() {
 
           const classes = cn(
             'relative flex items-center justify-center h-11 rounded-full transition-all',
-            active ? 'bg-neutral-900 text-white px-4 gap-2' : 'text-neutral-700 w-11'
+            active ? 'bg-primary text-primary-foreground px-4 gap-2' : 'text-foreground/70 hover:text-foreground w-11'
           );
 
           if (action === 'open-menu') {
