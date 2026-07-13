@@ -482,7 +482,7 @@ export default function Index() {
 
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
       <section ref={sec1.ref} className="container mx-auto px-4 lg:px-8 mt-8 lg:mt-12">
-        <div className="overflow-x-auto scrollbar-hide -mx-4 lg:mx-0 min-h-[118px] sm:min-h-[142px] md:min-h-[130px] lg:min-h-[190px]">
+        <div className="overflow-x-auto overflow-y-visible scrollbar-hide -mx-4 lg:mx-0 py-2 min-h-[118px] sm:min-h-[142px] md:min-h-[130px] lg:min-h-[190px]">
           <div className="flex gap-3 lg:gap-4 px-4 lg:px-0 snap-x snap-mandatory">
             {dbPromoTiles.map((tile, i) => {
               const Icon = HOME_PROMO_ICONS[tile.icon] || Sparkles;
