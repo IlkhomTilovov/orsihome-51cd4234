@@ -87,7 +87,7 @@ export function Header() {
   const navLinks = [
     { href: '/', label: language === 'ru' ? 'Главная' : 'Bosh sahifa' },
     { href: '/catalog', label: language === 'ru' ? 'Каталог' : 'Katalog' },
-    { href: '/about', label: language === 'ru' ? 'Портфолио' : 'Biz xaqimizda' },
+    { href: '/about', label: language === 'ru' ? 'О нас' : 'Biz xaqimizda' },
     { href: '/contact', label: language === 'ru' ? 'Контакты' : 'Aloqa' },
   ];
 
