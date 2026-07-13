@@ -62,7 +62,7 @@ export function MobileBottomNav() {
                   Icon && <Icon className="h-5 w-5" strokeWidth={active ? 2.2 : 1.8} />
                 )}
                 {isCart && totalItems > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-neutral-900 text-white text-[9px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1 ring-2 ring-white">
+                  <span className="absolute -top-1.5 -right-2 bg-primary text-primary-foreground text-[9px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1 ring-2 ring-background">
                     {totalItems > 9 ? '9+' : totalItems}
                   </span>
                 )}
@@ -73,7 +73,7 @@ export function MobileBottomNav() {
 
           const classes = cn(
             'relative flex items-center justify-center h-11 rounded-full transition-all',
-            active ? 'bg-neutral-900 text-white px-4 gap-2' : 'text-neutral-700 w-11'
+            active ? 'bg-primary text-primary-foreground px-4 gap-2' : 'text-foreground/70 hover:text-foreground w-11'
           );
 
           if (action === 'open-menu') {
