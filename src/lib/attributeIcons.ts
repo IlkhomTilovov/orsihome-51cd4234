@@ -50,6 +50,26 @@ import {
   Grid3x3,
   type LucideIcon,
 } from 'lucide-react';
+import {
+  MirrorIcon,
+  ChandelierIcon,
+  PendantLampIcon,
+  ToiletIcon,
+  SinkIcon,
+  RadiatorIcon,
+  FireplaceIcon,
+  PaintingIcon,
+  BarStoolIcon,
+  EaselIcon,
+  DresserIcon,
+  VanityIcon,
+  OfficeChairIcon,
+  PlantPotIcon,
+  CurtainsIcon,
+  FanIcon,
+  GiftBoxIcon,
+  NightstandIcon,
+} from './customFurnitureIcons';
 
 export interface AttributeIconDef {
   key: string;
@@ -107,6 +127,25 @@ export const ATTRIBUTE_ICONS: AttributeIconDef[] = [
   { key: 'zap', label: 'Elektr', Icon: Zap },
   { key: 'chevrons', label: 'Balandlik', Icon: ChevronsUpDown },
   { key: 'loader', label: 'Yuklama', Icon: Loader },
+  // Custom furniture icons
+  { key: 'mirror', label: 'Oyna', Icon: MirrorIcon as unknown as LucideIcon },
+  { key: 'chandelier', label: 'Lyustra', Icon: ChandelierIcon as unknown as LucideIcon },
+  { key: 'pendant-lamp', label: 'Osma chiroq', Icon: PendantLampIcon as unknown as LucideIcon },
+  { key: 'toilet', label: 'Unitaz', Icon: ToiletIcon as unknown as LucideIcon },
+  { key: 'sink', label: 'Rakovina', Icon: SinkIcon as unknown as LucideIcon },
+  { key: 'radiator', label: 'Radiator', Icon: RadiatorIcon as unknown as LucideIcon },
+  { key: 'fireplace', label: 'Kamin', Icon: FireplaceIcon as unknown as LucideIcon },
+  { key: 'painting', label: 'Rasm / Kartina', Icon: PaintingIcon as unknown as LucideIcon },
+  { key: 'bar-stool', label: 'Bar stul', Icon: BarStoolIcon as unknown as LucideIcon },
+  { key: 'easel', label: "Mol'bert", Icon: EaselIcon as unknown as LucideIcon },
+  { key: 'dresser', label: 'Komod', Icon: DresserIcon as unknown as LucideIcon },
+  { key: 'vanity', label: 'Trumo stol', Icon: VanityIcon as unknown as LucideIcon },
+  { key: 'office-chair', label: 'Ofis kreslosi', Icon: OfficeChairIcon as unknown as LucideIcon },
+  { key: 'plant-pot', label: 'Gul tuvagi', Icon: PlantPotIcon as unknown as LucideIcon },
+  { key: 'curtains', label: 'Pardalar', Icon: CurtainsIcon as unknown as LucideIcon },
+  { key: 'fan', label: 'Ventilyator', Icon: FanIcon as unknown as LucideIcon },
+  { key: 'gift-box', label: 'Sovg\'a qutisi', Icon: GiftBoxIcon as unknown as LucideIcon },
+  { key: 'nightstand', label: 'Tumbochka', Icon: NightstandIcon as unknown as LucideIcon },
 ];
 
 export const ATTRIBUTE_ICON_MAP: Record<string, LucideIcon> = ATTRIBUTE_ICONS.reduce(
