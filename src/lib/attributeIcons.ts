@@ -21,6 +21,14 @@ import {
   Star,
   ChevronsUpDown,
   Move3d,
+  Chair,
+  LampFloor,
+  LampCeiling,
+  LampWall,
+  Bath,
+  ShowerHead,
+  Blinds,
+  Curtains,
   type LucideIcon,
 } from 'lucide-react';
 
