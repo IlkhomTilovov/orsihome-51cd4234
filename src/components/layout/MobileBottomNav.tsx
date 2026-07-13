@@ -32,7 +32,7 @@ export function MobileBottomNav() {
       className="md:hidden fixed left-0 right-0 bottom-0 z-50 px-4 pb-3 pointer-events-none"
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 12px)' }}
     >
-      <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-white shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] ring-1 ring-black/5 px-2 py-2 flex items-center justify-between">
+      <nav className="pointer-events-auto mx-auto max-w-md rounded-full bg-background shadow-[0_10px_30px_-10px_hsl(var(--foreground)/0.25)] ring-1 ring-border px-2 py-2 flex items-center justify-between">
         {items.map((item, idx) => {
           const { to, icon: Icon, image, label, isCart, action } = item;
           const labelText = label[language];
