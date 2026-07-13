@@ -182,6 +182,7 @@ export default function ProductDetails() {
   
   // H1 uses target keyword if available, otherwise product name
   const h1Text = targetKeyword || name;
+  const displayH1 = h1Text ? h1Text.charAt(0).toUpperCase() + h1Text.slice(1) : h1Text;
   
   // Generate alt text using keyword variations
   const getImageAlt = (index: number) => {
