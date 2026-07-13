@@ -540,7 +540,7 @@ export default function Index() {
         </div>
 
         <div
-          className="overflow-hidden -mx-2 lg:-mx-3"
+          className="overflow-x-hidden overflow-y-visible -mx-2 lg:-mx-3 py-2"
           onTouchStart={onCatTouchStart}
           onTouchEnd={onCatTouchEnd}
         >
