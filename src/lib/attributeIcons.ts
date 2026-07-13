@@ -50,6 +50,26 @@ import {
   Grid3x3,
   type LucideIcon,
 } from 'lucide-react';
+import {
+  MirrorIcon,
+  ChandelierIcon,
+  PendantLampIcon,
+  ToiletIcon,
+  SinkIcon,
+  RadiatorIcon,
+  FireplaceIcon,
+  PaintingIcon,
+  BarStoolIcon,
+  EaselIcon,
+  DresserIcon,
+  VanityIcon,
+  OfficeChairIcon,
+  PlantPotIcon,
+  CurtainsIcon,
+  FanIcon,
+  GiftBoxIcon,
+  NightstandIcon,
+} from './customFurnitureIcons';
 
 export interface AttributeIconDef {
   key: string;
