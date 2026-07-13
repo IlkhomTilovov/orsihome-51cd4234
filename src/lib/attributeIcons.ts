@@ -21,6 +21,12 @@ import {
   Star,
   ChevronsUpDown,
   Move3d,
+  LampFloor,
+  LampCeiling,
+  LampWallUp,
+  Bath,
+  ShowerHead,
+  Blinds,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -51,6 +57,12 @@ export const ATTRIBUTE_ICONS: AttributeIconDef[] = [
   { key: 'sun', label: 'UV himoya', Icon: Sun },
   { key: 'zap', label: 'Elektr', Icon: Zap },
   { key: 'lamp', label: 'Yorug\'lik', Icon: Lamp },
+  { key: 'lamp-floor', label: 'Pol g\'ilofi', Icon: LampFloor },
+  { key: 'lamp-ceiling', label: 'Shift g\'ilofi', Icon: LampCeiling },
+  { key: 'lamp-wall', label: 'Devor g\'ilofi', Icon: LampWallUp },
+  { key: 'bath', label: 'Vanna', Icon: Bath },
+  { key: 'shower', label: 'Dush', Icon: ShowerHead },
+  { key: 'blinds', label: 'Pardalar', Icon: Blinds },
   { key: 'chevrons', label: 'Balandlik', Icon: ChevronsUpDown },
   { key: 'loader', label: 'Yuklama', Icon: Loader },
 ];
