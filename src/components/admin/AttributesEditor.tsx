@@ -344,7 +344,6 @@ function AttributeRow({
 }: RowProps) {
   const [iconOpen, setIconOpen] = useState(false);
   const [iconQuery, setIconQuery] = useState('');
-  const [langTab, setLangTab] = useState<'uz' | 'ru'>(language);
   const dragTitle = language === 'ru' ? 'Перетащите' : "Sudrab olib qo'ying";
   const iconSearchPh = language === 'ru' ? 'Поиск иконки...' : 'Ikonka qidirish...';
 
@@ -368,111 +367,114 @@ function AttributeRow({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className="group flex items-center gap-2 border rounded-xl bg-card p-2 hover:shadow-sm transition-shadow"
+      className="group flex flex-col md:flex-row md:items-start gap-2 border rounded-xl bg-card p-2 hover:shadow-sm transition-shadow"
     >
-      <button
-        type="button"
-        className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
-        title={dragTitle}
-      >
-        <GripVertical className="w-4 h-4" />
-      </button>
+      <div className="flex items-center md:flex-col gap-2 md:pt-1 shrink-0">
+        <button
+          type="button"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
+          title={dragTitle}
+        >
+          <GripVertical className="w-4 h-4" />
+        </button>
 
-      {/* Icon selector */}
-      <Popover open={iconOpen} onOpenChange={setIconOpen}>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            className="flex items-center gap-2 px-2.5 py-2 border rounded-lg hover:bg-muted/50 min-w-[140px]"
-          >
-            <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary">
-              <Icon className="w-4 h-4" />
-            </span>
-            <span className="text-sm flex-1 text-left truncate">{currentIconLabel}</span>
-            <svg width="10" height="10" viewBox="0 0 10 10" className="text-muted-foreground">
-              <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            </svg>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent className="w-72 p-2" align="start">
-          <div className="relative mb-2">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={iconQuery}
-              onChange={(e) => setIconQuery(e.target.value)}
-              placeholder={iconSearchPh}
-              className="pl-8 h-8 text-sm"
-            />
-          </div>
-          <div className="grid grid-cols-6 gap-1 max-h-56 overflow-y-auto">
-            {filteredIcons.map((i) => {
-              const I = i.Icon;
-              const active = i.key === row.icon;
-              return (
-                <button
-                  key={i.key}
-                  type="button"
-                  title={i.label}
-                  onClick={() => {
-                    onUpdate({ icon: i.key });
-                    setIconOpen(false);
-                  }}
-                  className={cn(
-                    'aspect-square rounded-md flex items-center justify-center hover:bg-muted transition-colors',
-                    active && 'bg-primary/10 text-primary ring-1 ring-primary'
-                  )}
-                >
-                  <I className="w-4 h-4" />
-                </button>
-              );
-            })}
-          </div>
-        </PopoverContent>
-      </Popover>
-
-      {/* Language tab pill */}
-      <div className="hidden md:flex items-center gap-0.5 rounded-md bg-muted p-0.5">
-        {(['uz', 'ru'] as const).map((l) => (
-          <button
-            key={l}
-            type="button"
-            onClick={() => setLangTab(l)}
-            className={cn(
-              'text-[10px] uppercase font-medium px-2 py-1 rounded',
-              langTab === l ? 'bg-background shadow-sm' : 'text-muted-foreground'
-            )}
-          >
-            {l}
-          </button>
-        ))}
+        {/* Icon selector */}
+        <Popover open={iconOpen} onOpenChange={setIconOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-2 px-2.5 py-2 border rounded-lg hover:bg-muted/50 min-w-[140px] md:min-w-0 md:w-full"
+            >
+              <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <Icon className="w-4 h-4" />
+              </span>
+              <span className="text-sm flex-1 text-left truncate hidden md:inline">{currentIconLabel}</span>
+              <svg width="10" height="10" viewBox="0 0 10 10" className="text-muted-foreground shrink-0">
+                <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              </svg>
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 p-2" align="start">
+            <div className="relative mb-2">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={iconQuery}
+                onChange={(e) => setIconQuery(e.target.value)}
+                placeholder={iconSearchPh}
+                className="pl-8 h-8 text-sm"
+              />
+            </div>
+            <div className="grid grid-cols-6 gap-1 max-h-56 overflow-y-auto">
+              {filteredIcons.map((i) => {
+                const I = i.Icon;
+                const active = i.key === row.icon;
+                return (
+                  <button
+                    key={i.key}
+                    type="button"
+                    title={i.label}
+                    onClick={() => {
+                      onUpdate({ icon: i.key });
+                      setIconOpen(false);
+                    }}
+                    className={cn(
+                      'aspect-square rounded-md flex items-center justify-center hover:bg-muted transition-colors',
+                      active && 'bg-primary/10 text-primary ring-1 ring-primary'
+                    )}
+                  >
+                    <I className="w-4 h-4" />
+                  </button>
+                );
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
-      {/* Name */}
-      <Input
-        value={langTab === 'uz' ? row.label_uz : row.label_ru}
-        onChange={(e) =>
-          onUpdate(langTab === 'uz' ? { label_uz: e.target.value } : { label_ru: e.target.value })
-        }
-        placeholder={langTab === 'uz' ? "Xususiyat nomi" : 'Название'}
-        className="flex-1 min-w-0"
-      />
-
-      {/* Value */}
-      <Input
-        value={langTab === 'uz' ? row.value_uz : row.value_ru}
-        onChange={(e) =>
-          onUpdate(langTab === 'uz' ? { value_uz: e.target.value } : { value_ru: e.target.value })
-        }
-        placeholder={langTab === 'uz' ? 'Qiymati' : 'Значение'}
-        className="flex-1 min-w-0"
-      />
+      {/* UZ + RU fields */}
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <span className="text-[10px] uppercase font-medium text-muted-foreground">UZ</span>
+          <div className="flex gap-2">
+            <Input
+              value={row.label_uz}
+              onChange={(e) => onUpdate({ label_uz: e.target.value })}
+              placeholder="Xususiyat nomi"
+              className="flex-1 min-w-0"
+            />
+            <Input
+              value={row.value_uz}
+              onChange={(e) => onUpdate({ value_uz: e.target.value })}
+              placeholder="Qiymati"
+              className="flex-1 min-w-0"
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          <span className="text-[10px] uppercase font-medium text-muted-foreground">RU</span>
+          <div className="flex gap-2">
+            <Input
+              value={row.label_ru}
+              onChange={(e) => onUpdate({ label_ru: e.target.value })}
+              placeholder="Название"
+              className="flex-1 min-w-0"
+            />
+            <Input
+              value={row.value_ru}
+              onChange={(e) => onUpdate({ value_ru: e.target.value })}
+              placeholder="Значение"
+              className="flex-1 min-w-0"
+            />
+          </div>
+        </div>
+      </div>
 
       <Button
         type="button"
         variant="ghost"
         size="icon"
         onClick={onRemove}
-        className="text-muted-foreground hover:text-destructive shrink-0"
+        className="text-muted-foreground hover:text-destructive shrink-0 md:mt-1"
       >
         <Trash2 className="w-4 h-4" />
       </Button>
