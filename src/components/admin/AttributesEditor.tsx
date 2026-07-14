@@ -367,12 +367,13 @@ function AttributeRow({
       onDragStart={onDragStart}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      className="group flex flex-col md:flex-row md:items-start gap-2 border rounded-xl bg-card p-2 hover:shadow-sm transition-shadow"
+      className="group relative border rounded-xl bg-card p-3 md:p-4 hover:border-primary/40 hover:shadow-sm transition-all"
     >
-      <div className="flex items-center md:flex-col gap-2 md:pt-1 shrink-0">
+      <div className="flex items-start gap-3">
+        {/* Drag handle */}
         <button
           type="button"
-          className="cursor-grab active:cursor-grabbing text-muted-foreground p-1"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground/60 hover:text-foreground p-1 mt-2 shrink-0"
           title={dragTitle}
         >
           <GripVertical className="w-4 h-4" />
@@ -383,15 +384,10 @@ function AttributeRow({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 px-2.5 py-2 border rounded-lg hover:bg-muted/50 min-w-[140px] md:min-w-0 md:w-full"
+              className="shrink-0 w-11 h-11 rounded-lg border bg-background hover:bg-muted/50 hover:border-primary/40 flex items-center justify-center text-primary transition-colors"
+              title={currentIconLabel}
             >
-              <span className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <Icon className="w-4 h-4" />
-              </span>
-              <span className="text-sm flex-1 text-left truncate hidden md:inline">{currentIconLabel}</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" className="text-muted-foreground shrink-0">
-                <path d="M2 4l3 3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
-              </svg>
+              <Icon className="w-5 h-5" />
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-72 p-2" align="start">
@@ -429,55 +425,62 @@ function AttributeRow({
             </div>
           </PopoverContent>
         </Popover>
-      </div>
 
-      {/* UZ + RU fields */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="space-y-1">
-          <span className="text-[10px] uppercase font-medium text-muted-foreground">UZ</span>
-          <div className="flex gap-2">
-            <Input
-              value={row.label_uz}
-              onChange={(e) => onUpdate({ label_uz: e.target.value })}
-              placeholder="Xususiyat nomi"
-              className="flex-1 min-w-0"
-            />
-            <Input
-              value={row.value_uz}
-              onChange={(e) => onUpdate({ value_uz: e.target.value })}
-              placeholder="Qiymati"
-              className="flex-1 min-w-0"
-            />
+        {/* UZ + RU fields */}
+        <div className="flex-1 min-w-0 grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold tracking-wider text-muted-foreground">UZ</span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                value={row.label_uz}
+                onChange={(e) => onUpdate({ label_uz: e.target.value })}
+                placeholder="Xususiyat nomi"
+                className="h-9"
+              />
+              <Input
+                value={row.value_uz}
+                onChange={(e) => onUpdate({ value_uz: e.target.value })}
+                placeholder="Qiymati"
+                className="h-9"
+              />
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold tracking-wider text-muted-foreground">RU</span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Input
+                value={row.label_ru}
+                onChange={(e) => onUpdate({ label_ru: e.target.value })}
+                placeholder="Название"
+                className="h-9"
+              />
+              <Input
+                value={row.value_ru}
+                onChange={(e) => onUpdate({ value_ru: e.target.value })}
+                placeholder="Значение"
+                className="h-9"
+              />
+            </div>
           </div>
         </div>
-        <div className="space-y-1">
-          <span className="text-[10px] uppercase font-medium text-muted-foreground">RU</span>
-          <div className="flex gap-2">
-            <Input
-              value={row.label_ru}
-              onChange={(e) => onUpdate({ label_ru: e.target.value })}
-              placeholder="Название"
-              className="flex-1 min-w-0"
-            />
-            <Input
-              value={row.value_ru}
-              onChange={(e) => onUpdate({ value_ru: e.target.value })}
-              placeholder="Значение"
-              className="flex-1 min-w-0"
-            />
-          </div>
-        </div>
-      </div>
 
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={onRemove}
-        className="text-muted-foreground hover:text-destructive shrink-0 md:mt-1"
-      >
-        <Trash2 className="w-4 h-4" />
-      </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={onRemove}
+          className="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }
+
