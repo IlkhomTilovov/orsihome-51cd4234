@@ -468,6 +468,16 @@ function AttributeRow({
           </div>
         </div>
       </div>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={onRemove}
+        className="text-muted-foreground hover:text-destructive shrink-0 md:mt-1"
+      >
+        <Trash2 className="w-4 h-4" />
+      </Button>
     </div>
   );
 }
