@@ -140,8 +140,9 @@ export default function Catalog() {
     const f: ProductFilters = { isActive: true };
 
     // When viewing a set, show ALL products in that set — ignore other filters
-    if (setProductIds) {
-      f.productIds = setProductIds;
+    if (setId) {
+      // While the set is still loading, short-circuit to avoid fetching the full catalog
+      f.productIds = setProductIds ?? [];
       if (debouncedSearch) f.search = debouncedSearch;
       return f;
     }
@@ -176,7 +177,7 @@ export default function Catalog() {
     if (promoTileId) f.promoTileId = promoTileId;
 
     return f;
-  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setProductIds, priceTouched, categories, resolvedSectionId, sectionCategoryIds]);
+  }, [debouncedSearch, sidebarFilters, filterOptions.maxPrice, promoTileId, setId, setProductIds, priceTouched, categories, resolvedSectionId, sectionCategoryIds]);
 
 
   const { products, totalCount, totalPages, loading: productsLoading } = useProducts(currentPage, filters, PAGE_SIZE);
