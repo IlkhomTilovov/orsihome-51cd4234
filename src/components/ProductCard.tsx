@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Check, Eye } from 'lucide-react';
+import { ShoppingBag, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useCart } from '@/hooks/useCart';
@@ -65,14 +65,6 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
             −{discountPct}%
           </span>
         )}
-
-        {/* Quick view chip — bottom-right, subtle so it doesn't cover image copy */}
-        <div className={`absolute right-2 flex justify-end pointer-events-none ${compact ? 'bottom-2' : 'bottom-3'}`}>
-          <span className={`inline-flex items-center gap-1 bg-background/70 backdrop-blur-md text-foreground/90 font-medium tracking-wide uppercase rounded-full shadow-soft-sm border border-white/20 ${compact ? 'text-[9px] px-2 py-1' : 'text-[10px] px-2.5 py-1'}`}>
-            <Eye className="w-3 h-3" />
-            {language === 'uz' ? "Ko'rish" : 'Просмотр'}
-          </span>
-        </div>
       </Link>
 
 
