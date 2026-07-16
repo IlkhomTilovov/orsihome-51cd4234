@@ -66,10 +66,10 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
           </span>
         )}
 
-        {/* Quick view button — always visible on image */}
-        <div className={`absolute left-3 right-3 flex justify-center transition-transform duration-300 md:group-hover:-translate-y-0.5 ${compact ? 'bottom-2' : 'bottom-3'}`}>
-          <span className={`inline-flex items-center gap-1.5 bg-background/95 backdrop-blur-sm text-foreground font-medium tracking-wider uppercase rounded-full shadow-soft-md ${compact ? 'text-[10px] px-3 py-1.5' : 'text-xs px-4 py-2'}`}>
-            <Eye className={`${compact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} />
+        {/* Quick view chip — bottom-right, subtle so it doesn't cover image copy */}
+        <div className={`absolute right-2 flex justify-end pointer-events-none ${compact ? 'bottom-2' : 'bottom-3'}`}>
+          <span className={`inline-flex items-center gap-1 bg-background/70 backdrop-blur-md text-foreground/90 font-medium tracking-wide uppercase rounded-full shadow-soft-sm border border-white/20 ${compact ? 'text-[9px] px-2 py-1' : 'text-[10px] px-2.5 py-1'}`}>
+            <Eye className="w-3 h-3" />
             {language === 'uz' ? "Ko'rish" : 'Просмотр'}
           </span>
         </div>
