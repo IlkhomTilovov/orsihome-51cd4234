@@ -151,12 +151,12 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
   );
 
   const renderPair = (items: ReturnType<typeof productsOf>) => (
-    <div className="grid grid-cols-2 gap-3 lg:gap-6 w-full my-0 mx-0 px-0 py-[5px]">
+    <div className="grid grid-cols-2 gap-2 lg:gap-4 w-full my-0 mx-0 px-0 py-[5px]">
       {items.length > 0 ? (
         <>
           {items.map((p, i) => (
             <div key={(p?.id || 'e') + '-' + i} className="h-full">
-              <ProductCard product={p} imageAspect="aspect-[16/10]" imageFit="contain" />
+              <ProductCard product={p} imageAspect="aspect-square" imageFit="contain" compact />
             </div>
           ))}
           {items.length === 1 && <EmptyCard />}
