@@ -23,9 +23,10 @@ interface ProductCardProps {
   eager?: boolean;
   imageAspect?: string;
   imageFit?: 'cover' | 'contain';
+  compact?: boolean;
 }
 
-export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]', imageFit = 'cover' }: ProductCardProps) {
+export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]', imageFit = 'cover', compact = false }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
