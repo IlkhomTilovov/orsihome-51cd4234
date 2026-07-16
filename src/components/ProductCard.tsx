@@ -76,21 +76,21 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
       </Link>
 
 
-      <div className={`flex flex-col flex-1 ${compact ? 'p-2 md:p-3' : 'p-3 md:p-5'}`}>
+      <div className={`flex flex-col flex-1 ${compact ? 'p-1.5 md:p-2' : 'p-3 md:p-5'}`}>
         <Link to={productUrl} className="block">
-          <h3 className={`font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300 ${compact ? 'text-xs md:text-sm min-h-0' : 'text-base md:text-base min-h-[2.6em]'}`}>
+          <h3 className={`font-medium text-foreground leading-snug group-hover:text-primary transition-colors duration-300 ${compact ? 'text-xs line-clamp-1 min-h-0' : 'text-base line-clamp-2 min-h-[2.6em]'}`}>
             {name}
           </h3>
         </Link>
 
         {price > 0 && (
-          <div className={`flex flex-col leading-tight ${compact ? 'mt-1' : 'mt-1.5'}`}>
+          <div className={`flex flex-col leading-tight ${compact ? 'mt-0.5' : 'mt-1.5'}`}>
             {hasDiscount && (
               <span className={`text-muted-foreground line-through tabular-nums ${compact ? 'text-[10px]' : 'text-xs'}`}>
                 {formatPrice(originalPrice as number)} {t.products.currency}
               </span>
             )}
-            <span className={`font-sans font-bold text-foreground tracking-tight tabular-nums ${compact ? 'text-sm' : 'text-base md:text-lg'}`}>
+            <span className={`font-sans font-bold text-foreground tracking-tight tabular-nums ${compact ? 'text-xs' : 'text-base md:text-lg'}`}>
               {formatPrice(price)} {t.products.currency}
             </span>
           </div>
