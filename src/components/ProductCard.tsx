@@ -22,9 +22,10 @@ interface ProductCardProps {
   };
   eager?: boolean;
   imageAspect?: string;
+  imageFit?: 'cover' | 'contain';
 }
 
-export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]' }: ProductCardProps) {
+export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4]', imageFit = 'cover' }: ProductCardProps) {
   const { language, t } = useLanguage();
   const { addItem, isInCart } = useCart();
   const inCart = isInCart(product.id);
@@ -53,7 +54,7 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
           alt={name}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           priority={eager}
-          className="w-full h-full object-cover object-top bg-card transition-transform duration-500 ease-out group-hover:scale-105"
+          className={`w-full h-full ${imageFit === 'contain' ? 'object-contain' : 'object-cover object-top'} bg-card transition-transform duration-500 ease-out group-hover:scale-105`}
           wrapperClassName="w-full h-full absolute inset-0"
         />
 
