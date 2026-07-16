@@ -140,8 +140,9 @@ export default function Catalog() {
     const f: ProductFilters = { isActive: true };
 
     // When viewing a set, show ALL products in that set — ignore other filters
-    if (setProductIds) {
-      f.productIds = setProductIds;
+    if (setId) {
+      // While the set is still loading, short-circuit to avoid fetching the full catalog
+      f.productIds = setProductIds ?? [];
       if (debouncedSearch) f.search = debouncedSearch;
       return f;
     }
