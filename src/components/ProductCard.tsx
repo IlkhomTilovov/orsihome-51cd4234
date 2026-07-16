@@ -47,7 +47,7 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
   
 
   return (
-    <article className="group relative h-full flex flex-col bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300">
+    <article className={`group relative h-full flex flex-col bg-background rounded-2xl overflow-hidden border border-border/40 shadow-soft-sm hover:shadow-soft transition-shadow duration-300 ${compact ? 'rounded-xl' : 'rounded-2xl'}`}>
       <Link to={productUrl} className={`block relative ${imageAspect} overflow-hidden bg-background`}>
         {/* Primary image */}
         <LazyImage
@@ -61,36 +61,36 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
 
         {/* Discount badge */}
         {hasDiscount && (
-          <span className="absolute top-3 left-3 bg-foreground text-background text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-lg shadow-soft-sm">
+          <span className={`absolute left-3 bg-foreground text-background text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-lg shadow-soft-sm ${compact ? 'top-2' : 'top-3'}`}>
             −{discountPct}%
           </span>
         )}
 
         {/* Quick view button — desktop only, lighter animation */}
-        <div className="hidden md:flex absolute bottom-3 left-3 right-3 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
-          <span className="inline-flex items-center gap-1.5 bg-background/95 backdrop-blur-sm text-foreground text-xs font-medium tracking-wider uppercase px-4 py-2 rounded-full shadow-soft-md">
-            <Eye className="w-3.5 h-3.5" />
+        <div className={`hidden md:flex absolute left-3 right-3 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto ${compact ? 'bottom-2' : 'bottom-3'}`}>
+          <span className={`inline-flex items-center gap-1.5 bg-background/95 backdrop-blur-sm text-foreground font-medium tracking-wider uppercase rounded-full shadow-soft-md ${compact ? 'text-[10px] px-3 py-1.5' : 'text-xs px-4 py-2'}`}>
+            <Eye className={`${compact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} />
             {language === 'uz' ? "Ko'rish" : 'Просмотр'}
           </span>
         </div>
       </Link>
 
 
-      <div className="p-3 md:p-5 flex flex-col flex-1">
+      <div className={`flex flex-col flex-1 ${compact ? 'p-2 md:p-3' : 'p-3 md:p-5'}`}>
         <Link to={productUrl} className="block">
-          <h3 className="font-medium text-foreground line-clamp-2 leading-snug min-h-[2.6em] group-hover:text-primary transition-colors duration-300">
+          <h3 className={`font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors duration-300 ${compact ? 'text-xs md:text-sm min-h-0' : 'text-base md:text-base min-h-[2.6em]'}`}>
             {name}
           </h3>
         </Link>
 
         {price > 0 && (
-          <div className="mt-1.5 flex flex-col leading-tight">
+          <div className={`flex flex-col leading-tight ${compact ? 'mt-1' : 'mt-1.5'}`}>
             {hasDiscount && (
-              <span className="text-xs text-muted-foreground line-through tabular-nums">
+              <span className={`text-muted-foreground line-through tabular-nums ${compact ? 'text-[10px]' : 'text-xs'}`}>
                 {formatPrice(originalPrice as number)} {t.products.currency}
               </span>
             )}
-            <span className="font-sans font-bold text-base md:text-lg text-foreground tracking-tight tabular-nums">
+            <span className={`font-sans font-bold text-foreground tracking-tight tabular-nums ${compact ? 'text-sm' : 'text-base md:text-lg'}`}>
               {formatPrice(price)} {t.products.currency}
             </span>
           </div>
@@ -99,7 +99,7 @@ export function ProductCard({ product, eager = false, imageAspect = 'aspect-[3/4
         <Button
           variant={inCart ? 'secondary' : 'outline'}
           aria-label={inCart ? (language === 'uz' ? 'Savatda' : 'В корзине') : (language === 'uz' ? "Buyurtma berish" : 'Заказать')}
-          className="mt-auto w-full rounded-full h-10 shadow-soft-sm hover:shadow-soft-md transition-all duration-300"
+          className={`mt-auto w-full rounded-full shadow-soft-sm hover:shadow-soft-md transition-all duration-300 ${compact ? 'h-8 text-xs' : 'h-10'}`}
           onClick={(e) => {
             e.preventDefault();
             if (!inCart) {
