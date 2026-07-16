@@ -145,7 +145,7 @@ function SetsCarousel({ sets, productsBySet, language, fallbackImage }: {
 
   const EmptyCard = ({ hideOnMobile = false }: { hideOnMobile?: boolean }) => (
     <div
-      className={`aspect-[3/4] ${hideOnMobile ? 'hidden lg:block' : 'block'}`}
+      className={`aspect-square ${hideOnMobile ? 'hidden lg:block' : 'block'}`}
       aria-hidden="true"
     />
   );
