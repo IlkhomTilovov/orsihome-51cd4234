@@ -63,10 +63,10 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
           sizes="(max-width: 640px) 100vw, 100vw"
         />
         <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-          <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
+          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
             <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
           </h1>
-          <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans">
+          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans drop-shadow-sm">
             <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
           </p>
         </div>
@@ -103,7 +103,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
             type="button"
             onClick={() => go(current - 1)}
             aria-label="Previous slide"
-            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-background/80 backdrop-blur border border-border items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 backdrop-blur border border-white/20 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -111,7 +111,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
             type="button"
             onClick={() => go(current + 1)}
             aria-label="Next slide"
-            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-background/80 backdrop-blur border border-border items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 backdrop-blur border border-white/20 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
           >
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -124,7 +124,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
                 type="button"
                 onClick={() => go(i)}
                 aria-label={`Slide ${i + 1}`}
-                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-foreground/30 hover:bg-foreground/50'}`}
+                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'}`}
               />
             ))}
           </div>
@@ -174,12 +174,12 @@ function SlideView({
       </picture>
       <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
         {title && (
-          <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
+          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
             {title}
           </h1>
         )}
         {subtitle && (
-          <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans max-w-xl">
+          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans max-w-xl drop-shadow-sm">
             {subtitle}
           </p>
         )}
