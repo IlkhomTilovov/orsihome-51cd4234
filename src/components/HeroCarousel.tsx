@@ -103,7 +103,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
             type="button"
             onClick={() => go(current - 1)}
             aria-label="Previous slide"
-            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-background/80 backdrop-blur border border-border items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 backdrop-blur border border-white/20 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -111,7 +111,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
             type="button"
             onClick={() => go(current + 1)}
             aria-label="Next slide"
-            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-background/80 backdrop-blur border border-border items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 backdrop-blur border border-white/20 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
           >
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -124,7 +124,7 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
                 type="button"
                 onClick={() => go(i)}
                 aria-label={`Slide ${i + 1}`}
-                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-primary' : 'w-2 bg-foreground/30 hover:bg-foreground/50'}`}
+                className={`h-2 rounded-full transition-all duration-500 ${i === current ? 'w-10 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'}`}
               />
             ))}
           </div>
