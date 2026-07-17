@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Sofa, Armchair, Bed, UtensilsCrossed, Lamp, Briefcase, Crown, Percent, Sparkles, Star, Tag, type LucideIcon } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Crown, Percent, Sparkles, Star, Tag, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/ProductCard';
 import { useFeaturedProducts, useCategories } from '@/hooks/useProducts';
@@ -14,32 +14,9 @@ import { useState, useRef, useEffect } from 'react';
 import { getPageSeo } from '@/lib/pageSeo';
 
 
-import serviceWardrobe from '@/assets/service-wardrobe.jpg';
 import serviceKitchen from '@/assets/service-kitchen.jpg';
-import serviceTvzone from '@/assets/service-tvzone.jpg';
-import serviceBedroom from '@/assets/service-bedroom.jpg';
-
-
-const defaultServiceImages: Record<string, string> = {
-  'shkaflar': serviceWardrobe,
-  'oshxona-mebellari': serviceKitchen,
-  'tv-zonalar': serviceTvzone,
-  'yotoqxona-mebellari': serviceBedroom,
-};
-
-const fallbackImages = [serviceBedroom, serviceWardrobe, serviceKitchen, serviceTvzone];
 
 const HOME_PROMO_ICONS: Record<string, LucideIcon> = { Crown, Percent, Sparkles, Star, Tag };
-
-// Fallback categories when DB is empty
-const fallbackCategories = [
-  { slug: 'divanlar', name_uz: 'Divanlar', name_ru: 'Диваны', icon: Sofa },
-  { slug: 'stullar', name_uz: 'Stullar', name_ru: 'Стулья', icon: Armchair },
-  { slug: 'krovat', name_uz: 'Krovat va matras', name_ru: 'Кровати и матрасы', icon: Bed },
-  { slug: 'stollar', name_uz: 'Stollar', name_ru: 'Столы', icon: UtensilsCrossed },
-  { slug: 'shkaf', name_uz: 'Shkaf va tumba', name_ru: 'Шкафы и тумбы', icon: Lamp },
-  { slug: 'ofis', name_uz: 'Ofis mebeli', name_ru: 'Офисная мебель', icon: Briefcase },
-];
 
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -338,19 +315,10 @@ export default function Index() {
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
-  // Never flash the hardcoded fallback list while DB categories are still loading —
-  // that looked like stale/cached data. Show fallback only if load finished AND DB is empty.
-  const cats = categories.length > 0
-    ? categories
-    : (shouldLoadBelowFoldData && !categoriesLoading ? fallbackCategories : []);
+  // Toifalarda eski hardcoded/fallback rasmlar umuman ko'rsatilmaydi.
+  const categoriesLoaded = shouldLoadBelowFoldData && !categoriesLoading;
+  const cats = categoriesLoaded ? categories : [];
   const catsReady = cats.length > 0;
-
-  const inspirations = [
-    { key: 'insp_1', fallback: fallbackImages[0] },
-    { key: 'insp_2', fallback: fallbackImages[1] },
-    { key: 'insp_3', fallback: fallbackImages[2] },
-    { key: 'insp_4', fallback: fallbackImages[3] },
-  ];
 
   // Toifalar carousel — one-at-a-time autoplay with seamless infinite loop
   const [catPerPage, setCatPerPage] = useState(4);
@@ -510,7 +478,7 @@ export default function Index() {
           </div>
         </div>
 
-        {!catsReady ? (
+        {!categoriesLoaded ? (
           <div className="-mx-2 lg:-mx-3 py-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 px-2 lg:px-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
@@ -519,7 +487,7 @@ export default function Index() {
               />
             ))}
           </div>
-        ) : (
+        ) : !catsReady ? null : (
         <div
           className="overflow-x-hidden overflow-y-visible -mx-2 lg:-mx-3 py-2"
           onTouchStart={onCatTouchStart}
@@ -534,7 +502,7 @@ export default function Index() {
           >
             {catsLooped.map((cat: any, i) => {
               const name = language === 'uz' ? cat.name_uz : cat.name_ru;
-              const img = cat.image || defaultServiceImages[cat.slug] || fallbackImages[i % 4];
+              const img = cat.image;
               const FallbackIcon = cat.icon;
               return (
                 <div
@@ -612,7 +580,7 @@ export default function Index() {
               sets={sets}
               productsBySet={productsBySet}
               language={language}
-              fallbackImage={fallbackImages[2]}
+              fallbackImage={serviceKitchen}
             />
           )}
         </section>

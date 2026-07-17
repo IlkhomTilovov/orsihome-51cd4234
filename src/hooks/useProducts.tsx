@@ -284,6 +284,7 @@ export function useCategories(enabled = true) {
     }
 
     const fetchCategories = async () => {
+      setLoading(true);
       try {
         const { data, error } = await supabase
           .from('categories')
