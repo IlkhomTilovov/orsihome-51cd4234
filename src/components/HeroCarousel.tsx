@@ -174,12 +174,12 @@ function SlideView({
       </picture>
       <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
         {title && (
-          <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
+          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
             {title}
           </h1>
         )}
         {subtitle && (
-          <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans max-w-xl">
+          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans max-w-xl drop-shadow-sm">
             {subtitle}
           </p>
         )}
