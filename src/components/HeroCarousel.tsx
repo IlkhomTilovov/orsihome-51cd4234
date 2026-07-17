@@ -15,7 +15,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouselProps) {
   const { language } = useLanguage();
-  const { data: slides = [], isLoading } = useHeroSlides();
+  const { data: slides = [] } = useHeroSlides();
   const [current, setCurrent] = useState(0);
   const [pausedUntil, setPausedUntil] = useState(0);
   const touchStartX = useRef<number | null>(null);
@@ -38,12 +38,8 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
     setCurrent(((n % count) + count) % count);
   };
 
-  // Skeleton while loading — real slide renders once data arrives
-  if (isLoading) {
-    return (
-      <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px] animate-pulse" />
-    );
-  }
+  // No skeleton: when there are no cached slides, render the fallback hero immediately
+  // so the LCP element paints on first frame. Once real slides arrive, they take over.
 
   // Fallback: no DB slides → keep old editable hero so admin can still edit it
   if (count === 0) {

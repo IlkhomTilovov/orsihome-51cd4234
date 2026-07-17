@@ -16,6 +16,27 @@ export interface HeroSlide {
   is_active: boolean;
 }
 
+const CACHE_KEY = 'hero-slides-active-v1';
+
+function readCache(): HeroSlide[] | undefined {
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return undefined;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as HeroSlide[]) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function writeCache(slides: HeroSlide[]) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(slides));
+  } catch {}
+}
+
 export function useHeroSlides() {
   return useQuery({
     queryKey: ['hero_slides', 'active'],
@@ -26,8 +47,11 @@ export function useHeroSlides() {
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
       if (error) throw error;
-      return (data || []) as HeroSlide[];
+      const slides = (data || []) as HeroSlide[];
+      writeCache(slides);
+      return slides;
     },
+    initialData: readCache(),
     staleTime: 5 * 60 * 1000,
   });
 }
