@@ -334,11 +334,16 @@ export default function Index() {
 
   const shouldLoadBelowFoldData = sec2.isVisible;
   const { products: featuredProducts } = useFeaturedProducts(4, shouldLoadBelowFoldData);
-  const { categories } = useCategories(shouldLoadBelowFoldData);
+  const { categories, loading: categoriesLoading } = useCategories(shouldLoadBelowFoldData);
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
-  const cats = categories.length > 0 ? categories : fallbackCategories;
+  // Never flash the hardcoded fallback list while DB categories are still loading —
+  // that looked like stale/cached data. Show fallback only if load finished AND DB is empty.
+  const cats = categories.length > 0
+    ? categories
+    : (shouldLoadBelowFoldData && !categoriesLoading ? fallbackCategories : []);
+  const catsReady = cats.length > 0;
 
   const inspirations = [
     { key: 'insp_1', fallback: fallbackImages[0] },
@@ -505,6 +510,16 @@ export default function Index() {
           </div>
         </div>
 
+        {!catsReady ? (
+          <div className="-mx-2 lg:-mx-3 py-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 px-2 lg:px-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-[4/5] bg-muted/50 rounded-[2rem] animate-pulse"
+              />
+            ))}
+          </div>
+        ) : (
         <div
           className="overflow-x-hidden overflow-y-visible -mx-2 lg:-mx-3 py-2"
           onTouchStart={onCatTouchStart}
@@ -560,6 +575,7 @@ export default function Index() {
             })}
           </div>
         </div>
+        )}
 
         {cats.length > catPerPage && (
           <div className="flex justify-center gap-2 mt-6">
