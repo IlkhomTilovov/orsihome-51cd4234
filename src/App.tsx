@@ -197,6 +197,11 @@ const App = () => (
                               <SetsAdmin />
                             </ProtectedRoute>
                           } />
+                          <Route path="hero-slides" element={
+                            <ProtectedRoute module="siteContent">
+                              <HeroSlidesAdmin />
+                            </ProtectedRoute>
+                          } />
                           <Route path="branches" element={
                             <ProtectedRoute module="siteContent">
                               <BranchesAdmin />
