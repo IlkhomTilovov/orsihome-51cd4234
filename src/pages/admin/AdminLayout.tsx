@@ -27,6 +27,7 @@ import {
   Boxes,
   PaintBucket,
   Cog,
+  Images,
   LucideIcon,
 } from 'lucide-react';
 
@@ -81,6 +82,7 @@ const navGroups: NavGroup[] = [
     titleKey: 'groupSiteContent',
     icon: PaintBucket,
     items: [
+      { titleKey: 'navHeroSlides', url: '/admin/hero-slides', icon: Images, module: 'siteContent' },
       { titleKey: 'navSiteContent', url: '/admin/site-content', icon: FileText, module: 'siteContent' },
       { titleKey: 'navBranches', url: '/admin/branches', icon: MapPin, module: 'siteContent' },
       { titleKey: 'navCheckoutForm', url: '/admin/checkout-form', icon: ClipboardList, module: 'siteContent' },
