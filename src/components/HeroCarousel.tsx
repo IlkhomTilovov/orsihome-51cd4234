@@ -5,6 +5,7 @@ import { useHeroSlides, type HeroSlide } from '@/hooks/useHeroSlides';
 import { useLanguage } from '@/hooks/useLanguage';
 import { EditableImage } from '@/components/EditableImage';
 import { EditableText } from '@/components/EditableText';
+import { transformStorageUrl } from '@/lib/imageTransform';
 
 const AUTOPLAY_MS = 6000;
 
