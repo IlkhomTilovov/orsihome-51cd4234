@@ -59,6 +59,7 @@ const CheckoutFormSettings = lazy(() => import("./pages/admin/CheckoutFormSettin
 const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
 const SetsAdmin = lazy(() => import("./pages/admin/Sets"));
 const BranchesAdmin = lazy(() => import("./pages/admin/Branches"));
+const HeroSlidesAdmin = lazy(() => import("./pages/admin/HeroSlides"));
 
 
 const queryClient = new QueryClient({
