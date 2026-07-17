@@ -146,8 +146,10 @@ function SlideView({
   const title = language === 'uz' ? slide.title_uz : slide.title_ru;
   const subtitle = language === 'uz' ? slide.subtitle_uz : slide.subtitle_ru;
   const ctaText = language === 'uz' ? slide.cta_text_uz : slide.cta_text_ru;
-  const desktopSrc = slide.image || fallbackImage;
-  const mobileSrc = slide.mobile_image || desktopSrc;
+  const rawDesktop = slide.image || fallbackImage;
+  const rawMobile = slide.mobile_image || rawDesktop;
+  const desktopSrc = transformStorageUrl(rawDesktop, { width: 1600, quality: 70 });
+  const mobileSrc = transformStorageUrl(rawMobile, { width: 900, quality: 70 });
 
   return (
     <div
