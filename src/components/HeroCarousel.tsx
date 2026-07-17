@@ -15,7 +15,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouselProps) {
   const { language } = useLanguage();
-  const { data: slides = [], isLoading } = useHeroSlides();
+  const { data: slides = [] } = useHeroSlides();
   const [current, setCurrent] = useState(0);
   const [pausedUntil, setPausedUntil] = useState(0);
   const touchStartX = useRef<number | null>(null);
