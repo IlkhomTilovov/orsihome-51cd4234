@@ -62,7 +62,6 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
           height={900}
           sizes="(max-width: 640px) 100vw, 100vw"
         />
-        <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
         <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
           <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
             <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
@@ -173,8 +172,6 @@ function SlideView({
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
       </picture>
-      <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
-
       <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
         {title && (
           <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
