@@ -63,10 +63,10 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
           sizes="(max-width: 640px) 100vw, 100vw"
         />
         <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-          <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
+          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
             <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
           </h1>
-          <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans">
+          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans drop-shadow-sm">
             <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
           </p>
         </div>
