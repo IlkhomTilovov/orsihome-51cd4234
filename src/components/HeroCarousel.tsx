@@ -38,11 +38,10 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
     setCurrent(((n % count) + count) % count);
   };
 
-  // Skeleton while loading — real slide renders once data arrives
-  if (isLoading) {
-    return (
-      <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px] animate-pulse" />
-    );
+  // No skeleton: if cache is empty and DB is still loading, render the fallback hero
+  // immediately so the LCP element paints on first frame. When slides arrive, swap in.
+  if (isLoading && count === 0) {
+    return <FallbackHero fallbackImage={fallbackImage} fallbackMobileImage={fallbackMobileImage} />;
   }
 
   // Fallback: no DB slides → keep old editable hero so admin can still edit it
