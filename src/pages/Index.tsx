@@ -334,11 +334,16 @@ export default function Index() {
 
   const shouldLoadBelowFoldData = sec2.isVisible;
   const { products: featuredProducts } = useFeaturedProducts(4, shouldLoadBelowFoldData);
-  const { categories } = useCategories(shouldLoadBelowFoldData);
+  const { categories, loading: categoriesLoading } = useCategories(shouldLoadBelowFoldData);
   const { data: dbPromoTiles = [] } = usePromoTiles();
   const { sets, productsBySet, loading: setsLoading } = useActiveSets(shouldLoadBelowFoldData);
 
-  const cats = categories.length > 0 ? categories : fallbackCategories;
+  // Never flash the hardcoded fallback list while DB categories are still loading —
+  // that looked like stale/cached data. Show fallback only if load finished AND DB is empty.
+  const cats = categories.length > 0
+    ? categories
+    : (shouldLoadBelowFoldData && !categoriesLoading ? fallbackCategories : []);
+  const catsReady = cats.length > 0;
 
   const inspirations = [
     { key: 'insp_1', fallback: fallbackImages[0] },
