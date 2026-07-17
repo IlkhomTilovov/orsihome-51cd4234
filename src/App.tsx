@@ -59,6 +59,7 @@ const CheckoutFormSettings = lazy(() => import("./pages/admin/CheckoutFormSettin
 const PromoTilesAdmin = lazy(() => import("./pages/admin/PromoTiles"));
 const SetsAdmin = lazy(() => import("./pages/admin/Sets"));
 const BranchesAdmin = lazy(() => import("./pages/admin/Branches"));
+const HeroSlidesAdmin = lazy(() => import("./pages/admin/HeroSlides"));
 
 
 const queryClient = new QueryClient({
@@ -194,6 +195,11 @@ const App = () => (
                           <Route path="sets" element={
                             <ProtectedRoute module="siteContent">
                               <SetsAdmin />
+                            </ProtectedRoute>
+                          } />
+                          <Route path="hero-slides" element={
+                            <ProtectedRoute module="siteContent">
+                              <HeroSlidesAdmin />
                             </ProtectedRoute>
                           } />
                           <Route path="branches" element={

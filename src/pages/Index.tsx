@@ -9,6 +9,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useSEO } from '@/hooks/useSEO';
 import { EditableText } from '@/components/EditableText';
 import { EditableImage } from '@/components/EditableImage';
+import { HeroCarousel } from '@/components/HeroCarousel';
 import { useState, useRef, useEffect } from 'react';
 import { getPageSeo } from '@/lib/pageSeo';
 
@@ -435,49 +436,14 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* ============ HERO (Apple-style: huge type + product + side promo) ============ */}
+      {/* ============ HERO (DB-driven carousel banner) ============ */}
       <section className="container mx-auto px-4 lg:px-8 pt-6 lg:pt-10">
         <div className="grid grid-cols-1 gap-6">
-          {/* Main hero card */}
-          <div className="relative bg-card rounded-[2rem] overflow-hidden shadow-soft h-[260px] sm:h-[360px] lg:h-auto lg:min-h-[620px]">
-            {/* Full-bleed background image (admin-managed).
-                fallbackSrc matches the actual hero currently in the CMS so first-time visitors
-                (no localStorage cache) don't see a jarring image swap. It is also preloaded
-                with fetchpriority="high" from index.html. */}
-            <EditableImage
-              contentKey="hero_product_image"
-              fallbackSrc="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
-              mobileSrc="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp"
-              alt="OrisHome premium furniture"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-              wrapperClassName="absolute inset-0 w-full h-full"
-              section="hero"
-              priority
-              width={1600}
-              height={900}
-              sizes="(max-width: 640px) 100vw, 100vw"
-            />
-
-
-            {/* Light blur overlay for readability */}
-            <div className="absolute inset-0 bg-[#f9f9f6]/[0.32] pointer-events-none" />
-
-
-            {/* Text content overlay - hidden on mobile */}
-            <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-              <h1 className="font-serif font-bold leading-[0.95] text-foreground text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight">
-                <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
-              </h1>
-              <p className="mt-6 text-foreground/70 text-base lg:text-lg font-sans">
-                <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
-              </p>
-
-            </div>
-
-          </div>
-
+          <HeroCarousel
+            fallbackImage="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
+            fallbackMobileImage="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp"
+          />
         </div>
-
       </section>
 
       {/* ============ PROMO TILES (DB-driven, single-row carousel) ============ */}
