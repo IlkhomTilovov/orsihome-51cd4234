@@ -306,6 +306,13 @@ export function useCategories(enabled = true) {
   return { categories, loading };
 }
 
+// Alias with explicit loaded flag for callers that need to distinguish
+// "still loading" from "loaded and empty".
+export function useCategoriesWithState(enabled = true) {
+  const { categories, loading } = useCategories(enabled);
+  return { categories, loading, loaded: !loading };
+}
+
 export function useSections(enabled = true) {
   const [sections, setSections] = useState<Array<{ id: string; name_uz: string; name_ru: string; slug: string; sort_order: number; is_active: boolean }>>([]);
   const [loading, setLoading] = useState(true);
