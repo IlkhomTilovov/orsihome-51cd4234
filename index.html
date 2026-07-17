@@ -88,12 +88,6 @@
             desktopUrl = 'https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp';
             mobileUrl = 'https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp';
           }
-          function transform(u, w) {
-            if (!u || u.indexOf('/storage/v1/object/public/') === -1) return u;
-            if (u.indexOf('/storage/v1/render/image/') !== -1) return u;
-            return u.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/') +
-              (u.indexOf('?') === -1 ? '?' : '&') + 'width=' + w + '&quality=70&resize=cover';
-          }
           function preload(href, media) {
             var l = document.createElement('link');
             l.rel = 'preload';
@@ -104,8 +98,8 @@
             if (media) l.media = media;
             document.head.appendChild(l);
           }
-          preload(transform(mobileUrl, 900), '(max-width: 640px)');
-          preload(transform(desktopUrl, 1600), '(min-width: 641px)');
+          preload(mobileUrl, '(max-width: 640px)');
+          preload(desktopUrl, '(min-width: 641px)');
         } catch (e) {}
       })();
     </script>
