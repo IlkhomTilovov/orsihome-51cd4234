@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, memo } from 'react';
 import { cn } from '@/lib/utils';
+import { transformStorageUrl } from '@/lib/imageTransform';
+
 
 const loadedImageSources = new Set<string>();
 
@@ -11,6 +13,10 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   wrapperClassName?: string;
   sizes?: string;
   priority?: boolean;
+  /** Supabase image transform width (px). If set, storage URLs are served resized. */
+  transformWidth?: number;
+  /** Supabase image transform quality (default 75). */
+  transformQuality?: number;
 }
 
 export const LazyImage = memo(function LazyImage({
@@ -21,9 +27,14 @@ export const LazyImage = memo(function LazyImage({
   wrapperClassName,
   sizes: sizesProp,
   priority = false,
+  transformWidth,
+  transformQuality,
   ...props
 }: LazyImageProps) {
-  const resolvedSrc = src || placeholder;
+  const rawSrc = src || placeholder;
+  const resolvedSrc = transformWidth
+    ? transformStorageUrl(rawSrc, { width: transformWidth, quality: transformQuality ?? 75 })
+    : rawSrc;
   const [isLoaded, setIsLoaded] = useState(() => priority || loadedImageSources.has(resolvedSrc));
   const [isInView, setIsInView] = useState(() => priority || loadedImageSources.has(resolvedSrc));
   const [error, setError] = useState(false);

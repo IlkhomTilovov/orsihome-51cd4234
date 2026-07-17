@@ -67,9 +67,9 @@ export default function SetsAdmin() {
     if (file.size > 5 * 1024 * 1024) { toast.error(t.imageSizeError); return; }
     setUploading(true);
     try {
-      const webp = await convertImageToWebP(file);
+      const webp = await convertImageToWebP(file, 0.7, 1200);
       const path = `sets/set-${Date.now()}.${webp.name.split('.').pop()}`;
-      const { error } = await supabase.storage.from('product-images').upload(path, webp, { contentType: webp.type });
+      const { error } = await supabase.storage.from('product-images').upload(path, webp, { contentType: webp.type, cacheControl: '31536000' });
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
       setForm(f => ({ ...f, image: publicUrl }));

@@ -73,9 +73,12 @@ export default function HeroSlidesAdmin() {
     }
     setUploading(true);
     try {
-      const webp = await convertImageToWebP(file);
+      const maxWidth = prefix === 'mobile' ? 900 : 1600;
+      const webp = await convertImageToWebP(file, 0.65, maxWidth);
       const path = `hero-slides/${prefix}-${Date.now()}.${webp.name.split('.').pop() || 'webp'}`;
-      const { error } = await supabase.storage.from('product-images').upload(path, webp, { contentType: webp.type });
+      const { error } = await supabase.storage
+        .from('product-images')
+        .upload(path, webp, { contentType: webp.type, cacheControl: '31536000' });
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('product-images').getPublicUrl(path);
       onDone(publicUrl);
