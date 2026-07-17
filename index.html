@@ -68,28 +68,41 @@
       crossorigin
     />
 
-    <!-- Preload LCP hero image — responsive:
-         mobile (≤640px) loads the 12KB 768px WebP, larger viewports load the 79KB 1536px WebP. -->
-    <link
-      rel="preload"
-      as="image"
-      media="(max-width: 640px)"
-      href="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp"
-      imagesrcset="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp 768w"
-      imagesizes="100vw"
-      fetchpriority="high"
-      type="image/webp"
-    />
-    <link
-      rel="preload"
-      as="image"
-      media="(min-width: 641px)"
-      href="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp"
-      imagesrcset="https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp 1536w"
-      imagesizes="100vw"
-      fetchpriority="high"
-      type="image/webp"
-    />
+    <!-- Preload LCP hero image — prefer the cached first active slide from a previous
+         visit; fall back to the static hero_product_image on first-ever visit. -->
+    <script>
+      (function () {
+        try {
+          var desktopUrl = null;
+          var mobileUrl = null;
+          var raw = localStorage.getItem('hero-slides-active-v1');
+          if (raw) {
+            var slides = JSON.parse(raw);
+            if (Array.isArray(slides) && slides.length > 0) {
+              var first = slides[0];
+              desktopUrl = first && first.image ? first.image : null;
+              mobileUrl = first && first.mobile_image ? first.mobile_image : (desktopUrl || null);
+            }
+          }
+          if (!desktopUrl) {
+            desktopUrl = 'https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828.webp';
+            mobileUrl = 'https://ueikzlqomhkbwyhfjbsf.supabase.co/storage/v1/object/public/product-images/site-content/hero_product_image-1780844788828-mobile.webp';
+          }
+          function preload(href, media) {
+            var l = document.createElement('link');
+            l.rel = 'preload';
+            l.as = 'image';
+            l.href = href;
+            l.setAttribute('imagesizes', '100vw');
+            l.setAttribute('fetchpriority', 'high');
+            if (media) l.media = media;
+            document.head.appendChild(l);
+          }
+          preload(mobileUrl, '(max-width: 640px)');
+          preload(desktopUrl, '(min-width: 641px)');
+        } catch (e) {}
+      })();
+    </script>
     <script>
       (function () {
         try {
