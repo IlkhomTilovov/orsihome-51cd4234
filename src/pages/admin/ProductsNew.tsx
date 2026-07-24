@@ -1,12 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
-import { 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  Eye, 
-  Image as ImageIcon, 
-  X, 
-  Upload, 
+import * as XLSX from 'xlsx';
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Eye,
+  Image as ImageIcon,
+  X,
+  Upload,
+  Download,
   Globe,
   Search,
   Star,
@@ -190,6 +192,9 @@ export default function ProductsNew() {
   const [mediaModalOpen, setMediaModalOpen] = useState(false);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
+  const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState(false);
   const { toast } = useToast();
   const { language } = useLanguage();
   const t = useAdminT();
@@ -785,6 +790,166 @@ export default function ProductsNew() {
     }
   };
 
+  const EXPORT_HEADERS = ['ID', 'Nomi (UZ)', 'Nomi (RU)', 'Slug', 'Toifa', 'Narxi', 'Eski narxi', 'Mavjud', 'Faol'] as const;
+
+  const handleExportExcel = async () => {
+    setExporting(true);
+    try {
+      let query = supabase
+        .from('products')
+        .select('id, name_uz, name_ru, slug, category_id, price, original_price, in_stock, is_active');
+
+      if (debouncedSearch) {
+        query = query.or(`name_uz.ilike.%${debouncedSearch}%,name_ru.ilike.%${debouncedSearch}%,slug.ilike.%${debouncedSearch}%`);
+      }
+      if (categoryFilter !== 'all') {
+        query = query.eq('category_id', categoryFilter);
+      }
+      if (statusFilter === 'active') {
+        query = query.eq('is_active', true);
+      } else if (statusFilter === 'inactive') {
+        query = query.eq('is_active', false);
+      } else if (statusFilter === 'featured') {
+        query = query.eq('is_featured', true);
+      } else if (statusFilter === 'out_of_stock') {
+        query = query.eq('in_stock', false);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
+      if (error) throw error;
+
+      const rows = (data || []).map((p: any) => [
+        p.id,
+        p.name_uz,
+        p.name_ru,
+        p.slug || '',
+        getCategoryName(p.category_id),
+        p.price ?? '',
+        p.original_price ?? '',
+        p.in_stock ? 'TRUE' : 'FALSE',
+        p.is_active ? 'TRUE' : 'FALSE',
+      ]);
+
+      const worksheet = XLSX.utils.aoa_to_sheet([[...EXPORT_HEADERS], ...rows]);
+      worksheet['!cols'] = [
+        { wch: 38 }, { wch: 30 }, { wch: 30 }, { wch: 28 }, { wch: 20 },
+        { wch: 12 }, { wch: 12 }, { wch: 10 }, { wch: 10 },
+      ];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Mahsulotlar');
+
+      const fileName = `mahsulotlar-${new Date().toISOString().slice(0, 10)}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+
+      toast({ title: 'Muvaffaqiyat', description: `${rows.length} ta mahsulot Excel faylga eksport qilindi` });
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: error.message });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const parsePriceCell = (value: unknown): number | null | undefined => {
+    if (value === undefined) return undefined; // column missing entirely -> don't touch
+    if (value === null || value === '') return null;
+    const cleaned = String(value).replace(/[^\d.-]/g, '');
+    if (cleaned === '') return null;
+    const num = parseFloat(cleaned);
+    return Number.isNaN(num) ? undefined : num;
+  };
+
+  const parseBoolCell = (value: unknown): boolean | undefined => {
+    if (value === undefined || value === null || value === '') return undefined;
+    const str = String(value).trim().toLowerCase();
+    if (['true', '1', 'ha', 'да', 'да ', 'mavjud', 'faol'].includes(str)) return true;
+    if (['false', '0', "yo'q", 'yoq', 'нет'].includes(str)) return false;
+    return undefined;
+  };
+
+  const handleImportClick = () => importInputRef.current?.click();
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: Record<string, unknown>[] = XLSX.utils.sheet_to_json(sheet, { defval: undefined });
+
+      if (rows.length === 0) {
+        toast({ variant: 'destructive', title: 'Xatolik', description: "Fayl bo'sh yoki noto'g'ri formatda" });
+        return;
+      }
+
+      let updated = 0;
+      let skipped = 0;
+      let failed = 0;
+
+      const CHUNK_SIZE = 10;
+      for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+        const chunk = rows.slice(i, i + CHUNK_SIZE);
+        const results = await Promise.allSettled(
+          chunk.map(async (row) => {
+            const id = String(row['ID'] ?? '').trim();
+            if (!id) {
+              skipped++;
+              return;
+            }
+
+            const payload: Record<string, unknown> = {};
+
+            const price = parsePriceCell(row['Narxi']);
+            if (price !== undefined) payload.price = price;
+
+            const originalPrice = parsePriceCell(row['Eski narxi']);
+            if (originalPrice !== undefined) payload.original_price = originalPrice;
+
+            const inStock = parseBoolCell(row['Mavjud']);
+            if (inStock !== undefined) payload.in_stock = inStock;
+
+            const isActive = parseBoolCell(row['Faol']);
+            if (isActive !== undefined) payload.is_active = isActive;
+
+            if (Object.keys(payload).length === 0) {
+              skipped++;
+              return;
+            }
+
+            const { data, error } = await supabase
+              .from('products')
+              .update(payload)
+              .eq('id', id)
+              .select('id');
+
+            if (error || !data || data.length === 0) {
+              failed++;
+            } else {
+              updated++;
+            }
+          })
+        );
+        // Propagate unexpected exceptions as failures without stopping the loop
+        results.forEach((r) => {
+          if (r.status === 'rejected') failed++;
+        });
+      }
+
+      toast({
+        title: 'Import yakunlandi',
+        description: `${updated} ta yangilandi, ${skipped} ta o'tkazib yuborildi, ${failed} ta xatolik`,
+      });
+      fetchProducts();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Xatolik', description: "Faylni o'qishda xatolik: " + error.message });
+    } finally {
+      setImporting(false);
+      if (importInputRef.current) importInputRef.current.value = '';
+    }
+  };
+
   const getSeoStatus = (product: Product) => {
     const hasTitle = product.meta_title_uz || product.meta_title_ru;
     const hasDescription = product.meta_description_uz || product.meta_description_ru;
@@ -818,7 +983,22 @@ export default function ProductsNew() {
           <h1 className="text-2xl font-bold">{t.products.title}</h1>
           <p className="text-muted-foreground">{t.products.subtitle}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            onChange={handleImportFile}
+            className="hidden"
+          />
+          <Button variant="outline" onClick={handleImportClick} disabled={importing}>
+            <Upload className="mr-2 h-4 w-4" />
+            {importing ? t.products.importing : t.products.importExcel}
+          </Button>
+          <Button variant="outline" onClick={handleExportExcel} disabled={exporting}>
+            <Download className="mr-2 h-4 w-4" />
+            {exporting ? t.products.exporting : t.products.exportExcel}
+          </Button>
           <Button variant="outline" onClick={fetchProducts}>
             <RefreshCw className="mr-2 h-4 w-4" />
             {t.products.refresh}

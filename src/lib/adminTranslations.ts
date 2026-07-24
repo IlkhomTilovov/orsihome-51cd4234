@@ -422,6 +422,10 @@ export const adminTranslations = {
       previous: 'Oldingi',
       next: 'Keyingi',
       currency: "so'm",
+      importExcel: 'Excel import',
+      exportExcel: 'Excel eksport',
+      importing: 'Import qilinmoqda...',
+      exporting: 'Eksport qilinmoqda...',
     },
     sets: {
       title: "Setlar to'plami",
@@ -1268,6 +1272,10 @@ export const adminTranslations = {
       previous: 'Назад',
       next: 'Далее',
       currency: 'сум',
+      importExcel: 'Импорт Excel',
+      exportExcel: 'Экспорт Excel',
+      importing: 'Импортируется...',
+      exporting: 'Экспортируется...',
     },
     sets: {
       title: 'Наборы',
