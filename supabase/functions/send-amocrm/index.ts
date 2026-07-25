@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
     const body: AmoRequest = await req.json();
     const settings = await getAmoSettings(supabase);
 
-    if (!settings.enabled || !settings.domain || !settings.client_id || !settings.client_secret) {
+    if (!settings.enabled || !settings.domain || !settings.access_token) {
       return new Response(
         JSON.stringify({ success: false, error: "AmoCRM ulanmagan" }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

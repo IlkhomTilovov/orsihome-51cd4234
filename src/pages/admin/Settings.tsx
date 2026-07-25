@@ -145,6 +145,8 @@ export default function Settings() {
   const [savingAmocrm, setSavingAmocrm] = useState(false);
   const [connectingAmocrm, setConnectingAmocrm] = useState(false);
   const [testingAmocrm, setTestingAmocrm] = useState(false);
+  const [amocrmToken, setAmocrmToken] = useState('');
+  const [savingAmocrmToken, setSavingAmocrmToken] = useState(false);
   const [amocrmTestResult, setAmocrmTestResult] = useState<'success' | 'error' | null>(null);
 
   const { toast } = useToast();
@@ -404,6 +406,30 @@ export default function Settings() {
     }
   };
 
+  const connectWithLongLivedToken = async () => {
+    const domain = normalizeAmoDomain(amocrm.domain);
+    if (!domain || !amocrmToken.trim()) {
+      toast({ title: t.errorTitle, description: t.amocrmFillFirst, variant: 'destructive' });
+      return;
+    }
+    setSavingAmocrmToken(true);
+    try {
+      const farFuture = new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString();
+      await upsertSetting('amocrm_domain', domain);
+      await upsertSetting('amocrm_access_token', amocrmToken.trim());
+      await upsertSetting('amocrm_token_expires_at', farFuture);
+      await upsertSetting('amocrm_refresh_token', '');
+      await upsertSetting('amocrm_enabled', 'true');
+      setAmocrm((prev) => ({ ...prev, domain, connected: true }));
+      setAmocrmToken('');
+      toast({ title: t.successTitle, description: t.amocrmConnected });
+    } catch (err: any) {
+      toast({ title: t.errorTitle, description: err.message || t.amocrmConnectError, variant: 'destructive' });
+    } finally {
+      setSavingAmocrmToken(false);
+    }
+  };
+
   const connectAmocrm = async () => {
     const domain = normalizeAmoDomain(amocrm.domain);
     if (!domain || !amocrm.client_id.trim() || !amocrm.client_secret.trim()) {
@@ -645,6 +671,33 @@ export default function Settings() {
             <p className="text-xs text-muted-foreground">{t.amocrmDomainHint}</p>
           </div>
 
+          <div className="rounded-md border border-primary/30 bg-primary/5 p-4 space-y-3">
+            <div>
+              <p className="font-medium text-sm">{t.amocrmQuickConnect}</p>
+              <p className="text-xs text-muted-foreground">{t.amocrmQuickConnectDesc}</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="amocrm-long-token">{t.amocrmLongLivedToken}</Label>
+              <Input
+                id="amocrm-long-token"
+                type="password"
+                value={amocrmToken}
+                onChange={(e) => setAmocrmToken(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">{t.amocrmLongLivedTokenHint}</p>
+            </div>
+            <Button onClick={connectWithLongLivedToken} disabled={savingAmocrmToken}>
+              {savingAmocrmToken ? (
+                <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+              ) : (
+                <Link2 className="mr-2 h-4 w-4" />
+              )}
+              {t.amocrmConnect}
+            </Button>
+          </div>
+
+          <p className="text-xs text-muted-foreground text-center">{t.amocrmOrOauth}</p>
+
           <div className="space-y-2">
             <Label htmlFor="amocrm-client-id">{t.amocrmClientId}</Label>
             <Input
@@ -684,13 +737,13 @@ export default function Settings() {
                 {t.amocrmDisconnect}
               </Button>
             ) : (
-              <Button onClick={connectAmocrm} disabled={connectingAmocrm}>
+              <Button variant="outline" onClick={connectAmocrm} disabled={connectingAmocrm}>
                 {connectingAmocrm ? (
                   <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
                 ) : (
                   <Link2 className="mr-2 h-4 w-4" />
                 )}
-                {connectingAmocrm ? t.amocrmConnecting : t.amocrmConnect}
+                {connectingAmocrm ? t.amocrmConnecting : t.amocrmConnectOauth}
               </Button>
             )}
 
