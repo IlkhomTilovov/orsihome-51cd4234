@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Save, Send, CheckCircle, XCircle, Pin } from 'lucide-react';
+import { Save, Send, CheckCircle, XCircle, Pin, Link2, Unlink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -101,6 +101,20 @@ interface WebAppSettings {
   short_name: string;
 }
 
+interface AmoCrmSettings {
+  domain: string;
+  client_id: string;
+  client_secret: string;
+  connected: boolean;
+}
+
+function normalizeAmoDomain(value: string) {
+  return value
+    .trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/+$/, '');
+}
+
 export default function Settings() {
   const t = useAdminT().settings;
   const [telegram, setTelegram] = useState<TelegramSettings>({
@@ -121,10 +135,67 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
+
+  const [amocrm, setAmocrm] = useState<AmoCrmSettings>({
+    domain: '',
+    client_id: '',
+    client_secret: '',
+    connected: false,
+  });
+  const [savingAmocrm, setSavingAmocrm] = useState(false);
+  const [connectingAmocrm, setConnectingAmocrm] = useState(false);
+  const [testingAmocrm, setTestingAmocrm] = useState(false);
+  const [amocrmTestResult, setAmocrmTestResult] = useState<'success' | 'error' | null>(null);
+
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSettings();
+  }, []);
+
+  // Handle the redirect back from AmoCRM's OAuth authorize page (?code=...&state=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+    const authError = params.get('error');
+
+    if (authError) {
+      toast({ title: t.errorTitle, description: t.amocrmAuthDenied, variant: 'destructive' });
+      window.history.replaceState(null, '', window.location.pathname);
+      return;
+    }
+
+    if (!code) return;
+
+    const savedState = sessionStorage.getItem('amocrm_oauth_state');
+    sessionStorage.removeItem('amocrm_oauth_state');
+
+    if (!savedState || savedState !== state) {
+      toast({ title: t.errorTitle, description: t.amocrmStateMismatch, variant: 'destructive' });
+      window.history.replaceState(null, '', window.location.pathname);
+      return;
+    }
+
+    (async () => {
+      setConnectingAmocrm(true);
+      try {
+        const redirect_uri = `${window.location.origin}/admin/settings`;
+        const { data, error } = await supabase.functions.invoke('amocrm-connect', {
+          body: { code, redirect_uri },
+        });
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || t.amocrmConnectError);
+        toast({ title: t.successTitle, description: t.amocrmConnected });
+        await fetchSettings();
+      } catch (err: any) {
+        toast({ title: t.errorTitle, description: err.message || t.amocrmConnectError, variant: 'destructive' });
+      } finally {
+        setConnectingAmocrm(false);
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -151,6 +222,13 @@ export default function Settings() {
         button_text: settings['telegram_webapp_button'] || prev.button_text,
         short_name: settings['telegram_webapp_short_name'] || prev.short_name,
       }));
+
+      setAmocrm({
+        domain: settings['amocrm_domain'] || '',
+        client_id: settings['amocrm_client_id'] || '',
+        client_secret: settings['amocrm_client_secret'] || '',
+        connected: !!settings['amocrm_access_token'] && settings['amocrm_enabled'] === 'true',
+      });
 
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -299,6 +377,82 @@ export default function Settings() {
     } finally {
       setSavingWebapp(false);
       setConnectingBot(false);
+    }
+  };
+
+  const saveAmocrmSettings = async () => {
+    const domain = normalizeAmoDomain(amocrm.domain);
+    if (!domain || !amocrm.client_id.trim()) {
+      toast({ title: t.errorTitle, description: t.amocrmFillFirst, variant: 'destructive' });
+      return false;
+    }
+    setSavingAmocrm(true);
+    try {
+      await upsertSetting('amocrm_domain', domain);
+      await upsertSetting('amocrm_client_id', amocrm.client_id.trim());
+      if (amocrm.client_secret.trim()) {
+        await upsertSetting('amocrm_client_secret', amocrm.client_secret.trim());
+      }
+      setAmocrm((prev) => ({ ...prev, domain }));
+      toast({ title: t.successTitle, description: t.settingsSaved });
+      return true;
+    } catch (err: any) {
+      toast({ title: t.errorTitle, description: err.message || t.settingsSaveError, variant: 'destructive' });
+      return false;
+    } finally {
+      setSavingAmocrm(false);
+    }
+  };
+
+  const connectAmocrm = async () => {
+    const domain = normalizeAmoDomain(amocrm.domain);
+    if (!domain || !amocrm.client_id.trim() || !amocrm.client_secret.trim()) {
+      toast({ title: t.errorTitle, description: t.amocrmFillFirst, variant: 'destructive' });
+      return;
+    }
+    setConnectingAmocrm(true);
+    const ok = await saveAmocrmSettings();
+    if (!ok) {
+      setConnectingAmocrm(false);
+      return;
+    }
+    const state = crypto.randomUUID();
+    sessionStorage.setItem('amocrm_oauth_state', state);
+    const authorizeUrl = `https://${domain}/oauth?client_id=${encodeURIComponent(amocrm.client_id.trim())}&state=${encodeURIComponent(state)}`;
+    window.location.href = authorizeUrl;
+  };
+
+  const disconnectAmocrm = async () => {
+    setConnectingAmocrm(true);
+    try {
+      await upsertSetting('amocrm_enabled', 'false');
+      await upsertSetting('amocrm_access_token', '');
+      await upsertSetting('amocrm_refresh_token', '');
+      setAmocrm((prev) => ({ ...prev, connected: false }));
+      toast({ title: t.successTitle, description: t.amocrmDisconnected });
+    } catch (err: any) {
+      toast({ title: t.errorTitle, description: err.message || t.amocrmConnectError, variant: 'destructive' });
+    } finally {
+      setConnectingAmocrm(false);
+    }
+  };
+
+  const testAmocrm = async () => {
+    setTestingAmocrm(true);
+    setAmocrmTestResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-amocrm', {
+        body: { type: 'test' },
+      });
+      if (error) throw error;
+      if (!data?.success) throw new Error(data?.error || t.amocrmTestError);
+      setAmocrmTestResult('success');
+      toast({ title: t.successTitle, description: t.amocrmTestSuccess });
+    } catch (err: any) {
+      setAmocrmTestResult('error');
+      toast({ title: t.errorTitle, description: err.message || t.amocrmTestError, variant: 'destructive' });
+    } finally {
+      setTestingAmocrm(false);
     }
   };
 
@@ -455,6 +609,133 @@ export default function Settings() {
         defaultButton={webapp.button_text || t.catalog}
         shortName={webapp.short_name}
       />
+
+      {/* AmoCRM Integration */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Link2 className="h-5 w-5" />
+            {t.amocrmTitle}
+          </CardTitle>
+          <CardDescription>{t.amocrmDesc}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-md border border-border p-3 text-sm flex items-center gap-2">
+            {amocrm.connected ? (
+              <>
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                {t.amocrmConnected}
+              </>
+            ) : (
+              <>
+                <XCircle className="h-4 w-4 text-muted-foreground" />
+                {t.amocrmNotConnected}
+              </>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="amocrm-domain">{t.amocrmDomain}</Label>
+            <Input
+              id="amocrm-domain"
+              placeholder="yourcompany.amocrm.ru"
+              value={amocrm.domain}
+              onChange={(e) => setAmocrm((p) => ({ ...p, domain: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">{t.amocrmDomainHint}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="amocrm-client-id">{t.amocrmClientId}</Label>
+            <Input
+              id="amocrm-client-id"
+              value={amocrm.client_id}
+              onChange={(e) => setAmocrm((p) => ({ ...p, client_id: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">{t.amocrmClientIdHint}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="amocrm-client-secret">{t.amocrmClientSecret}</Label>
+            <Input
+              id="amocrm-client-secret"
+              type="password"
+              value={amocrm.client_secret}
+              onChange={(e) => setAmocrm((p) => ({ ...p, client_secret: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">{t.amocrmClientSecretHint}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>{t.amocrmRedirectUriLabel}</Label>
+            <Input readOnly value={typeof window !== 'undefined' ? `${window.location.origin}/admin/settings` : ''} />
+            <p className="text-xs text-muted-foreground">{t.amocrmRedirectUriHint}</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+            <Button variant="outline" onClick={saveAmocrmSettings} disabled={savingAmocrm}>
+              <Save className="mr-2 h-4 w-4" />
+              {savingAmocrm ? t.saving : t.amocrmSave}
+            </Button>
+
+            {amocrm.connected ? (
+              <Button variant="outline" onClick={disconnectAmocrm} disabled={connectingAmocrm}>
+                <Unlink className="mr-2 h-4 w-4" />
+                {t.amocrmDisconnect}
+              </Button>
+            ) : (
+              <Button onClick={connectAmocrm} disabled={connectingAmocrm}>
+                {connectingAmocrm ? (
+                  <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+                ) : (
+                  <Link2 className="mr-2 h-4 w-4" />
+                )}
+                {connectingAmocrm ? t.amocrmConnecting : t.amocrmConnect}
+              </Button>
+            )}
+
+            {amocrm.connected && (
+              <Button variant="outline" onClick={testAmocrm} disabled={testingAmocrm}>
+                {testingAmocrm ? (
+                  <div className="animate-spin h-4 w-4 mr-2 border-2 border-current border-t-transparent rounded-full" />
+                ) : amocrmTestResult === 'success' ? (
+                  <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+                ) : amocrmTestResult === 'error' ? (
+                  <XCircle className="mr-2 h-4 w-4 text-red-500" />
+                ) : (
+                  <Send className="mr-2 h-4 w-4" />
+                )}
+                {t.amocrmTestLead}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* AmoCRM Setup Guide */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{t.amocrmGuideTitle}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <h4 className="font-medium">1. {t.amocrmStep1}</h4>
+            <p className="text-sm text-muted-foreground">{t.amocrmStep1Desc}</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-medium">2. {t.amocrmStep2}</h4>
+            <p className="text-sm text-muted-foreground">{t.amocrmStep2Desc}</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-medium">3. {t.amocrmStep3}</h4>
+            <p className="text-sm text-muted-foreground">{t.amocrmStep3Desc}</p>
+          </div>
+          <div className="space-y-2">
+            <h4 className="font-medium">4. {t.amocrmStep4}</h4>
+            <p className="text-sm text-muted-foreground">{t.amocrmStep4Desc}</p>
+          </div>
+        </CardContent>
+      </Card>
 
 
       {/* How to Setup Guide */}

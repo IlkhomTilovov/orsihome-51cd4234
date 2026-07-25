@@ -6,11 +6,11 @@ import { EditableText } from '@/components/EditableText';
 import { EditableLink } from '@/components/EditableLink';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
 export function Footer() {
   const { language } = useLanguage();
   const { settings, getAddress, getWorkingHours } = useSystemSettings();
+  const logoUrl = settings?.logo_url;
 
   const { data: categories } = useQuery({
     queryKey: ['footer-categories'],
@@ -44,15 +44,21 @@ export function Footer() {
             <div className="md:col-span-5 flex flex-col space-y-6">
               <div className="space-y-3">
                 <Link to="/" className="inline-block">
-                  <img
-                    src={logoAsset.url}
-                    alt="ORSI HOME"
-                    width={140}
-                    height={48}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-10 md:h-12 w-auto object-contain"
-                  />
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="ORSI HOME"
+                      width={140}
+                      height={48}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-10 md:h-12 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-xl font-serif font-bold tracking-wide text-foreground">
+                      ORSI HOME
+                    </span>
+                  )}
                 </Link>
                 <EditableText
                   contentKey="footer_description"

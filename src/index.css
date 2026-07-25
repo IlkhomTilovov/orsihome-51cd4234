@@ -2,15 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Theme-driven Design System — Manrope as the global typeface. */
-
-@font-face {
-  font-family: 'Manrope';
-  src: url('/__l5e/assets-v1/7a790fdc-26a1-4403-9d63-ea3d4a2b4695/Manrope-VariableFont_wght.ttf') format('truetype');
-  font-weight: 200 800;
-  font-style: normal;
-  font-display: swap;
-}
+/* Theme-driven Design System — Manrope as the global typeface (loaded via index.html). */
 
 @layer base {
   * {

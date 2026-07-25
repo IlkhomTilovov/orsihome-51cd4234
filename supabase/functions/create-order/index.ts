@@ -247,6 +247,41 @@ Deno.serve(async (req) => {
     }
     */
 
+    // Send order to amoCRM as a new Lead (async, non-blocking failure)
+    try {
+      const amoPayload = {
+        type: 'order',
+        order_data: {
+          order_number: orderData.order_number,
+          customer_name: body.customer_name.trim(),
+          customer_phone: cleanPhone,
+          customer_message: body.customer_message || undefined,
+          total_price: totalPrice,
+          items: orderItems.map(item => ({
+            product_name: item.product_name_snapshot,
+            quantity: item.quantity,
+            price: item.price_snapshot,
+            selected_options: item.selected_options,
+          })),
+        },
+      };
+
+      const amoResponse = await fetch(`${supabaseUrl}/functions/v1/send-amocrm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+        },
+        body: JSON.stringify(amoPayload),
+      });
+
+      const amoResult = await amoResponse.json();
+      console.log('AmoCRM notification result:', amoResult);
+    } catch (amoError) {
+      // Don't fail the order if amoCRM sync fails
+      console.error('AmoCRM notification error (non-blocking):', amoError);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,

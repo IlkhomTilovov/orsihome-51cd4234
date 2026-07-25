@@ -8,7 +8,6 @@ import { useCart } from '@/hooks/useCart';
 import { useSystemSettings } from '@/hooks/useSystemSettings';
 import { useCategories, useSections, type Product } from '@/hooks/useProducts';
 import { supabase } from '@/integrations/supabase/client';
-import logoAsset from '@/assets/orsi-logo.svg.asset.json';
 
 const CartDrawer = lazy(() => import('@/components/CartDrawer').then((m) => ({ default: m.CartDrawer })));
 
@@ -93,6 +92,7 @@ export function Header() {
 
   const isActive = (path: string) => location.pathname === path;
   const contactPhone = settings?.contact_phone || '';
+  const logoUrl = settings?.logo_url;
 
   return (
     <header
@@ -109,15 +109,21 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <img
-              src={logoAsset.url}
-              alt="ORSI HOME"
-              width={140}
-              height={40}
-              fetchpriority="high"
-              decoding="async"
-              className="h-8 md:h-10 w-auto object-contain"
-            />
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt="ORSI HOME"
+                width={140}
+                height={40}
+                fetchpriority="high"
+                decoding="async"
+                className="h-8 md:h-10 w-auto object-contain"
+              />
+            ) : (
+              <span className="text-lg md:text-xl font-serif font-bold tracking-wide text-foreground">
+                ORSI HOME
+              </span>
+            )}
           </Link>
 
           {/* Desktop Nav */}
