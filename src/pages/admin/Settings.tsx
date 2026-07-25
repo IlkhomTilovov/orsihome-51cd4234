@@ -467,11 +467,9 @@ export default function Settings() {
     setTestingAmocrm(true);
     setAmocrmTestResult(null);
     try {
-      const { data, error } = await supabase.functions.invoke('send-amocrm', {
-        body: { type: 'test' },
-      });
+      const { data, error } = await supabase.rpc('amocrm_test_lead');
       if (error) throw error;
-      if (!data?.success) throw new Error(data?.error || t.amocrmTestError);
+      if (!(data as any)?.success) throw new Error((data as any)?.error || t.amocrmTestError);
       setAmocrmTestResult('success');
       toast({ title: t.successTitle, description: t.amocrmTestSuccess });
     } catch (err: any) {
