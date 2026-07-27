@@ -61,6 +61,7 @@ export type Database = {
       }
       categories: {
         Row: {
+          amocrm_category: string | null
           created_at: string
           icon: string | null
           id: string
@@ -82,6 +83,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amocrm_category?: string | null
           created_at?: string
           icon?: string | null
           id?: string
@@ -103,6 +105,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amocrm_category?: string | null
           created_at?: string
           icon?: string | null
           id?: string

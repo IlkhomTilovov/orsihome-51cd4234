@@ -54,6 +54,7 @@ interface Category {
   is_indexed: boolean;
   is_followed: boolean;
   products_count?: number;
+  amocrm_category: string | null;
 }
 
 interface Section {
@@ -82,7 +83,12 @@ interface FormData {
   meta_keywords: string;
   is_indexed: boolean;
   is_followed: boolean;
+  amocrm_category: string;
 }
+
+const AMOCRM_CATEGORY_OPTIONS = [
+  'stul', 'office mebel', 'loft', 'shkaf', 'parta', 'kreslo koja', 'kreslo setka',
+];
 
 const initialFormData: FormData = {
   name_uz: '',
@@ -101,6 +107,7 @@ const initialFormData: FormData = {
   meta_keywords: '',
   is_indexed: true,
   is_followed: true,
+  amocrm_category: '',
 };
 
 export default function Categories() {
@@ -281,6 +288,7 @@ export default function Categories() {
       meta_keywords: category.meta_keywords || '',
       is_indexed: category.is_indexed ?? true,
       is_followed: category.is_followed ?? true,
+      amocrm_category: category.amocrm_category || '',
     });
     setSlugError('');
     setActiveTab('general');
@@ -343,6 +351,7 @@ export default function Categories() {
         meta_keywords: formData.meta_keywords || null,
         is_indexed: formData.is_indexed,
         is_followed: formData.is_followed,
+        amocrm_category: formData.amocrm_category || null,
       };
 
       if (selectedCategory) {
@@ -732,7 +741,30 @@ export default function Categories() {
                 </p>
               </div>
 
-
+              <div className="space-y-2">
+                <Label>{language === 'ru' ? 'Категория AmoCRM (поле "Mahsulot")' : 'AmoCRM kategoriyasi ("Mahsulot" maydoni)'}</Label>
+                <Select
+                  value={formData.amocrm_category || 'none'}
+                  onValueChange={(v) => setFormData({ ...formData, amocrm_category: v === 'none' ? '' : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={language === 'ru' ? '— Не выбрано —' : '— Belgilanmagan —'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {language === 'ru' ? '— Не выбрано —' : '— Belgilanmagan —'}
+                    </SelectItem>
+                    {AMOCRM_CATEGORY_OPTIONS.map((opt) => (
+                      <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {language === 'ru'
+                    ? 'Заказы с товарами из этой категории будут отправлены в amoCRM с заполненным полем "Mahsulot".'
+                    : "Shu kategoriyadagi mahsulot bilan tushgan buyurtmalar amoCRM'ga \"Mahsulot\" maydoni to'ldirilgan holda yuboriladi."}
+                </p>
+              </div>
 
               <div className="space-y-2">
                 <Label>{t.categories.slugUrl}</Label>
