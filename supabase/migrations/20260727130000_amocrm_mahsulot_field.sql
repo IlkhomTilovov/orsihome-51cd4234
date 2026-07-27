@@ -144,7 +144,7 @@ begin
 
     -- Drop the key entirely when there's no mapping, rather than sending null.
     if v_custom_fields is null then
-      v_payload := jsonb_build_array(v_payload->0 - 'custom_fields_values');
+      v_payload := jsonb_build_array((v_payload->0) - 'custom_fields_values'::text);
     end if;
 
     perform net.http_post(
