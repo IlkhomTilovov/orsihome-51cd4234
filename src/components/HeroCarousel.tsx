@@ -58,11 +58,11 @@ export function HeroCarousel({ fallbackImage, fallbackMobileImage }: HeroCarouse
           height={900}
           sizes="(max-width: 640px) 100vw, 100vw"
         />
-        <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
-          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
+        <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-3xl z-10">
+          <h1 className="font-serif font-bold leading-[1.05] text-white text-4xl sm:text-5xl lg:text-6xl tracking-tight drop-shadow-md">
             <EditableText contentKey="hero_title_line1" fallback="SOFA" as="span" className="block" section="hero" />
           </h1>
-          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans drop-shadow-sm">
+          <p className="mt-4 text-white/80 text-lg lg:text-xl font-sans drop-shadow-sm">
             <EditableText contentKey="hero_subtitle" fallback="Design by OrisHome" as="span" section="hero" />
           </p>
         </div>
@@ -168,14 +168,14 @@ function SlideView({
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
       </picture>
-      <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-2xl z-10">
+      <div className="relative h-full hidden sm:flex flex-col justify-center p-8 lg:p-14 max-w-3xl z-10">
         {title && (
-          <h1 className="font-serif font-bold leading-[0.95] text-white text-5xl sm:text-6xl lg:text-7xl xl:text-8xl tracking-tight drop-shadow-md">
+          <h1 className="font-serif font-bold leading-[1.05] text-white text-4xl sm:text-5xl lg:text-6xl tracking-tight drop-shadow-md">
             {title}
           </h1>
         )}
         {subtitle && (
-          <p className="mt-6 text-white/80 text-base lg:text-lg font-sans max-w-xl drop-shadow-sm">
+          <p className="mt-4 text-white/80 text-lg lg:text-xl font-sans max-w-xl drop-shadow-sm">
             {subtitle}
           </p>
         )}
